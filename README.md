@@ -1,5 +1,5 @@
 <p align="center">
-<img src=".github/formease.png" alt="FormEase Preview" width="100%" />
+<img src=".github/formease.jpg" alt="FormEase Preview" width="100%" />
 </p>
 
 
