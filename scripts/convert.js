@@ -1,7 +1,8 @@
 window.addEventListener('message', (event) => {
   if (event.source === window && event.data.type === 'convert') {
+    const inputId = event.data.inputId;
     convertImage(event.data.file, event.data.format, (convertedFile) => {
-      window.postMessage({ type: 'fileProcessed', file: convertedFile }, '*');
+      window.postMessage({ type: 'fileProcessed', file: convertedFile, inputId: inputId }, '*');
     });
   }
 });

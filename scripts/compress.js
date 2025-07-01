@@ -1,8 +1,9 @@
 
 window.addEventListener('message', (event) => {
   if (event.source === window && event.data.type === 'compress') {
+    const inputId = event.data.inputId;
     compressImage(event.data.file, event.data.quality, (compressedFile) => {
-      window.postMessage({ type: 'fileProcessed', file: compressedFile }, '*');
+      window.postMessage({ type: 'fileProcessed', file: compressedFile, inputId: inputId }, '*');
     });
   }
 });

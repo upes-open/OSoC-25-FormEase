@@ -1,8 +1,9 @@
 
 window.addEventListener('message', (event) => {
   if (event.source === window && event.data.type === 'resize') {
+    const inputId = event.data.inputId;
     resizeImage(event.data.file, event.data.scale, (resizedFile) => {
-      window.postMessage({ type: 'fileProcessed', file: resizedFile }, '*');
+      window.postMessage({ type: 'fileProcessed', file: resizedFile, inputId: inputId }, '*');
     });
   }
 });
