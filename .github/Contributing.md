@@ -50,26 +50,7 @@ git clone https://github.com/YOUR-USERNAME/FormEase.git
 cd FormEase
 ```
 
-### 3. Set Up Node + Dependencies
-```bash
-# Use Node Version Manager (recommended)
-nvm install
-nvm use
-
-# Install all dependencies
-yarn install
-```
-
-### 4. Set Up Your Environment
-- Ask maintainers for the `.env` file, or refer to `.env.example`
-- Configure frontend and backend separately
-
-### 5. Run Locally
-```bash
-yarn dev
-```
-Now you’re ready to build, test, and explore 🚀
-
+### 3. Set Up at your environment!
 ---
 
 ## Project Structure
