@@ -3,7 +3,7 @@
 
   "name": "FormEase",
   "description": "Resize, compress, and convert files before uploading, directly in-browser.",
-  "version": "1.0",
+  "version": "1.1",
   "permissions": ["scripting", "activeTab"],
   
   "action": {
