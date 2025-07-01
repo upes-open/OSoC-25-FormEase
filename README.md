@@ -72,8 +72,8 @@ OSOC-25-FORMEASE/
 ## Contributing
 
 - Explore issues and choose your interests  
-- Check our [CONTRIBUTING.md](./.github/CONTRIBUTING.md) for full setup & PR flow  
-- Go through our [Code of Conduct](./.github/CODE_OF_CONDUCT.md)  
+- Check our [CONTRIBUTING.md](./.github/Contributing.md) for full setup & PR flow  
+- Go through our [Code of Conduct](./.github/Code_of_conduct.md)  
 - Build real features, learn web tech, and improve user experience!
 
 
