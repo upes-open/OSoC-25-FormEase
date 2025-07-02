@@ -6,6 +6,10 @@
   "version": "1.0",
   "permissions": ["scripting", "activeTab"],
   
+  "icons": {
+    "128": "icons/logo.png"
+  },
+
   "action": {
     "default_icon": "icons/logo.png",
     "default_title": "FormEase"
