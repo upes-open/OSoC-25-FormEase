@@ -1,31 +1,80 @@
 /* Custom styles + Tailwind can be imported here */
 /* For now: simple placeholder */
+/* Base styles */
 body {
-  font-family: sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafb;
 }
 
+/* Toolbox container */
 .formease-toolbox {
-  background-color: rgb(15, 70, 12);
-  border-radius: 2rem;
-}
-
-h4 {
-  color: rgb(96, 239, 14);
-}
-
-#task {
+  background-color: #f0fdf4; /* light green */
+  border: 2px solid #4ade80; /* green border */
   border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
 }
 
+/* Toolbox heading */
+.formease-toolbox h4 {
+  color: #065f46; /* dark green */
+  margin-bottom: 0.5rem;
+}
+
+/* Buttons inside toolbox */
 .taskBtn {
-  background-color: rgb(137, 207, 31);
-  color: black;
-  border: 1px solid white;
-  border-radius: 1rem;
-  padding: 0.5rem 2rem;
+  background-color: #4ade80; /* green */
+  color: #065f46;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  margin: 0.25rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
 }
 
 .taskBtn:hover {
   cursor: pointer;
-  background-color: brown;
+  background-color: #22c55e; /* darker green */
+}
+
+/* Resize slider label */
+.scale-display {
+  margin-left: 0.5rem;
+  font-weight: bold;
+  color: #166534;
+}
+
+/* Feedback container (success, error, processing) */
+.formease-feedback {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Floating Edit Button */
+.edit-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #1d4ed8;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 0.3rem 0.75rem;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 9999;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.edit-button:hover {
+  background-color: #2563eb;
 }
