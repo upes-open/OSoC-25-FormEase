@@ -4,6 +4,7 @@
   "version": "1.0",
   "description": "Resize, compress, and convert files before uploading, directly in-browser.",
   "permissions": ["scripting", "activeTab"],
+  "host_permissions": ["<all_urls>"],
   "action": {
     "default_icon": "icons/logo.png",
     "default_title": "FormEase"
@@ -16,7 +17,15 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["styles/popup.css", "scripts/ui-helper.js"],
+      "resources": [
+        "toolbox.html",
+        "styles.css",
+        "scripts/pica.min.js",
+        "scripts/resize.js",
+        "scripts/compress.js",
+        "scripts/convert.js",
+        "scripts/ffmpeg.min.js"
+      ],
       "matches": ["<all_urls>"]
     }
   ]
