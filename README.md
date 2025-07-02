@@ -7,13 +7,12 @@
 
 ---
 
-##  Key Features
+##  Project Overview
 
-- **In-Browser Processing**: Resize, compress, and convert files directly on the page.
-- **Seamless Integration**: The toolbox appears automatically next to file input fields.
-- **File Replacement**: The processed file is automatically re-injected into the file input, ready for submission.
-- **Privacy First**: All processing happens in your browser. No data is sent to external servers.
-- **Lightweight & Fast**: Built with minimal dependencies for a smooth user experience.
+**FormEase** is a lightweight Chrome Extension that streamlines the file upload process for online application forms.  
+Users can **resize, compress, and convert images or videos** directly inside any webpage — without needing external tools.
+
+> Built for privacy, designed for accessibility, and crafted to reduce friction in applications.
 
 
 <p align="center">
