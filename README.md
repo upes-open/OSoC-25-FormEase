@@ -3,8 +3,6 @@
 </p>
 
 
-<h3 align="center">One-Click File Processing for Seamless Online Applications</h3>
-
 ---
 
 ##  Key Features
@@ -74,11 +72,11 @@ OSOC-25-FORMEASE/
 
 ## Contributing
 
-- Explore issues and choose your interests
-- Check our [CONTRIBUTING.md](./CONTRIBUTING.md) for full setup & PR flow.
-- Go through our [Code of Conduct](./.github/Code_of_conduct.md)
+- Explore issues and choose your interests  
+- Check our [CONTRIBUTING.md](./.github/Contributing.md) for full setup & PR flow  
+- Go through our [Code of Conduct](./.github/Code_of_conduct.MD)  
 - Build real features, learn web tech, and improve user experience!
-  
+
 
 ## Project Mentors
 
