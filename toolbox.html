@@ -1,53 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FormEase Toolbox</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <header class="header">
-    <div class="container">
-      <h1 class="header-title">FormEase Toolbox</h1>
-    </div>
-  </header>
-  <main class="main">
-    <div class="container">
-      <div class="card-grid">
-        <div class="card">
-          <h2 class="card-title">Resize</h2>
-          <p class="card-description">Adjust the dimensions of your images.</p>
-          <div class="card-content">
-            <input type="range" id="resize" min="10" max="100" value="100" class="slider">
-          </div>
-          <div class="card-footer">
-            <button id="resizeBtn" class="button">Resize</button>
-          </div>
-        </div>
-        <div class="card">
-          <h2 class="card-title">Compress</h2>
-          <p class="card-description">Reduce the file size of your images.</p>
-          <div class="card-content">
-            </div>
-          <div class="card-footer">
-            <button id="compressBtn" class="button button-primary">Compress</button>
-            </div>
-        </div>
-        <div class="card">
-          <h2 class="card-title">Convert</h2>
-          <p class="card-description">Change the format of your files.</p>
-          <div class="card-content">
-            </div>
-          <div class="card-footer">
-            <button id="convertBtn" class="button button-secondary">Convert</button>
-            </div>
-        </div>
-      </div>
-    </div>
-  </main>
-</body>
-</html>
+<div class="formease-toolbox">
+    <!---basic template-->
+  <h4>FormEase Toolbox</h4>
+
+  <!-- Basic Range Control -->
+  <label for="resize">Resize:</label>
+  <input type="range" id="resize" min="10" max="100" value="100" />
+
+  <!-- Placeholder Buttons -->
+  <button id="compressBtn">Compress</button>
+  <button id="convertBtn">Convert</button>
+
+  <!-- You can add preview, dropdowns, etc. -->
+</div>
