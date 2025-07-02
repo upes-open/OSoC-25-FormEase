@@ -7,7 +7,7 @@
   "permissions": ["scripting", "activeTab"],
   
   "action": {
-    "default_icon": "icons/logo.png",
+    "default_icon": "icons/logo.jpg",
     "default_title": "FormEase"
   },
 
@@ -16,8 +16,8 @@
   },
   "content_scripts": [
     {
-      "matches": ["   "],
-      "js": ["   "]
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
     }
   ],
   "web_accessible_resources": [
