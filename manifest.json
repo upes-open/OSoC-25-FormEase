@@ -5,11 +5,8 @@
   "description": "Resize, compress, and convert files before uploading, directly in-browser.",
   "permissions": ["scripting", "activeTab"],
   "action": {
-    "default_icon": "icons/logo.jpg",
+    "default_icon": "icons/logo.png",
     "default_title": "FormEase"
-  },
-  "background": {
-    "service_worker": "background.js"
   },
   "content_scripts": [
     {
