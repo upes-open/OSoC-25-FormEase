@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormEase Test - File Upload with Processing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #ddd;
+            border-radius: 6px;
+            background-color: #fafafa;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="file"]:hover {
+            border-color: #2563eb;
+        }
+        
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .submit-btn {
+            background-color: #2563eb;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .info-box {
+            background-color: #e0f2fe;
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .file-info {
+            background-color: #f3f4f6;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        h1 {
+            color: #1f2937;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 FormEase Test Page</h1>
+    <p class="description">Upload images and test the resize, compress, and convert functionality</p>
+    
+    <div class="info-box">
+        <strong>Instructions:</strong>
+        <ol>
+            <li>Install the FormEase browser extension</li>
+            <li>Select an image file using the file inputs below</li>
+            <li>Use the FormEase toolbox that appears to resize, compress, or convert your file</li>
+            <li>Submit the form to verify the processed file is included</li>
+        </ol>
+    </div>
+
+    <div class="form-container">
+        <h2>Profile Photo Upload</h2>
+        <form id="profileForm" action="#" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="profilePhoto">Profile Photo:</label>
+                <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" required>
+                <div class="file-info" id="profilePhotoInfo">
+                    No file selected. FormEase toolbox will appear after selecting an image.
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Upload Profile</button>
+        </form>
+    </div>
+
+    <div class="form-container">
+        <h2>Document Upload</h2>
+        <form id="documentForm" action="#" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="documentTitle">Document Title:</label>
+                <input type="text" id="documentTitle" name="documentTitle" placeholder="Enter document title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="documentFile">Document Image:</label>
+                <input type="file" id="documentFile" name="documentFile" accept="image/*" required>
+                <div class="file-info" id="documentFileInfo">
+                    No file selected. FormEase toolbox will appear after selecting an image.
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Upload Document</button>
+        </form>
+    </div>
+
+    <script>
+        // Add file change listeners to show file information
+        function setupFileInfo(inputId, infoId) {
+            const input = document.getElementById(inputId);
+            const info = document.getElementById(infoId);
+            
+            input.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    const sizeInKB = (file.size / 1024).toFixed(2);
+                    info.innerHTML = `
+                        <strong>Selected:</strong> ${file.name}<br>
+                        <strong>Size:</strong> ${sizeInKB} KB<br>
+                        <strong>Type:</strong> ${file.type}<br>
+                        <em>Use the FormEase toolbox above to process this file</em>
+                    `;
+                    info.style.display = 'block';
+                } else {
+                    info.innerHTML = 'No file selected. FormEase toolbox will appear after selecting an image.';
+                }
+            });
+        }
+
+        // Setup file info for both inputs
+        setupFileInfo('profilePhoto', 'profilePhotoInfo');
+        setupFileInfo('documentFile', 'documentFileInfo');
+
+        // Add form submit handlers to demonstrate file replacement
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('profilePhoto');
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                alert(`Form would submit with file: ${file.name} (${(file.size/1024).toFixed(2)} KB)\nType: ${file.type}\nLast Modified: ${new Date(file.lastModified)}`);
+            }
+        });
+
+        document.getElementById('documentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('documentFile');
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                alert(`Form would submit with file: ${file.name} (${(file.size/1024).toFixed(2)} KB)\nType: ${file.type}\nLast Modified: ${new Date(file.lastModified)}`);
+            }
+        });
+
+        // Listen for FormEase events to show processing results
+        document.addEventListener('formease:fileProcessed', function(e) {
+            console.log('FormEase processing completed:', e.detail);
+            
+            // Update file info with processing results
+            const inputId = e.detail.inputId.includes('profilePhoto') ? 'profilePhoto' : 'documentFile';
+            const infoId = inputId + 'Info';
+            const info = document.getElementById(infoId);
+            
+            if (info) {
+                const stats = e.detail.processStats;
+                const file = e.detail.processedFile;
+                const sizeInKB = (file.size / 1024).toFixed(2);
+                
+                let processingInfo = '';
+                if (stats.originalSize && stats.newSize) {
+                    const sizeDiff = ((stats.originalSize - stats.newSize) / stats.originalSize * 100).toFixed(1);
+                    processingInfo = `<br><strong>Processing:</strong> ${e.detail.operation} completed, size changed by ${sizeDiff}%`;
+                }
+                
+                info.innerHTML = `
+                    <strong>Processed File:</strong> ${file.name}<br>
+                    <strong>Size:</strong> ${sizeInKB} KB<br>
+                    <strong>Type:</strong> ${file.type}${processingInfo}<br>
+                    <em style="color: green;">✅ File ready for upload!</em>
+                `;
+            }
+        });
+    </script>
+</body>
+</html> 
