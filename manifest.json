@@ -1,33 +1,26 @@
 {
   "manifest_version": 3,
-
   "name": "FormEase",
-  "description": "Resize, compress, and convert files before uploading, directly in-browser.",
   "version": "1.0",
+  "description": "Resize, compress, and convert files before uploading, directly in-browser.",
   "permissions": ["scripting", "activeTab"],
-  
   "action": {
-    "default_icon": "icons/logo.png",
+    "default_icon": "icons/logo.jpg",
     "default_title": "FormEase"
   },
-
   "background": {
-
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["   "],
-      "js": ["   "]
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": [
-
-        
-      ],
+      "resources": ["styles/popup.css", "scripts/ui-helper.js"],
       "matches": ["<all_urls>"]
     }
   ]
-
 }

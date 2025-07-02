@@ -1,3 +1,4 @@
+
 /**
  * FormEase Content Script
  * Implements seamless file replacement using the DataTransfer API
@@ -600,3 +601,8 @@ if (document.readyState === 'loading') {
 window.addEventListener('beforeunload', cleanup);
 
 console.log('[FormEase] Content script loaded and initialized');
+
+document.querySelectorAll('input[type="file"]').forEach((input, index) => {
+  console.log(`FormEase detected a file input! (${index + 1})`);
+});
+
