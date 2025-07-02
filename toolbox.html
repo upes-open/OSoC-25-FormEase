@@ -1,14 +1,94 @@
-<div class="formease-toolbox">
-    <!---basic template-->
-  <h4>FormEase Toolbox</h4>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toolbox</title>
 
-  <!-- Basic Range Control -->
-  <label for="resize">Resize:</label>
-  <input type="range" id="resize" min="10" max="100" value="100" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div
+      class="formease-toolbox h-auto w-auto flex flex-col items-center justify-center float-right mx-10 my-6 px-12 py-8 text-white gap-4"
+    >
+      <!---Basic Template-->
+      <h4 class="text-2xl font-black">FormEase Toolbox</h4>
 
-  <!-- Placeholder Buttons -->
-  <button id="compressBtn">Compress</button>
-  <button id="convertBtn">Convert</button>
+      <!-- Dropdown -->
+      <div id="dropdown flex">
+        <label for="task">Choose what you want to do : </label>
+        <select id="task" name="task" class="text-black ms-4 p-2">
+          <option value="nill">Select</option>
+          <option value="resize">Resize</option>
+          <option value="compress">Compress</option>
+          <option value="convert">Convert</option>
+        </select>
+      </div>
 
-  <!-- You can add preview, dropdowns, etc. -->
-</div>
+      <!-- Basic Range Control -->
+      <div id="resize" class="hidden flex flex-col gap-4">
+        <div id="resizeRange flex items-center">
+          <label for="resize">Resize :</label>
+          <input
+            type="range"
+            id="resize"
+            min="10"
+            max="100"
+            value="100"
+            class="ms-4"
+          />
+        </div>
+        <div class="resizeTaskBtns flex gap-4">
+          <button id="resizeBtn" class="taskBtn">Resize</button>
+          <button id="previewBtn" class="taskBtn">Preview</button>
+        </div>
+      </div>
+
+      <!-- Compress Button -->
+      <div id="compress" class="hidden flex gap-4">
+        <button id="compressBtn" class="taskBtn">Compress</button>
+        <button id="previewBtn" class="taskBtn">Preview</button>
+      </div>
+
+      <!-- Convert Button -->
+      <div id="convert" class="hidden flex gap-4">
+        <button id="convertBtn" class="taskBtn">Convert</button>
+        <button id="previewBtn" class="taskBtn">Preview</button>
+      </div>
+    </div>
+
+    <script>
+      // Selecting Dropdown & Buttons
+      let dropdown = document.querySelector("#task");
+      let resize = document.querySelector("#resize");
+      let compress = document.querySelector("#compress");
+      let convert = document.querySelector("#convert");
+
+      // Making the Dropdown Dynamic
+      dropdown.addEventListener("change", (e) => {
+        dropdown.value = e.target.value;
+
+        // Logic for Visibility of Buttons
+        if (dropdown.value == "resize") {
+          resize.classList.remove("hidden");
+          compress.classList.add("hidden");
+          convert.classList.add("hidden");
+        } else if (dropdown.value == "compress") {
+          compress.classList.remove("hidden");
+          resize.classList.add("hidden");
+          convert.classList.add("hidden");
+        } else if (dropdown.value == "convert") {
+          convert.classList.remove("hidden");
+          compress.classList.add("hidden");
+          resize.classList.add("hidden");
+        } else {
+          resize.classList.add("hidden");
+          compress.classList.add("hidden");
+          convert.classList.add("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>

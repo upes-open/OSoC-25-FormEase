@@ -3,3 +3,29 @@
 body {
   font-family: sans-serif;
 }
+
+.formease-toolbox {
+  background-color: rgb(15, 70, 12);
+  border-radius: 2rem;
+}
+
+h4 {
+  color: rgb(96, 239, 14);
+}
+
+#task {
+  border-radius: 1rem;
+}
+
+.taskBtn {
+  background-color: rgb(137, 207, 31);
+  color: black;
+  border: 1px solid white;
+  border-radius: 1rem;
+  padding: 0.5rem 2rem;
+}
+
+.taskBtn:hover {
+  cursor: pointer;
+  background-color: brown;
+}
