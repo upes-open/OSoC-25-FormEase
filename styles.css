@@ -7,7 +7,7 @@ body {
 }
 
 /* Floating Toolbox Container */
-.container {
+.container-0, .container-1 {
   margin: 0;
   padding: 0;
 }
@@ -72,7 +72,7 @@ body {
 }
 
 /* Resize slider label */
-.scale-display {
+#resize-scale {
   margin-left: 0.5rem;
   font-weight: bold;
   color: #166534;
