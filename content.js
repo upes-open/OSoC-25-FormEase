@@ -42,17 +42,28 @@ function setupFileInput(input) {
   });
 
   input.addEventListener("change", function (event) {
+    console.log("[FormEase] File input change event fired.", event.target.files);
     if (event.target.files && event.target.files[0]) {
       originalFiles.set(inputId, event.target.files[0]);
       console.log(
         `[FormEase] Original file stored for input ${inputId}:`,
         event.target.files[0].name
       );
-    }
-    if (event.target.name == "profilePhoto") {
-      createToolboxForInput(input, 0);
+      if (event.target.name == "profilePhoto") {
+        createToolboxForInput(input, 0, event.target.files[0]);
+      } else {
+        createToolboxForInput(input, 1, event.target.files[0]);
+      }
     } else {
-      createToolboxForInput(input, 1);
+      // Clear preview if file selection is cancelled
+      const toolbox = document.querySelector(`.formease-toolbox[data-input-id="${inputId}"]`);
+      const imagePreview = toolbox.querySelector("#image-preview");
+      const imagePreviewArea = toolbox.querySelector("#image-preview-area");
+      if (imagePreview && imagePreviewArea) {
+        imagePreview.src = "#";
+        imagePreviewArea.style.display = "none";
+        console.log("[FormEase] File selection cancelled, preview cleared.");
+      }
     }
   });
 
@@ -83,17 +94,19 @@ function injectFloatingEditButton(input) {
   });
 }
 
-function createToolboxForInput(input, inputId) {
+function createToolboxForInput(input, inputId, file = null) {
   const toolbox = document.createElement("div");
   toolbox.className = "container";
   toolbox.dataset.inputId = inputId;
+  console.log("[FormEase] createToolboxForInput called for inputId:", inputId, "with file:", file);
 
   fetch(chrome.runtime.getURL("toolbox.html"))
     .then((response) => response.text())
     .then((data) => {
       toolbox.innerHTML = data;
       input.parentNode.insertBefore(toolbox, input.nextSibling);
-      setupToolboxEventListeners(toolbox, inputId);
+      console.log("[FormEase] Toolbox inserted into DOM.", toolbox);
+      setupToolboxEventListeners(toolbox, inputId, file);
       addVisualFeedback(toolbox, inputId);
       console.log(`[FormEase] Toolbox created for input ${inputId}`);
     })
@@ -102,7 +115,8 @@ function createToolboxForInput(input, inputId) {
     );
 }
 
-function setupToolboxEventListeners(toolbox, inputId) {
+function setupToolboxEventListeners(toolbox, inputId, file = null) {
+  console.log("[FormEase] setupToolboxEventListeners called for inputId:", inputId, "with file:", file);
   const input = document.querySelector(`input[data-form-ease-id="${inputId}"]`);
   const dropdown = toolbox.querySelector("#task");
 
@@ -111,6 +125,28 @@ function setupToolboxEventListeners(toolbox, inputId) {
   const convert = toolbox.querySelector("#convert");
   const resizeSlider = toolbox.querySelector("#resize-range");
   const applyBtn = toolbox.querySelector("#apply");
+
+  // Display image preview if a file is provided
+  if (file) {
+    console.log("[FormEase] File provided to setupToolboxEventListeners, attempting to display preview.");
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const imagePreview = toolbox.querySelector("#image-preview");
+      const imagePreviewArea = toolbox.querySelector("#image-preview-area");
+      console.log("[FormEase] FileReader onload fired. imagePreview:", imagePreview, "imagePreviewArea:", imagePreviewArea);
+      if (imagePreview && imagePreviewArea) {
+        imagePreview.src = e.target.result;
+        imagePreviewArea.style.display = "block";
+        console.log("[FormEase] Image preview updated and displayed.");
+      } else {
+        console.log("[FormEase] Image preview elements not found in toolbox.");
+      }
+    };
+    reader.readAsDataURL(file);
+    console.log("[FormEase] FileReader readAsDataURL called.");
+  } else {
+    console.log("[FormEase] No file provided to setupToolboxEventListeners for preview.");
+  }
 
   dropdown.addEventListener("change", (e) => {
     dropdown.value = e.target.value;
@@ -293,9 +329,13 @@ window.addEventListener("message", (event) => {
 
       showDetailedSuccessMessage(toolbox, "Original file restored.");
       feedbackArea.innerHTML = ""; // Clear success messages
-      // Clear previews or processed outputs (assuming #previewArea or similar)
-      const previewArea = toolbox.querySelector("#previewArea");
-      if (previewArea) previewArea.innerHTML = "";
+      // Clear previews
+      const imagePreview = toolbox.querySelector("#image-preview");
+      const imagePreviewArea = toolbox.querySelector("#image-preview-area");
+      if (imagePreview && imagePreviewArea) {
+        imagePreview.src = "#";
+        imagePreviewArea.style.display = "none";
+      }
       setTimeout(() => (feedbackArea.style.display = "none"), 3000);
     } else {
       showError(toolbox, "No original file found to reset.");
