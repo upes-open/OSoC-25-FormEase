@@ -2,40 +2,71 @@
 /* For now: simple placeholder */
 /* Base styles */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f9fafb;
 }
 
-/* Toolbox container */
+/* Floating Toolbox Container */
+.container {
+  margin: 0;
+  padding: 0;
+}
+
+/* Toolbox Container */
 .formease-toolbox {
   background-color: #f0fdf4; /* light green */
-  border: 2px solid #4ade80; /* green border */
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 0.5rem;
   margin-top: 0.5rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Toolbox heading */
+/* Toolbox Heading */
 .formease-toolbox h4 {
+  font-weight: 900;
+  font-size: 1rem;
   color: #065f46; /* dark green */
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
-/* Buttons inside toolbox */
-.taskBtn {
+/* Toolbox Dropdown */
+#dropdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+#task {
+  padding: 0.5rem;
+  margin-inline-start: 10px;
+  border-radius: 1rem;
+}
+
+/* Toolbox Range */
+#resize-inner,
+#compress-inner,
+#convert-inner {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Button inside toolbox */
+#apply {
   background-color: #4ade80; /* green */
   color: #065f46;
   border: none;
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
-  margin: 0.25rem;
+  margin-top: 1rem;
   font-weight: 600;
   transition: background-color 0.2s ease;
 }
 
-.taskBtn:hover {
+#apply:hover {
   cursor: pointer;
   background-color: #22c55e; /* darker green */
 }
@@ -77,4 +108,8 @@ body {
 
 .edit-button:hover {
   background-color: #2563eb;
+}
+
+.hidden {
+  display: none;
 }

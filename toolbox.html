@@ -4,22 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Toolbox</title>
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div
-      class="formease-toolbox h-auto w-auto flex flex-col items-center justify-center float-right mx-10 my-6 px-12 py-8 text-white gap-4"
-    >
+    <div class="formease-toolbox">
       <!---Basic Template-->
-      <h4 class="text-2xl font-black">FormEase Toolbox</h4>
+      <h4>FormEase Toolbox</h4>
 
       <!-- Dropdown -->
-      <div id="dropdown flex">
+      <div id="dropdown">
         <label for="task">Choose what you want to do : </label>
-        <select id="task" name="task" class="text-black ms-4 p-2">
+        <select id="task" name="task">
           <option value="nill">Select</option>
           <option value="resize">Resize</option>
           <option value="compress">Compress</option>
@@ -28,67 +22,49 @@
       </div>
 
       <!-- Basic Range Control -->
-      <div id="resize" class="hidden flex flex-col gap-4">
-        <div id="resizeRange flex items-center">
+      <div id="resize" class="hidden">
+        <div id="resize-inner">
           <label for="resize">Resize :</label>
           <input
             type="range"
-            id="resize"
+            id="resize-range"
             min="10"
             max="100"
             value="100"
             class="ms-4"
           />
         </div>
-        <div class="resizeTaskBtns flex gap-4">
-          <button id="resizeBtn" class="taskBtn">Resize</button>
-          <button id="previewBtn" class="taskBtn">Preview</button>
+      </div>
+      <div class="scale-display"></div>
+
+      <!-- Compress Input -->
+      <div id="compress" class="hidden">
+        <div id="compress-inner">
+          <label for="compress-input">Compress to : </label>
+          <input
+            type="number"
+            id="compress-input"
+            name="compress"
+            min="1"
+            max="100"
+          />
+          <span>%</span>
         </div>
       </div>
 
-      <!-- Compress Button -->
-      <div id="compress" class="hidden flex gap-4">
-        <button id="compressBtn" class="taskBtn">Compress</button>
-        <button id="previewBtn" class="taskBtn">Preview</button>
+      <!-- Convert Dropdown -->
+      <div id="convert" class="hidden">
+        <div id="convert-inner">
+          <label for="convert-dropdown">Convert to : </label>
+          <select id="convert-dropdown" name="convert">
+            <option value="PNG" selected>PNG</option>
+            <option value="JPG">JPG</option>
+            <option value="JPEG">JPEG</option>
+          </select>
+        </div>
       </div>
 
-      <!-- Convert Button -->
-      <div id="convert" class="hidden flex gap-4">
-        <button id="convertBtn" class="taskBtn">Convert</button>
-        <button id="previewBtn" class="taskBtn">Preview</button>
-      </div>
+      <button id="apply" class="hidden">Apply</button>
     </div>
-
-    <script>
-      // Selecting Dropdown & Buttons
-      let dropdown = document.querySelector("#task");
-      let resize = document.querySelector("#resize");
-      let compress = document.querySelector("#compress");
-      let convert = document.querySelector("#convert");
-
-      // Making the Dropdown Dynamic
-      dropdown.addEventListener("change", (e) => {
-        dropdown.value = e.target.value;
-
-        // Logic for Visibility of Buttons
-        if (dropdown.value == "resize") {
-          resize.classList.remove("hidden");
-          compress.classList.add("hidden");
-          convert.classList.add("hidden");
-        } else if (dropdown.value == "compress") {
-          compress.classList.remove("hidden");
-          resize.classList.add("hidden");
-          convert.classList.add("hidden");
-        } else if (dropdown.value == "convert") {
-          convert.classList.remove("hidden");
-          compress.classList.add("hidden");
-          resize.classList.add("hidden");
-        } else {
-          resize.classList.add("hidden");
-          compress.classList.add("hidden");
-          convert.classList.add("hidden");
-        }
-      });
-    </script>
   </body>
 </html>
