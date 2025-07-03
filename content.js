@@ -63,19 +63,7 @@ function injectFloatingEditButton(input) {
   const editBtn = document.createElement("button");
   editBtn.textContent = "Edit";
   editBtn.className = "formease-edit-btn";
-  editBtn.style.cssText = `
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    z-index: 9999;
-    padding: 4px 10px;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-  `;
+  /* removed the styling which was giving through js instead of that used external css */
 
   if (input.parentNode && input.parentNode.style) {
     input.parentNode.style.position = "relative";
