@@ -276,6 +276,44 @@ window.addEventListener("message", (event) => {
     console.error("[FormEase] Replacement failed:", err);
     showError(toolbox, "Failed to update file. Please try again.");
   }
+
+  // Handle Reset Request
+  if (type === "requestReset") {
+    const { inputId } = event.data;
+    const input = document.querySelector(`input[data-form-ease-id="${inputId}"]`);
+    const toolbox = document.querySelector(`.formease-toolbox[data-input-id="${inputId}"]`);
+    const feedbackArea = toolbox.querySelector(".formease-feedback");
+
+    if (!input) {
+      showError(toolbox, "Input not found.");
+      return;
+    }
+
+    if (originalFiles && originalFiles.has(inputId)) {
+      const originalFile = originalFiles.get(inputId);
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(originalFile);
+      const hiddenInput = document.createElement("input");
+      hiddenInput.type = "file";
+      hiddenInput.style.display = "none";
+      hiddenInput.files = dataTransfer.files;
+      input.parentNode.insertBefore(hiddenInput, input);
+      input.parentNode.removeChild(input);
+      input.parentNode.appendChild(input);
+      hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+
+      showDetailedSuccessMessage(toolbox, "Original file restored.");
+      feedbackArea.innerHTML = ""; // Clear success messages
+      // Clear previews or processed outputs (assuming #previewArea or similar)
+      const previewArea = toolbox.querySelector("#previewArea");
+      if (previewArea) previewArea.innerHTML = "";
+      setTimeout(() => (feedbackArea.style.display = "none"), 3000);
+    } else {
+      showError(toolbox, "No original file found to reset.");
+      setTimeout(() => (feedbackArea.style.display = "none"), 3000);
+    }
+  }
 });
 
 function showProcessingIndicator(toolbox, operation) {
@@ -336,20 +374,17 @@ function watchForDynamicInputs() {
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((node) => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          if (
-            node.tagName === "INPUT" &&
-            node.type === "file" &&
-            !node.dataset.formEaseId
-          ) {
-            setupFileInput(node);
-          }
-          const fileInputs =
-            node.querySelectorAll?.('input[type="file"]') || [];
-          fileInputs.forEach((input) => {
-            if (!input.dataset.formEaseId) setupFileInput(input);
-          });
+        if (
+          node.tagName === "INPUT" &&
+          node.type === "file" &&
+          !node.dataset.formEaseId
+        ) {
+          setupFileInput(node);
         }
+        const fileInputs = node.querySelectorAll?.('input[type="file"]') || [];
+        fileInputs.forEach((input) => {
+          if (!input.dataset.formEaseId) setupFileInput(input);
+        });
       });
     });
   });
