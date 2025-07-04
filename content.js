@@ -100,26 +100,27 @@ function injectFloatingEditButton(input) {
 }
 
 function checkToolboxExistence(input, inputId, file = null) {
-  if (inputId == 0) {
-    const profileToolbox = document.querySelector(".container-0");
-    if (!profileToolbox) {
-      const toolbox = document.createElement("div");
-      toolbox.className = "container-0";
-      createToolboxForInput(input, inputId, toolbox);
-    }
-  } else {
-    const documentToolbox = document.querySelector(".container-1");
-    if (!documentToolbox) {
-      const toolbox = document.createElement("div");
-      toolbox.className = "container-1";
-      createToolboxForInput(input, inputId, toolbox, file);
-    }
+
+ //using formeaseId instead of inputId, because inputId is not unique everytime
+  const formEaseId = input.dataset.formEaseId;
+  let existingToolbox = document.querySelector(`.formease-toolbox[data-input-id="${formEaseId}"]`);
+
+  //checking if the toolbox is already present or not
+  if(!existingToolbox){
+    const toolbox = document.createElement("div");
+    toolbox.className = `formease-toolbox container-${inputId}`;
+    createToolboxForInput(input,inputId,toolbox,file)
+  }else{  
+    console.log(`[formEase] toolbox already exists for input : ${formEaseId}, updating preview`);
+    setupToolboxEventListeners(existingToolbox,formEaseId,file)
   }
+
 }
 
 function createToolboxForInput(input, inputId, toolbox, file = null) {
+   
   if (toolbox) {
-    toolbox.dataset.inputId = inputId;
+    toolbox.dataset.inputId = input.dataset.formEaseId;
     console.log(
       "[FormEase] createToolboxForInput called for inputId:",
       inputId,
@@ -133,8 +134,12 @@ function createToolboxForInput(input, inputId, toolbox, file = null) {
         toolbox.innerHTML = data;
         input.parentNode.insertBefore(toolbox, input.nextSibling);
         console.log("[FormEase] Toolbox inserted into DOM.", toolbox);
-        setupToolboxEventListeners(toolbox, inputId, file);
-        addVisualFeedback(toolbox, inputId);
+
+        //here passed the input.dataset.formEaseId instead of inputId 
+        setupToolboxEventListeners(toolbox, input.dataset.formEaseId, file);
+        // same for adding visual feedback
+        addVisualFeedback(toolbox, input.dataset.formEaseId);
+
         console.log(`[FormEase] Toolbox created for input ${inputId}`);
       })
       .catch((error) =>
