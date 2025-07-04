@@ -34,8 +34,12 @@
             value="100"
             class="ms-4"
           />
+          <br /><br />
+          <label for="resize-file-input">Upload File:</label>
+          <input type="file" id="resize-file-input" />
         </div>
       </div>
+
       <div id="resize-scale"></div>
 
       <!-- Compress Input -->
@@ -134,6 +138,44 @@
         feedbackArea.style.backgroundColor = "#dbeafe";
         feedbackArea.style.color = "#1d4ed8";
       });
+      const dropdown = document.getElementById("task");
+      const applyButton = document.getElementById("apply");
+
+      // Show/hide sections based on dropdown
+      dropdown.addEventListener("change", () => {
+        const selected = dropdown.value;
+
+        document.querySelectorAll("#resize, #compress, #convert").forEach((section) => {
+          section.classList.add("hidden");
+        });
+
+        if (selected !== "nill") {
+          document.getElementById(selected).classList.remove("hidden");
+          applyButton.classList.remove("hidden");
+        } else {
+          applyButton.classList.add("hidden");
+        }
+      });
+
+      // Apply button functionality for resize
+      applyButton.addEventListener("click", (e) => {
+        e.preventDefault();
+
+      const selected = dropdown.value;
+
+      if (selected === "resize") {
+        const fileInput = document.getElementById("resize-file-input");
+        const file = fileInput.files[0];
+
+        if (!file) {
+          alert("Please select a file before applying resize.");
+          return;
+        }
+
+        console.log("Resizing:", file.name);
+      }
+    });
+
     </script>
   </body>
 </html>
