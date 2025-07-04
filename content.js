@@ -13,9 +13,7 @@ function injectScript(filePath) {
   (document.head || document.documentElement).appendChild(script);
 }
 
-// Inject processing scripts
-injectScript("scripts/pica.min.js");
-injectScript("scripts/resize.js");
+// Inject processing scripts (remove pica.min.js since toolbox.html uses CDN)
 injectScript("scripts/compress.js");
 injectScript("scripts/convert.js");
 
@@ -100,25 +98,20 @@ function injectFloatingEditButton(input) {
 }
 
 function checkToolboxExistence(input, inputId, file = null) {
-
- //using formeaseId instead of inputId, because inputId is not unique everytime
   const formEaseId = input.dataset.formEaseId;
   let existingToolbox = document.querySelector(`.formease-toolbox[data-input-id="${formEaseId}"]`);
 
-  //checking if the toolbox is already present or not
-  if(!existingToolbox){
+  if (!existingToolbox) {
     const toolbox = document.createElement("div");
     toolbox.className = `formease-toolbox container-${inputId}`;
-    createToolboxForInput(input,inputId,toolbox,file)
-  }else{  
+    createToolboxForInput(input, inputId, toolbox, file);
+  } else {
     console.log(`[formEase] toolbox already exists for input : ${formEaseId}, updating preview`);
-    setupToolboxEventListeners(existingToolbox,formEaseId,file)
+    setupToolboxEventListeners(existingToolbox, formEaseId, file);
   }
-
 }
 
 function createToolboxForInput(input, inputId, toolbox, file = null) {
-   
   if (toolbox) {
     toolbox.dataset.inputId = input.dataset.formEaseId;
     console.log(
@@ -135,9 +128,7 @@ function createToolboxForInput(input, inputId, toolbox, file = null) {
         input.parentNode.insertBefore(toolbox, input.nextSibling);
         console.log("[FormEase] Toolbox inserted into DOM.", toolbox);
 
-        //here passed the input.dataset.formEaseId instead of inputId 
         setupToolboxEventListeners(toolbox, input.dataset.formEaseId, file);
-        // same for adding visual feedback
         addVisualFeedback(toolbox, input.dataset.formEaseId);
 
         console.log(`[FormEase] Toolbox created for input ${inputId}`);
@@ -213,18 +204,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       });
 
       applyBtn.addEventListener("click", () => {
-        const scale = resizeSlider.value;
-        const currentFile = getCurrentFileForInput(inputId);
-        if (currentFile) {
-          processFile(
-            "resize",
-            currentFile,
-            { scale: parseFloat(scale) },
-            inputId
-          );
-        } else {
-          showError(toolbox, "Please select a file first");
-        }
+        window.postMessage({ type: "triggerApply", inputId }, "*");
       });
     } else if (dropdown.value == "compress") {
       resizeScale.classList.add("hidden");
@@ -308,23 +288,24 @@ function processFile(operation, file, options, inputId) {
     if (state) state.isProcessing = false;
   }, 30000);
 
-  window.postMessage(
-    {
-      type: operation,
-      file,
-      inputId,
-      timeoutId,
-      ...options,
-    },
-    "*"
-  );
+  if (operation !== "resize") { // Skip resize, handled by toolbox.html
+    window.postMessage(
+      {
+        type: operation,
+        file,
+        inputId,
+        timeoutId,
+        ...options,
+      },
+      "*"
+    );
+  }
 }
 
 window.addEventListener("message", (event) => {
   if (event.source !== window) return;
 
-  const { type, inputId, file, error, timeoutId, originalOperation } =
-    event.data;
+  const { type, inputId, file, error, timeoutId, originalOperation } = event.data;
   const toolbox = document.querySelector(
     `.formease-toolbox[data-input-id="${inputId}"]`
   );
@@ -337,6 +318,16 @@ window.addEventListener("message", (event) => {
     showError(toolbox, `${originalOperation} failed: ${error}`);
     hideProcessingIndicator(toolbox);
     if (state) state.isProcessing = false;
+    return;
+  }
+
+  if (type === "storeOriginal") {
+    originalFiles.set(inputId, file);
+    return;
+  }
+
+  if (type === "triggerApply") {
+    applyButton.click(); // Trigger toolbox.html's apply logic
     return;
   }
 
@@ -378,7 +369,6 @@ window.addEventListener("message", (event) => {
 
   // Handle Reset Request
   if (type === "requestReset") {
-    const { inputId } = event.data;
     const input = document.querySelector(
       `input[data-form-ease-id="${inputId}"]`
     );
@@ -396,19 +386,11 @@ window.addEventListener("message", (event) => {
       const originalFile = originalFiles.get(inputId);
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(originalFile);
-      const hiddenInput = document.createElement("input");
-      hiddenInput.type = "file";
-      hiddenInput.style.display = "none";
-      hiddenInput.files = dataTransfer.files;
-      input.parentNode.insertBefore(hiddenInput, input);
-      input.parentNode.removeChild(input);
-      input.parentNode.appendChild(input);
-      hiddenInput.dispatchEvent(new Event("change", { bubbles: true }));
+      input.files = dataTransfer.files;
       input.dispatchEvent(new Event("change", { bubbles: true }));
 
       showDetailedSuccessMessage(toolbox, "Original file restored.");
-      feedbackArea.innerHTML = ""; // Clear success messages
-      // Clear previews
+      feedbackArea.innerHTML = "";
       const imagePreview = toolbox.querySelector("#image-preview");
       const imagePreviewArea = toolbox.querySelector("#image-preview-area");
       if (imagePreview && imagePreviewArea) {
