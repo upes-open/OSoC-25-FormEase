@@ -44,7 +44,7 @@ function setupFileInput(input) {
     if (event.target.files && event.target.files[0]) {
       originalFiles.set(inputId, event.target.files[0]);
       console.log(`[FormEase] Original file stored for input ${inputId}:`, event.target.files[0].name);
-      checkToolboxExistence(input, inputId, event.target.files[0]); // Inject toolbox for all inputs
+      checkToolboxExistence(input, inputId, event.target.files[0]); // Trigger for all valid cases
     } else {
       // Clear preview if file selection is cancelled
       const toolbox = document.querySelector(`.formease-toolbox[data-input-id="${inputId}"]`);
@@ -127,6 +127,12 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
   const input = document.querySelector(`input[data-form-ease-id="${inputId}"]`);
   const dropdown = toolbox.querySelector("#task");
 
+  // Skip toolbox for PDF files
+  if (file && file.type === "application/pdf") {
+    toolbox.style.display = "none";
+    return;
+  }
+
   const resize = toolbox.querySelector("#resize");
   const resizeScale = toolbox.querySelector("#resize-scale");
   const compress = toolbox.querySelector("#compress");
@@ -134,8 +140,8 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
   const resizeSlider = toolbox.querySelector("#resize-range");
   const applyBtn = toolbox.querySelector("#apply");
 
-  // Display image preview if a file is provided
-  if (file) {
+  // Display image preview if a file is provided and not PDF
+  if (file && file.type.startsWith("image/")) {
     console.log("[FormEase] File provided to setupToolboxEventListeners, attempting to display preview.");
     const reader = new FileReader();
     reader.onload = function (e) {
@@ -153,7 +159,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     reader.readAsDataURL(file);
     console.log("[FormEase] FileReader readAsDataURL called.");
   } else {
-    console.log("[FormEase] No file provided to setupToolboxEventListeners for preview.");
+    console.log("[FormEase] No valid image file provided for preview.");
   }
 
   if (dropdown && !dropdown.dataset.listenerAdded) {
@@ -175,7 +181,19 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         }
         if (applyBtn && !applyBtn.dataset.listenerAdded) {
           applyBtn.addEventListener("click", () => {
-            window.postMessage({ type: "triggerApply", inputId }, "*");
+            const currentFile = getCurrentFileForInput(inputId);
+            if (currentFile) {
+              const img = new Image();
+              img.src = URL.createObjectURL(currentFile);
+              img.onload = () => {
+                if (img.width > 1600 || img.height > 1600) {
+                  window.postMessage({ type: "triggerApply", inputId }, "*");
+                } else {
+                  showError(toolbox, "Resolution is already under 1600x1600px, no resize needed.");
+                }
+                URL.revokeObjectURL(img.src);
+              };
+            }
             applyBtn.dataset.listenerAdded = "true";
           });
         }
@@ -188,10 +206,10 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         if (applyBtn && !applyBtn.dataset.listenerAdded) {
           applyBtn.addEventListener("click", () => {
             const currentFile = getCurrentFileForInput(inputId);
-            if (currentFile) {
+            if (currentFile && currentFile.size > 1024 * 1024) { // 1MB in bytes
               processFile("compress", currentFile, { quality: 0.7 }, inputId);
             } else {
-              showError(toolbox, "Please select a file first");
+              showError(toolbox, "File size is already under 1MB, no compression needed.");
             }
             applyBtn.dataset.listenerAdded = "true";
           });
