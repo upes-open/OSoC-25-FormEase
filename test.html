@@ -1,361 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FormEase Test - File Upload with Processing</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f5f5f5;
-      }
 
-      #container {
-        max-width: 800px;
-        padding: 20px;
-        margin: 0 auto;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FormEase Test - Comprehensive Feature Testing</title>
+  <style>
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
 
-      .form-container {
-        background: white;
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        margin-block: 2rem;
-      }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
 
-      .form-group {
-        margin-bottom: 20px;
-      }
+    h1 {
+      color: #1f2937;
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-      label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: bold;
-        color: #333;
-      }
+    .description {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 30px;
+    }
 
-      input[type="file"] {
-        width: 100%;
-        padding: 12px;
-        border: 2px dashed #ddd;
-        border-radius: 6px;
-        background-color: #fafafa;
-        cursor: pointer;
-        transition: border-color 0.3s;
-      }
+    .info-box {
+      background-color: #e0f2fe;
+      border-left: 4px solid #2563eb;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
 
-      input[type="file"]:hover {
-        border-color: #2563eb;
-      }
+    .form-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      background: #fafafa;
+    }
 
-      input[type="text"],
-      input[type="email"] {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        font-size: 14px;
-      }
+    .form-section h2 {
+      color: #1f2937;
+      margin-bottom: 15px;
+    }
 
-      .submit-btn {
-        background-color: #2563eb;
-        color: white;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 6px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
+    .form-group {
+      margin-bottom: 15px;
+    }
 
-      .submit-btn:hover {
-        background-color: #1d4ed8;
-      }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #333;
+    }
 
-      .info-box {
-        background-color: #e0f2fe;
-        border-left: 4px solid #2563eb;
-        padding: 15px;
-        margin-bottom: 20px;
-        border-radius: 4px;
-      }
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 2px dashed #ddd;
+      border-radius: 4px;
+      background: #f9fafb;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
 
-      .file-info {
-        background-color: #f3f4f6;
-        padding: 10px;
-        border-radius: 4px;
-        margin-top: 10px;
-        font-size: 12px;
-        color: #666;
-      }
+    input[type="file"]:hover {
+      border-color: #2563eb;
+    }
 
-      h1 {
-        color: #1f2937;
-        text-align: center;
-        margin-bottom: 10px;
-      }
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
 
-      .description {
-        text-align: center;
-        color: #6b7280;
-        margin-bottom: 30px;
-      }
-    </style>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
+    .preview {
+      margin-top: 10px;
+      display: none;
+    }
 
-  <body>
-    <!-- Description -->
-    <div id="container">
-      <h1>🚀 FormEase Test Page</h1>
-      <p class="description">
-        Upload images and test the resize, compress, and convert functionality
-      </p>
+    .preview img {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
 
-      <!-- Info Box -->
-      <div class="info-box">
-        <strong>Instructions:</strong>
-        <ol>
-          <li>Install the FormEase browser extension</li>
-          <li>Select an image file using the file inputs below</li>
-          <li>
-            Use the FormEase toolbox that appears to resize, compress, or
-            convert your file
-          </li>
-          <li>Submit the form to verify the processed file is included</li>
-        </ol>
-      </div>
+    .file-info {
+      margin-top: 5px;
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #666;
+    }
 
-      <!-- Profile Form -->
-      <div class="form-container">
-        <h2>Profile Photo Upload</h2>
-        <form
-          id="profileForm"
-          action="#"
-          method="post"
-          enctype="multipart/form-data"
-        >
-          <!-- Name -->
-          <div class="form-group">
-            <label for="name">Full Name:</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="Enter your full name"
-              required
-            />
-          </div>
+    .error {
+      color: #dc2626;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
 
-          <!-- Email -->
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Enter your email"
-              required
-            />
-          </div>
+    .submit-btn {
+      background-color: #2563eb;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-          <!-- Image Upload -->
-          <div class="form-group">
-            <label for="profilePhoto">Profile Photo:</label>
-            <input
-              class="input-file"
-              type="file"
-              id="profilePhoto"
-              name="profilePhoto"
-              accept="image/*"
-              required
-            />
+    .submit-btn:hover {
+      background-color: #1d4ed8;
+    }
+  </style>
+</head>
 
-            <!-- Created a preview container for profile images -->
-            <div
-              id="profile-preview-container"
-              class="image-preview-container"
-              style="display: none"
-            >
-              <img id="profile-image-preview" src="#" alt="Profile Preview" />
-            </div>
-            <!-- Ends here -->
-
-            <!-- File Info -->
-            <div class="file-info" id="profilePhotoInfo">
-              No file selected. FormEase toolbox will appear after selecting an
-              image.
-            </div>
-          </div>
-
-          <!-- Upload Profile Button -->
-          <button type="submit" class="submit-btn">Upload Profile</button>
-        </form>
-      </div>
-
-      <!-- Image Drop Zones -->
-      <div style="display: flex; gap: 2rem">
-        <div id="profile-drop-zone" class="hidden drop-zone">
-          Drop your profile image here
-        </div>
-        <div id="doc-drop-zone" class="hidden drop-zone">
-          Drop your document image here
-        </div>
-      </div>
-
-      <!-- Document Form -->
-      <div class="form-container">
-        <h2>Document Upload</h2>
-        <form
-          id="documentForm"
-          action="#"
-          method="post"
-          enctype="multipart/form-data"
-        >
-          <!-- Title -->
-          <div class="form-group">
-            <label for="documentTitle">Document Title:</label>
-            <input
-              type="text"
-              id="documentTitle"
-              name="documentTitle"
-              placeholder="Enter document title"
-              required
-            />
-          </div>
-
-          <!-- Document Image -->
-          <div class="form-group">
-            <label for="documentFile">Document Image:</label>
-            <input
-              class="input-file"
-              type="file"
-              id="documentFile"
-              name="documentFile"
-              accept="image/*"
-              required
-            />
-
-            <!-- Created a preview container for document images -->
-            <div
-              id="document-preview-container"
-              class="image-preview-container"
-              style="display: none"
-            >
-              <img src="#" alt="document preview" id="document-image-preview" />
-            </div>
-            <!-- Ends here -->
-
-            <!-- File Info -->
-            <div class="file-info" id="documentFileInfo">
-              No file selected. FormEase toolbox will appear after selecting an
-              image.
-            </div>
-          </div>
-
-          <!-- Upload Document Button -->
-          <button type="submit" class="submit-btn">Upload Document</button>
-        </form>
-      </div>
+<body>
+  <div class="container">
+    <h1>🚀 FormEase Test Page</h1>
+    <p class="description">
+      Test FormEase features and edge cases with realistic upload scenarios.
+    </p>
+    <div class="info-box">
+      <strong>Instructions:</strong>
+      <ol>
+        <li>Install the FormEase browser extension.</li>
+        <li>Upload files to test Resize, Compress, Convert, and PDF features.</li>
+        <li>Use the FormEase toolbox for processing (except PDF).</li>
+        <li>Submit forms to verify processed files or validation errors.</li>
+      </ol>
     </div>
 
-    <script>
-      // Add file change listeners to show file information
-      function setupFileInfo(inputId, infoId) {
-        const input = document.getElementById(inputId);
-        const info = document.getElementById(infoId);
+    <!-- Resize Test: Social Media Profile Photo -->
+    <div class="form-section">
+      <h2>Social Media Profile Photo</h2>
+      <form id="profileForm" action="#" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="profilePhoto">Profile Photo (Image, Max 1600x1600px):</label>
+          <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" required />
+          <div class="preview" id="profilePreview">
+            <img id="profileImagePreview" src="#" alt="Profile Preview" />
+          </div>
+          <div class="file-info" id="profileInfo">No file selected.</div>
+          <div class="error" id="profileError">Error: Image must be under 1600x1600px.</div>
+        </div>
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" placeholder="Enter username" required />
+        </div>
+        <button type="submit" class="submit-btn">Submit Profile Photo</button>
+      </form>
+    </div>
 
-        input.addEventListener("change", function (e) {
-          if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            const sizeInKB = (file.size / 1024).toFixed(2);
-            info.innerHTML = `
-                        <strong>Selected:</strong> ${file.name}<br>
-                        <strong>Size:</strong> ${sizeInKB} KB<br>
-                        <strong>Type:</strong> ${file.type}<br>
-                        <em>Use the FormEase toolbox above to process this file</em>
-                    `;
-            info.style.display = "block";
-          } else {
-            info.innerHTML =
-              "No file selected. FormEase toolbox will appear after selecting an image.";
-          }
-        });
-      }
+    <!-- Compress Test: Product Image -->
+    <div class="form-section">
+      <h2>E-commerce Product Image</h2>
+      <form id="productForm" action="#" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="productImage">Product Image (Image, Max 1MB):</label>
+          <input type="file" id="productImage" name="productImage" accept="image/*" required />
+          <div class="preview" id="productPreview">
+            <img id="productImagePreview" src="#" alt="Product Preview" />
+          </div>
+          <div class="file-info" id="productInfo">No file selected.</div>
+          <div class="error" id="productError">Error: File size must be under 1MB.</div>
+        </div>
+        <div class="form-group">
+          <label for="productName">Product Name:</label>
+          <input type="text" id="productName" name="productName" placeholder="Enter product name" required />
+        </div>
+        <button type="submit" class="submit-btn">Submit Product Image</button>
+      </form>
+    </div>
 
-      // Setup file info for both inputs
-      setupFileInfo("profilePhoto", "profilePhotoInfo");
-      setupFileInfo("documentFile", "documentFileInfo");
+    <!-- Convert Test: Marketing Banner -->
+    <div class="form-section">
+      <h2>Marketing Banner Image</h2>
+      <form id="bannerForm" action="#" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="bannerImage">Banner Image (Any Image):</label>
+          <input type="file" id="bannerImage" name="bannerImage" accept="image/*" required />
+          <div class="preview" id="bannerPreview">
+            <img id="bannerImagePreview" src="#" alt="Banner Preview" />
+          </div>
+          <div class="file-info" id="bannerInfo">No file selected.</div>
+        </div>
+        <div class="form-group">
+          <label for="campaignName">Campaign Name:</label>
+          <input type="text" id="campaignName" name="campaignName" placeholder="Enter campaign name" required />
+        </div>
+        <button type="submit" class="submit-btn">Submit Banner Image</button>
+      </form>
+    </div>
 
-      // Add form submit handlers to demonstrate file replacement
-      document
-        .getElementById("profileForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const fileInput = document.getElementById("profilePhoto");
-          if (fileInput.files && fileInput.files[0]) {
-            const file = fileInput.files[0];
-            alert(
-              `Form would submit with file: ${file.name} (${(
-                file.size / 1024
-              ).toFixed(2)} KB)\nType: ${file.type}\nLast Modified: ${new Date(
-                file.lastModified
-              )}`
-            );
-          }
-        });
+    <!-- PDF Test: Document Submission -->
+    <div class="form-section">
+      <h2>Official Document Upload</h2>
+      <form id="documentForm" action="#" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="documentFile">Document (PDF Only):</label>
+          <input type="file" id="documentFile" name="documentFile" accept="application/pdf" required />
+          <div class="file-info" id="documentInfo">No file selected.</div>
+          <div class="error" id="documentError">Error: File must be a PDF.</div>
+        </div>
+        <div class="form-group">
+          <label for="docTitle">Document Title:</label>
+          <input type="text" id="docTitle" name="docTitle" placeholder="Enter document title" required />
+        </div>
+        <button type="submit" class="submit-btn">Submit Document</button>
+      </form>
+    </div>
 
-      document
-        .getElementById("documentForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const fileInput = document.getElementById("documentFile");
-          if (fileInput.files && fileInput.files[0]) {
-            const file = fileInput.files[0];
-            alert(
-              `Form would submit with file: ${file.name} (${(
-                file.size / 1024
-              ).toFixed(2)} KB)\nType: ${file.type}\nLast Modified: ${new Date(
-                file.lastModified
-              )}`
-            );
-          }
-        });
+    <!-- Edge Cases Test -->
+    <div class="form-section">
+      <h2>Edge Cases Testing</h2>
+      <form id="edgeForm" action="#" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="invalidImage">Invalid Image Type (Non-Image):</label>
+          <input type="file" id="invalidImage" name="invalidImage" />
+          <div class="file-info" id="invalidInfo">No file selected.</div>
+          <div class="error" id="invalidError">Error: File must be an image.</div>
+        </div>
+        <div class="form-group">
+          <label for="oversizedImage">Oversized Image (5MB+):</label>
+          <input type="file" id="oversizedImage" name="oversizedImage" accept="image/*" />
+          <div class="file-info" id="oversizedInfo">No file selected.</div>
+          <div class="error" id="oversizedError">Error: File size exceeds 5MB.</div>
+        </div>
+        <div class="form-group">
+          <label for="zeroSizeFile">Zero-Size File:</label>
+          <input type="file" id="zeroSizeFile" name="zeroSizeFile" />
+          <div class="file-info" id="zeroSizeInfo">No file selected.</div>
+          <div class="error" id="zeroSizeError">Error: File size cannot be zero.</div>
+        </div>
+        <button type="submit" class="submit-btn">Test Edge Cases</button>
+      </form>
+    </div>
+  </div>
 
-      // Listen for FormEase events to show processing results
-      document.addEventListener("formease:fileProcessed", function (e) {
-        console.log("FormEase processing completed:", e.detail);
+  <script>
+    // File info and preview setup with validation
+    function setupFileHandler(inputId, infoId, previewId, errorId, constraints = {}) {
+      const input = document.getElementById(inputId);
+      const info = document.getElementById(infoId);
+      const preview = document.getElementById(previewId);
+      const error = document.getElementById(errorId);
+      const previewImg = preview?.querySelector("img");
 
-        // Update file info with processing results
-        const inputId = e.detail.inputId.includes("profilePhoto")
-          ? "profilePhoto"
-          : "documentFile";
-        const infoId = inputId + "Info";
-        const info = document.getElementById(infoId);
+      input.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        error.style.display = "none";
+        info.innerHTML = "No file selected.";
 
-        if (info) {
-          const stats = e.detail.processStats;
-          const file = e.detail.processedFile;
+        if (file) {
           const sizeInKB = (file.size / 1024).toFixed(2);
+          info.innerHTML = `<strong>Name:</strong> ${file.name}<br><strong>Size:</strong> ${sizeInKB} KB<br><strong>Type:</strong> ${file.type}`;
 
-          let processingInfo = "";
-          if (stats.originalSize && stats.newSize) {
-            const sizeDiff = (
-              ((stats.originalSize - stats.newSize) / stats.originalSize) *
-              100
-            ).toFixed(1);
-            processingInfo = `<br><strong>Processing:</strong> ${e.detail.operation} completed, size changed by ${sizeDiff}%`;
+          let isValid = true;
+          // Match MIME type: use exact match or wildcard for images
+          if (constraints.accept) {
+            const acceptType = constraints.accept;
+            if (acceptType === "image/*" && !file.type.startsWith("image/")) {
+              error.style.display = "block";
+              error.innerHTML = constraints.acceptError || `Error: File must be an image.`;
+              isValid = false;
+            } else if (acceptType !== "image/*" && file.type !== acceptType) {
+              error.style.display = "block";
+              error.innerHTML = constraints.acceptError || `Error: File must be ${acceptType.split("/")[1]}.`;
+              isValid = false;
+            }
+          }
+          if (constraints.maxSize && file.size > constraints.maxSize * 1024) {
+            error.style.display = "block";
+            error.innerHTML = `Error: File size must be under ${constraints.maxSize}KB.`;
+            isValid = false;
+          }
+          if (constraints.maxResolution) {
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            img.onload = () => {
+              if (img.width > constraints.maxResolution || img.height > constraints.maxResolution) {
+                error.style.display = "block";
+                error.innerHTML = `Error: Resolution must be under ${constraints.maxResolution}x${constraints.maxResolution}px.`;
+                isValid = false;
+              }
+              URL.revokeObjectURL(img.src);
+            };
+          }
+          if (constraints.minSize && file.size === 0) {
+            error.style.display = "block";
+            error.innerHTML = "Error: File size cannot be zero.";
+            isValid = false;
           }
 
-          info.innerHTML = `
-                    <strong>Processed File:</strong> ${file.name}<br>
-                    <strong>Size:</strong> ${sizeInKB} KB<br>
-                    <strong>Type:</strong> ${file.type}${processingInfo}<br>
-                    <em style="color: green;">✅ File ready for upload!</em>
-                `;
+          if (isValid && previewImg) {
+            previewImg.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+          } else if (!isValid) {
+            preview.style.display = "none";
+          }
         }
       });
-    </script>
-  </body>
+    }
+
+    // Setup for each field
+    setupFileHandler("profilePhoto", "profileInfo", "profilePreview", "profileError", {
+      accept: "image/*",
+      maxResolution: 1600,
+      acceptError: "Error: File must be an image and under 1600x1600px."
+    });
+    setupFileHandler("productImage", "productInfo", "productPreview", "productError", {
+      accept: "image/*",
+      maxSize: 1024,
+      acceptError: "Error: File must be an image and under 1MB."
+    });
+    setupFileHandler("bannerImage", "bannerInfo", "bannerPreview", null, {
+      accept: "image/*"
+    });
+    setupFileHandler("documentFile", "documentInfo", null, "documentError", {
+      accept: "application/pdf",
+      acceptError: "Error: File must be a PDF."
+    });
+    setupFileHandler("invalidImage", "invalidInfo", null, "invalidError", {
+      accept: "image/*",
+      acceptError: "Error: File must be an image."
+    });
+    setupFileHandler("oversizedImage", "oversizedInfo", "oversizedPreview", "oversizedError", {
+      accept: "image/*",
+      maxSize: 5120,
+      acceptError: "Error: File size exceeds 5MB."
+    });
+    setupFileHandler("zeroSizeFile", "zeroSizeInfo", null, "zeroSizeError", {
+      minSize: 1,
+      acceptError: "Error: File size cannot be zero."
+    });
+
+    // Form submit handlers
+    document.getElementById("profileForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById("profilePhoto");
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        alert(`Submitted (profilePhoto): ${file.name} (${(file.size / 1024).toFixed(2)} KB), Type: ${file.type}`);
+      }
+    });
+
+    document.getElementById("productForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById("productImage");
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        alert(`Submitted (productImage): ${file.name} (${(file.size / 1024).toFixed(2)} KB), Type: ${file.type}`);
+      }
+    });
+
+    document.getElementById("bannerForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById("bannerImage");
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        alert(`Submitted (bannerImage): ${file.name} (${(file.size / 1024).toFixed(2)} KB), Type: ${file.type}`);
+      }
+    });
+
+    document.getElementById("documentForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById("documentFile");
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        alert(`Submitted (documentFile): ${file.name} (${(file.size / 1024).toFixed(2)} KB), Type: ${file.type}`);
+      }
+    });
+
+    document.getElementById("edgeForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const inputs = ["invalidImage", "oversizedImage", "zeroSizeFile"];
+      inputs.forEach(id => {
+        const fileInput = document.getElementById(id);
+        if (fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          alert(`Tested (${id}): ${file.name} (${(file.size / 1024).toFixed(2)} KB), Type: ${file.type}`);
+        }
+      });
+    });
+
+    // Listen for FormEase processing events
+    document.addEventListener("formease:fileProcessed", (e) => {
+      const { inputId, processedFile, originalFile, operation } = e.detail;
+      const infoId = inputId + "Info";
+      const info = document.getElementById(infoId);
+      if (info) {
+        const sizeInKB = (processedFile.size / 1024).toFixed(2);
+        const originalSizeInKB = (originalFile.size / 1024).toFixed(2);
+        const sizeDiff = (((originalFile.size - processedFile.size) / originalFile.size) * 100).toFixed(1);
+        info.innerHTML = `
+          <strong>Processed File:</strong> ${processedFile.name}<br>
+          <strong>Size:</strong> ${sizeInKB} KB (was ${originalSizeInKB} KB, ${sizeDiff}% reduction)<br>
+          <strong>Type:</strong> ${processedFile.type}<br>
+          <em style="color: green;">✅ ${operation} completed!</em>
+        `;
+      }
+    });
+  </script>
+</body>
+
 </html>
