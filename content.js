@@ -7,6 +7,7 @@
 /**
  * Injects a script into the page context to access page-level APIs
  */
+
 function injectScript(filePath) {
   const script = document.createElement("script");
   script.src = chrome.runtime.getURL(filePath);
@@ -19,7 +20,98 @@ injectScript("scripts/resize.js");
 injectScript("scripts/compress.js");
 injectScript("scripts/convert.js");
 
+// Initialise File Input Counter
 let fileInputCounter = 0;
+
+// Drag & Drop Processing
+const dropZones = document.querySelectorAll(".drop-zone");
+const inputs = document.querySelectorAll(".input-file");
+
+// Preventing Default Behaviour of Windows
+document.addEventListener("dragover", (e) => {
+  e.preventDefault();
+
+  const toolboxes = document.querySelectorAll(".formease-toolbox");
+  for (let toolbox of toolboxes) {
+    toolbox.classList.add("hidden");
+  }
+
+  for (let dropZone of dropZones) {
+    dropZone.classList.remove("hidden");
+  }
+  for (let input of inputs) {
+    input.classList.add("hidden");
+  }
+});
+
+document.addEventListener("drop", (e) => {
+  e.preventDefault();
+
+  const toolboxes = document.querySelectorAll(".formease-toolbox");
+  for (let toolbox of toolboxes) {
+    toolbox.classList.remove("hidden");
+  }
+
+  for (let dropZone of dropZones) {
+    dropZone.classList.add("hidden");
+  }
+  for (let input of inputs) {
+    input.classList.remove("hidden");
+  }
+});
+
+// Drop Box Event Listeners
+for (let dropZone of dropZones) {
+  // Control styling on drag
+  dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("dragover");
+  });
+  dropZone.addEventListener("dragleave", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("dragover");
+  });
+
+  // Drop functionality
+  dropZone.addEventListener("drop", (e) => {
+    dropZone.classList.remove("dragover");
+    if (dropZone.id == "profile-drop-zone") {
+      const input = document.getElementById("profilePhoto");
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].type.startsWith("image/")) {
+        const file = files[0];
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        input.files = dataTransfer.files;
+        if (!input.dataset.formEaseId) {
+          const inputId = `formEaseInput-${fileInputCounter++}`;
+          input.dataset.formEaseId = inputId;
+        }
+        checkToolboxExistence(input, 0, input.files[0]);
+      }
+    } else {
+      const input = document.getElementById("documentFile");
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].type.startsWith("image/")) {
+        const file = files[0];
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        input.files = dataTransfer.files;
+        if (!input.dataset.formEaseId) {
+          const inputId = `formEaseInput-${fileInputCounter++}`;
+          input.dataset.formEaseId = inputId;
+        }
+        checkToolboxExistence(input, 1, input.files[0]);
+      }
+    }
+  });
+}
+
+// Normal File Input Processing
 const originalFiles = new Map();
 const processingState = new Map();
 
@@ -100,25 +192,26 @@ function injectFloatingEditButton(input) {
 }
 
 function checkToolboxExistence(input, inputId, file = null) {
-
- //using formeaseId instead of inputId, because inputId is not unique everytime
+  //using formeaseId instead of inputId, because inputId is not unique everytime
   const formEaseId = input.dataset.formEaseId;
-  let existingToolbox = document.querySelector(`.formease-toolbox[data-input-id="${formEaseId}"]`);
+  let existingToolbox = document.querySelector(
+    `.formease-toolbox[data-input-id="${formEaseId}"]`
+  );
 
   //checking if the toolbox is already present or not
-  if(!existingToolbox){
+  if (!existingToolbox) {
     const toolbox = document.createElement("div");
     toolbox.className = `formease-toolbox container-${inputId}`;
-    createToolboxForInput(input,inputId,toolbox,file)
-  }else{  
-    console.log(`[formEase] toolbox already exists for input : ${formEaseId}, updating preview`);
-    setupToolboxEventListeners(existingToolbox,formEaseId,file)
+    createToolboxForInput(input, inputId, toolbox, file);
+  } else {
+    console.log(
+      `[formEase] toolbox already exists for input : ${formEaseId}, updating preview`
+    );
+    setupToolboxEventListeners(existingToolbox, formEaseId, file);
   }
-
 }
 
 function createToolboxForInput(input, inputId, toolbox, file = null) {
-   
   if (toolbox) {
     toolbox.dataset.inputId = input.dataset.formEaseId;
     console.log(
@@ -135,7 +228,7 @@ function createToolboxForInput(input, inputId, toolbox, file = null) {
         input.parentNode.insertBefore(toolbox, input.nextSibling);
         console.log("[FormEase] Toolbox inserted into DOM.", toolbox);
 
-        //here passed the input.dataset.formEaseId instead of inputId 
+        //here passed the input.dataset.formEaseId instead of inputId
         setupToolboxEventListeners(toolbox, input.dataset.formEaseId, file);
         // same for adding visual feedback
         addVisualFeedback(toolbox, input.dataset.formEaseId);

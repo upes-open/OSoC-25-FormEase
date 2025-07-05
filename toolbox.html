@@ -34,12 +34,10 @@
             value="100"
             class="ms-4"
           />
-          <br /><br />
-          <label for="resize-file-input">Upload File:</label>
-          <input type="file" id="resize-file-input" />
         </div>
       </div>
 
+      <!-- Resize Scale -->
       <div id="resize-scale"></div>
 
       <!-- Compress Input -->
@@ -69,6 +67,7 @@
         </div>
       </div>
 
+      <!-- Apply Button for all 3 actions (resize, compress, convert) -->
       <button id="apply" class="hidden" style="margin-right: 10px">
         Apply
       </button>
@@ -145,9 +144,11 @@
       dropdown.addEventListener("change", () => {
         const selected = dropdown.value;
 
-        document.querySelectorAll("#resize, #compress, #convert").forEach((section) => {
-          section.classList.add("hidden");
-        });
+        document
+          .querySelectorAll("#resize, #compress, #convert")
+          .forEach((section) => {
+            section.classList.add("hidden");
+          });
 
         if (selected !== "nill") {
           document.getElementById(selected).classList.remove("hidden");
@@ -161,21 +162,20 @@
       applyButton.addEventListener("click", (e) => {
         e.preventDefault();
 
-      const selected = dropdown.value;
+        const selected = dropdown.value;
 
-      if (selected === "resize") {
-        const fileInput = document.getElementById("resize-file-input");
-        const file = fileInput.files[0];
+        if (selected === "resize") {
+          const fileInput = document.getElementById("resize-file-input");
+          const file = fileInput.files[0];
 
-        if (!file) {
-          alert("Please select a file before applying resize.");
-          return;
+          if (!file) {
+            alert("Please select a file before applying resize.");
+            return;
+          }
+
+          console.log("Resizing:", file.name);
         }
-
-        console.log("Resizing:", file.name);
-      }
-    });
-
+      });
     </script>
   </body>
 </html>
