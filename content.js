@@ -226,22 +226,27 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
   const convert = toolbox.querySelector("#convert");
   const resizeSlider = toolbox.querySelector("#resize-range");
   const applyBtn = toolbox.querySelector("#apply");
+  const previewInfo = toolbox.querySelector("#preview-info");
 
-  // Display image preview
+  // Display image preview and resolution
   if (file) {
     console.log("[FormEase] File provided to setupToolboxEventListeners, attempting to display preview.");
     const reader = new FileReader();
     reader.onload = function (e) {
       const imagePreview = toolbox.querySelector("#image-preview");
       const imagePreviewArea = toolbox.querySelector("#image-preview-area");
-      console.log("[FormEase] FileReader onload fired. imagePreview:", imagePreview, "imagePreviewArea:", imagePreviewArea);
-      if (imagePreview && imagePreviewArea) {
-        imagePreview.src = e.target.result;
-        imagePreviewArea.style.display = "block";
-        console.log("[FormEase] Image preview updated and displayed.");
-      } else {
-        console.log("[FormEase] Image preview elements not found in toolbox.");
-      }
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = () => {
+        if (imagePreview && imagePreviewArea) {
+          imagePreview.src = e.target.result;
+          imagePreviewArea.style.display = "block";
+          previewInfo.innerHTML = `Name: ${file.name}<br>Size: ${(file.size / 1024).toFixed(2)} KB<br>Resolution: ${img.width}x${img.height}px<br>Type: ${file.type}`;
+          console.log("[FormEase] Image preview and resolution updated and displayed.");
+        } else {
+          console.log("[FormEase] Image preview elements not found in toolbox.");
+        }
+      };
     };
     reader.readAsDataURL(file);
     console.log("[FormEase] FileReader readAsDataURL called.");
@@ -429,6 +434,7 @@ window.addEventListener("message", (event) => {
         inputId,
         originalFile: originalFiles.get(inputId),
         processedFile: file,
+        operation: originalOperation,
       },
       bubbles: true,
     });
