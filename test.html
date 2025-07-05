@@ -14,23 +14,24 @@
     }
 
     .container {
-      max-width: 900px;
+      max-width: 800px;
       margin: 0 auto;
       background: #fff;
-      padding: 30px;
+      padding: 25px;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
       color: #202124;
       text-align: center;
       margin-bottom: 20px;
+      font-size: 1.8em;
     }
 
     .section {
-      margin-bottom: 30px;
-      padding: 20px;
+      margin-bottom: 25px;
+      padding: 15px;
       border: 1px solid #e0e0e0;
       border-radius: 6px;
       background: #fff;
@@ -38,8 +39,8 @@
 
     .section h2 {
       color: #202124;
-      margin-bottom: 15px;
-      font-size: 1.5em;
+      margin-bottom: 10px;
+      font-size: 1.4em;
     }
 
     .form-group {
@@ -53,19 +54,13 @@
       font-weight: 500;
     }
 
-    input[type="file"],
-    input[type="text"],
-    input[type="email"] {
+    input[type="file"] {
       width: 100%;
       padding: 10px;
-      border: 1px solid #dadce0;
+      border: 2px dashed #dadce0;
       border-radius: 4px;
       font-size: 14px;
       box-sizing: border-box;
-    }
-
-    input[type="file"] {
-      border: 2px dashed #dadce0;
       background: #f1f3f4;
       cursor: pointer;
     }
@@ -116,12 +111,12 @@
 
     .instructions {
       background: #f1f3f4;
-      padding: 20px;
+      padding: 15px;
       border-radius: 4px;
       margin-bottom: 20px;
-      font-size: 16px;
+      font-size: 14px;
       color: #202124;
-      line-height: 1.6;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -144,7 +139,7 @@
       <h2>Profile Photo Upload (Resize Test)</h2>
       <form id="resizeForm" action="#" method="post" enctype="multipart/form-data">
         <div class="form-group">
-          <label for="resizePhoto">Profile Photo (Max 1600x1600px, Images Only):</label>
+          <label for="resizePhoto">Profile Photo (Images Only, Max 1600x1600px):</label>
           <input type="file" id="resizePhoto" name="resizePhoto" accept="image/*" required />
           <div class="preview" id="resizePreview">
             <img id="resizeImagePreview" src="#" alt="Preview" />
@@ -161,7 +156,7 @@
       <h2>Compressed Image Upload (Compress Test)</h2>
       <form id="compressForm" action="#" method="post" enctype="multipart/form-data">
         <div class="form-group">
-          <label for="compressPhoto">Compressed Image (Max 1MB, Images Only):</label>
+          <label for="compressPhoto">Compressed Image (Images Only, Max 1MB):</label>
           <input type="file" id="compressPhoto" name="compressPhoto" accept="image/*" required />
           <div class="preview" id="compressPreview">
             <img id="compressImagePreview" src="#" alt="Preview" />
@@ -224,7 +219,7 @@
 
           // Validation
           let isValid = true;
-          if (constraints.accept && !file.type.startsWith(constraints.accept)) {
+          if (constraints.accept && !file.type.startsWith(constraints.accept) && !file.type.endsWith(constraints.accept)) {
             error.style.display = "block";
             error.innerHTML = constraints.acceptError || `Error: File must be ${constraints.accept}.`;
             isValid = false;
@@ -268,7 +263,7 @@
       maxSize: 1024,
       acceptError: "Error: File must be an image and under 1MB."
     });
-    setupFileHandler("convertPhoto", "convertInfo", "convertPreview", "convertError", {
+    setupFileHandler("convertPhoto", "convertInfo", "convertPreview", null, {
       accept: "image"
     });
     setupFileHandler("pdfFile", "pdfInfo", null, "pdfError", {
