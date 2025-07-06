@@ -277,7 +277,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     reader.onload = function (e) {
       const imagePreview = toolbox.querySelector("#image-preview");
       const imagePreviewArea = toolbox.querySelector("#image-preview-area");
-      const loader = toolbox.querySelector(".loader");
+      const loader = toolbox.querySelector(".spinner");
 
       // Loader untill image loads
       imagePreview.onload = () => {
