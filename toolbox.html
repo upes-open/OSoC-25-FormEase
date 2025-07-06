@@ -37,6 +37,9 @@
           <br /><br />
           <label for="resize-file-input">Upload File:</label>
           <input type="file" id="resize-file-input" />
+          <!-- Display file sizes -->
+          <div id="file-info" style="font-size: 12px; color: #333; margin-top: 8px;"></div>
+
         </div>
       </div>
 
@@ -156,25 +159,57 @@
           applyButton.classList.add("hidden");
         }
       });
+      let originalFileSizeKB = 0;
+
+      const resizeFileInput = document.getElementById("resize-file-input");
+
+      resizeFileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        originalFileSizeKB = file.size / 1024;
+
+        let originalText = originalFileSizeKB > 1024
+          ? `Original: ${(originalFileSizeKB / 1024).toFixed(2)} MB`
+          : `Original: ${originalFileSizeKB.toFixed(2)} KB`;
+
+        const fileInfo = document.getElementById("file-info");
+        fileInfo.innerText = originalText;
+      });
 
       // Apply button functionality for resize
-      applyButton.addEventListener("click", (e) => {
-        e.preventDefault();
-
-      const selected = dropdown.value;
-
       if (selected === "resize") {
-        const fileInput = document.getElementById("resize-file-input");
-        const file = fileInput.files[0];
+      const fileInput = document.getElementById("resize-file-input");
+      const file = fileInput.files[0];
 
-        if (!file) {
-          alert("Please select a file before applying resize.");
-          return;
-        }
-
-        console.log("Resizing:", file.name);
+      if (!file) {
+        alert("Please select a file before applying resize.");
+        return;
       }
-    });
+
+      // Simulate processing: calculate blob size
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const arrayBuffer = reader.result;
+        const blob = new Blob([arrayBuffer]);
+
+        const finalSizeKB = blob.size / 1024;
+
+        let finalText = finalSizeKB > 1024
+          ? `Final: ${(finalSizeKB / 1024).toFixed(2)} MB`
+          : `Final: ${finalSizeKB.toFixed(2)} KB`;
+
+        const savedPercent = 100 - (finalSizeKB / originalFileSizeKB) * 100;
+        const savedText = `Saved: ${savedPercent.toFixed(1)}%`;
+
+        const fileInfo = document.getElementById("file-info");
+        fileInfo.innerHTML += ` → <span class="badge">${finalText}</span> <span class="badge">${savedText}</span>`;
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+
 
     </script>
   </body>

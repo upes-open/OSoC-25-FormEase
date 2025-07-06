@@ -118,3 +118,15 @@ body {
 .hidden {
   display: none;
 }
+/* Badge style for displaying file size info */
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  margin-left: 4px;
+  font-size: 12px;
+  border-radius: 0.375rem; /* Rounded */
+  background-color: #e0f2fe; /* Light blue */
+  border: 1px solid #bae6fd; /* Border */
+  color: #0369a1; /* Dark blue text */
+}
+
