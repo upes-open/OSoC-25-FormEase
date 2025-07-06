@@ -9,7 +9,6 @@
 
   <body>
     <div class="formease-toolbox">
-      <!---Basic Template-->
       <h4>FormEase Toolbox</h4>
 
       <!-- Dropdown -->
@@ -27,20 +26,11 @@
       <div id="resize" class="hidden">
         <div id="resize-inner">
           <label for="resize">Resize :</label>
-          <input
-            type="range"
-            id="resize-range"
-            min="10"
-            max="100"
-            value="100"
-            class="ms-4"
-          />
+          <input type="range" id="resize-range" min="10" max="100" value="100" class="ms-4" />
           <br /><br />
           <label for="resize-file-input">Upload File:</label>
           <input type="file" id="resize-file-input" />
-          <!-- Display file sizes -->
           <div id="file-info" style="font-size: 12px; color: #333; margin-top: 8px;"></div>
-
         </div>
       </div>
 
@@ -50,13 +40,7 @@
       <div id="compress" class="hidden">
         <div id="compress-inner">
           <label for="compress-input">Compress to : </label>
-          <input
-            type="number"
-            id="compress-input"
-            name="compress"
-            min="1"
-            max="100"
-          />
+          <input type="number" id="compress-input" name="compress" min="1" max="100" />
           <span>%</span>
         </div>
       </div>
@@ -73,150 +57,64 @@
         </div>
       </div>
 
-      <button id="apply" class="hidden" style="margin-right: 10px">
-        Apply
-      </button>
+      <button id="apply" class="hidden" style="margin-right: 10px">Apply</button>
 
-      <!-- Reset Button -->
       <div class="reset-section">
         <button id="resetButton">Reset</button>
       </div>
 
-      <!-- Feedback Area -->
-      <div
-        class="formease-feedback"
-        style="
-          display: none;
-          margin-top: 10px;
-          padding: 8px;
-          border-radius: 4px;
-        "
-      ></div>
+      <div class="formease-feedback" style="display: none; margin-top: 10px; padding: 8px; border-radius: 4px;"></div>
 
-      <!-- Image Preview Area -->
-      <div
-        id="image-preview-area"
-        style="margin-top: 15px; text-align: center; display: none"
-      >
-        <img
-          id="image-preview"
-          src="#"
-          alt="Image Preview"
-          style="
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-          "
-        />
+      <div id="image-preview-area" style="margin-top: 15px; text-align: center; display: none">
+        <img id="image-preview" src="#" alt="Image Preview" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #ddd;" />
       </div>
     </div>
 
     <script>
       // Selecting Buttons
-      let resetButton = document.querySelector("#resetButton");
-      let feedbackArea = document.querySelector(".formease-feedback");
+      const resetButton = document.querySelector("#resetButton");
+      const feedbackArea = document.querySelector(".formease-feedback");
 
-      // Reset Button Functionality
       resetButton.addEventListener("click", () => {
         const toolbox = document.querySelector(".formease-toolbox");
         const inputId = toolbox.dataset.inputId;
-        const input = document.querySelector(
-          `input[data-form-ease-id="${inputId}"]`
-        );
-
-        if (!inputId || !input) {
-          feedbackArea.style.display = "block";
-          feedbackArea.innerHTML = "Error: Input not found.";
-          feedbackArea.style.backgroundColor = "#fef2f2";
-          feedbackArea.style.color = "#dc2626";
-          setTimeout(() => (feedbackArea.style.display = "none"), 3000);
-          return;
-        }
-
-        window.postMessage({ type: "requestReset", inputId }, "*");
-
-        // Temporary feedback
-        feedbackArea.style.display = "block";
-        feedbackArea.innerHTML = "Requesting reset...";
-        feedbackArea.style.backgroundColor = "#dbeafe";
-        feedbackArea.style.color = "#1d4ed8";
-      });
-      const dropdown = document.getElementById("task");
-      const applyButton = document.getElementById("apply");
-
-      // Show/hide sections based on dropdown
-      dropdown.addEventListener("change", () => {
-        const selected = dropdown.value;
-
-        document.querySelectorAll("#resize, #compress, #convert").forEach((section) => {
-          section.classList.add("hidden");
-        });
-
-        if (selected !== "nill") {
-          document.getElementById(selected).classList.remove("hidden");
-          applyButton.classList.remove("hidden");
-        } else {
-          applyButton.classList.add("hidden");
+        const input = document.querySelector(`input[data-form-ease-id="${inputId}"]`);
+        if (input) {
+          input.value = null;
+          document.querySelector("#file-info").innerText = "";
+          document.querySelector("#image-preview-area").style.display = "none";
         }
       });
-      let originalFileSizeKB = 0;
 
-      const resizeFileInput = document.getElementById("resize-file-input");
-
-      resizeFileInput.addEventListener("change", (event) => {
+      document.getElementById("resize-file-input").addEventListener("change", (event) => {
         const file = event.target.files[0];
         if (!file) return;
 
-        originalFileSizeKB = file.size / 1024;
+        const originalSizeKB = file.size / 1024;
+        let originalText = originalSizeKB > 1024 ? `Original: ${(originalSizeKB / 1024).toFixed(2)} MB` : `Original: ${originalSizeKB.toFixed(2)} KB`;
 
-        let originalText = originalFileSizeKB > 1024
-          ? `Original: ${(originalFileSizeKB / 1024).toFixed(2)} MB`
-          : `Original: ${originalFileSizeKB.toFixed(2)} KB`;
-
-        const fileInfo = document.getElementById("file-info");
-        fileInfo.innerText = originalText;
-      });
-
-      // Apply button click functionality
-      applyButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        const selected = dropdown.value;
-
-      if (selected === "resize") {
-        const fileInput = document.getElementById("resize-file-input");
-        const file = fileInput.files[0];
-
-        if (!file) {
-          alert("Please select a file before applying resize.");
-          return;
-        }
-
-        // Simulate processing: calculate blob size
         const reader = new FileReader();
-
         reader.onloadend = () => {
           const arrayBuffer = reader.result;
           const blob = new Blob([arrayBuffer]);
 
           const finalSizeKB = blob.size / 1024;
-
-          let finalText = finalSizeKB > 1024
-            ? `Final: ${(finalSizeKB / 1024).toFixed(2)} MB`
-            : `Final: ${finalSizeKB.toFixed(2)} KB`;
-
-          const savedPercent = 100 - (finalSizeKB / originalFileSizeKB) * 100;
+          let finalText = finalSizeKB > 1024 ? `Final: ${(finalSizeKB / 1024).toFixed(2)} MB` : `Final: ${finalSizeKB.toFixed(2)} KB`;
+          const savedPercent = 100 - (finalSizeKB / originalSizeKB) * 100;
           const savedText = `Saved: ${savedPercent.toFixed(1)}%`;
 
           const fileInfo = document.getElementById("file-info");
-          fileInfo.innerHTML += ` → <span class="badge">${finalText}</span> <span class="badge">${savedText}</span>`;
+          fileInfo.innerHTML = `${originalText} → <span class="badge">${finalText}</span> <span class="badge">${savedText}</span>`;
         };
-
         reader.readAsArrayBuffer(file);
-      }
-    });
+      });
 
+      window.addEventListener("beforeunload", () => {
+        document.querySelectorAll(".formease-toolbox").forEach(t => t.remove());
+        console.log("[FormEase] Cleanup completed");
+      });
 
+      console.log("[FormEase] Content script loaded and initialized");
     </script>
   </body>
 </html>
