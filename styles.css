@@ -129,4 +129,12 @@ body {
   border: 1px solid #bae6fd; /* Border */
   color: #0369a1; /* Dark blue text */
 }
+.badge {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 4px;
+}
 
