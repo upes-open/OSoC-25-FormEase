@@ -164,6 +164,15 @@
           <div class="error" id="profileError">Error: Image must be under 1600x1600px.</div>
         </div>
         <div class="form-group">
+          <label for="manualWidth">Manual Width (px):</label>
+          <input type="number" id="manualWidth" name="manualWidth" placeholder="e.g., 400" min="1" />
+        </div>
+        
+        <div class="form-group">
+          <label for="manualHeight">Manual Height (px):</label>
+          <input type="number" id="manualHeight" name="manualHeight" placeholder="e.g., 400" min="1" />
+        </div>
+        <div class="form-group">
           <label for="username">Username:</label>
           <input type="text" id="username" name="username" placeholder="Enter username" required />
         </div>
@@ -305,6 +314,9 @@
             img.onload = () => {
               resolution = `${img.width}x${img.height}px`;
               info.innerHTML = `<strong>Name:</strong> ${file.name}<br><strong>Size:</strong> ${sizeInKB} KB<br><strong>Resolution:</strong> ${resolution}<br><strong>Type:</strong> ${file.type}`;
+              // ✅ Store the original image dimensions for manual input validation
+              originalImageWidth = img.width;
+              originalImageHeight = img.height;
               URL.revokeObjectURL(img.src);
             };
           } else {
@@ -357,6 +369,36 @@
       });
     }
 
+    // Manual resize input
+    const manualWidthInput = document.getElementById("manualWidth");
+    const manualHeightInput = document.getElementById("manualHeight");
+    let originalImageWidth = 0;
+    let originalImageHeight = 0;
+    
+    // Validation of input Height and Width values
+    function validateManualResizeInputs() {
+      const width = parseInt(manualWidthInput.value.trim());
+      const height = parseInt(manualHeightInput.value.trim());
+
+      const error = document.getElementById("profileError");
+      error.style.display = "none";
+
+      if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+        error.style.display = "block";
+        error.innerText = "Error: Width and height must be positive numbers.";
+        return false;
+      }
+
+  if (width > originalImageWidth || height > originalImageHeight) {
+    error.style.display = "block";
+    error.innerText = `Error: Width and height must not exceed original image size (${originalImageWidth}x${originalImageHeight}px).`;
+    return false;
+  }
+
+  return true;
+}
+
+
     // Setup for each field
     setupFileHandler("profilePhoto", "profileInfo", "profilePreview", "profileError", {
       accept: "image/*",
@@ -392,10 +434,15 @@
     // Form submit handlers
     document.getElementById("profileForm").addEventListener("submit", (e) => {
       e.preventDefault();
+      // ✨ If manual width/height are entered, validate them
+      if (manualWidthInput.value || manualHeightInput.value) {
+        const isValid = validateManualResizeInputs();
+        if (!isValid) return; // ❌ Stop form submission if invalid
+      }
       const fileInput = document.getElementById("profilePhoto");
       if (fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
-        alert(`Submitted (profilePhoto): ${file.name} (${(file.size / 1024).toFixed(2)} KB), Type: ${file.type}`);
+        alert(`✅ Submitted (profilePhoto): ${file.name} (${(file.size / 1024).toFixed(2)} KB), Type: ${file.type}`);
       }
     });
 
