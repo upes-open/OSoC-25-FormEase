@@ -442,7 +442,7 @@
       const fileInput = document.getElementById("profilePhoto");
       if (fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
-        alert(`✅ Submitted (profilePhoto): ${file.name} (${(file.size / 1024).toFixed(2)} KB), Type: ${file.type}`);
+        alert(` Submitted (profilePhoto): ${file.name} (${(file.size / 1024).toFixed(2)} KB), Type: ${file.type}`);
       }
     });
 
