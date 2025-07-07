@@ -94,10 +94,9 @@
         id="image-preview-area"
         style="margin-top: 15px; text-align: center; display: none"
       >
-        <!-- File Size Info Area -->
-        <div id="file-size-info" class="file-size-info-box" style="display: none;"></div>
+        
 
-        <div class="spinner"></div>
+        
         <img
           id="image-preview"
           src="#"
@@ -201,10 +200,19 @@
                 const imagePreview = document.getElementById("image-preview");
                 imagePreview.src = URL.createObjectURL(blob);
                 document.getElementById("image-preview-area").style.display = "block";
-                // Display file size info
-                const fileSizeInfo = document.getElementById("file-size-info");
-                fileSizeInfo.innerHTML = `Original: ${originalSizeMB} → Final: ${finalSizeMB} <br> Saved: ${savedPercent}%`;
-                fileSizeInfo.style.display = "block";
+                // Display resolution and file sizes in .formease-feedback
+                const resolution = `${dummyCanvas.width} x ${dummyCanvas.height} px`;
+
+                feedbackArea.innerHTML = `
+                  <div style="border: 1px solid #ccc; padding: 10px; border-radius: 6px; font-family: sans-serif; background-color: #f9fafb;">
+                    <p><strong>Resolution:</strong> ${resolution}</p>
+                    <p><strong>Original Size:</strong> ${originalSizeMB}</p>
+                    <p><strong>Final Size:</strong> ${finalSizeMB}</p>
+                    <p><strong>Size Saved:</strong> ${savedPercent}%</p>
+                  </div>
+                `;
+                feedbackArea.style.display = "block";
+
               }, "image/jpeg"); // simulate conversion
             };
             img.src = e.target.result;
