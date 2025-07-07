@@ -244,6 +244,7 @@ function createToolboxForInput(input, inputId, toolbox, file = null) {
       );
   }
 }
+
 function setupToolboxEventListeners(toolbox, inputId, file = null) {
   console.log(
     "[FormEase] setupToolboxEventListeners called for inputId:",
@@ -259,70 +260,105 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     return;
   }
 
+  const resolutionDisplay = toolbox.querySelector("#image-resolution");
+const sizeComparison = toolbox.querySelector("#size-comparison");
+
+if (file && resolutionDisplay) {
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
+  img.onload = () => {
+    const width = img.width;
+    const height = img.height;
+    const sizeKB = (file.size / 1024).toFixed(2);
+
+    resolutionDisplay.textContent = `Resolution: ${width} x ${height} px`;
+
+    if (sizeComparison) {
+      sizeComparison.innerHTML = `
+        <span style="background-color: #f3f4f6; padding: 4px 6px; border-radius: 4px;">
+          Original: ${sizeKB} KB
+        </span>
+      `;
+    }
+
+    URL.revokeObjectURL(img.src);
+  };
+}
+
+
   const resize = toolbox.querySelector("#resize");
   const resizeScale = toolbox.querySelector("#resize-scale");
   const compress = toolbox.querySelector("#compress");
   const convert = toolbox.querySelector("#convert");
   const resizeSlider = toolbox.querySelector("#resize-range");
   const applyBtn = toolbox.querySelector("#apply");
-  const previewInfo = toolbox.querySelector("#preview-info");
 
-
+  // Display image preview
   if (file) {
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const imagePreview = toolbox.querySelector("#image-preview");
-    const imagePreviewArea = toolbox.querySelector("#image-preview-area");
-    const img = new Image();
-    img.src = e.target.result;
-    img.onload = () => {
+    console.log(
+      "[FormEase] File provided to setupToolboxEventListeners, attempting to display preview."
+    );
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const imagePreview = toolbox.querySelector("#image-preview");
+      const imagePreviewArea = toolbox.querySelector("#image-preview-area");
+      const loader = toolbox.querySelector(".spinner");
+
+      // Loader untill image loads
+      imagePreview.onload = () => {
+        loader.classList.add("hidden");
+      };
+
+      console.log(
+        "[FormEase] FileReader onload fired. imagePreview:",
+        imagePreview,
+        "imagePreviewArea:",
+        imagePreviewArea
+      );
       if (imagePreview && imagePreviewArea) {
         imagePreview.src = e.target.result;
         imagePreviewArea.style.display = "block";
-        previewInfo.innerHTML = `…`;
-        console.log("Image preview and resolution updated and displayed.");
+        console.log("[FormEase] Image preview updated and displayed.");
+      } else {
+        console.log("[FormEase] Image preview elements not found in toolbox.");
       }
     };
-  };
-  reader.readAsDataURL(file);
-}
-
-
+    reader.readAsDataURL(file);
+    console.log("[FormEase] FileReader readAsDataURL called.");
+  }
 
   if (dropdown && !dropdown.dataset.listenerAdded) {
     dropdown.addEventListener("change", (e) => {
       dropdown.value = e.target.value;
       dropdown.dataset.listenerAdded = "true";
 
-      resize.classList.add("hidden");
-      compress.classList.add("hidden");
-      convert.classList.add("hidden");
-      resizeScale.classList.add("hidden");
-      applyBtn.classList.add("hidden");
-
       if (dropdown.value === "resize") {
-        resize.classList.remove("hidden");
         resizeScale.classList.remove("hidden");
+        resize.classList.remove("hidden");
+        compress.classList.add("hidden");
+        convert.classList.add("hidden");
         applyBtn.classList.remove("hidden");
-
         if (resizeSlider && !resizeSlider.dataset.listenerAdded) {
           resizeSlider.addEventListener("input", (e) => {
             if (resizeScale) resizeScale.textContent = `${e.target.value}%`;
             resizeSlider.dataset.listenerAdded = "true";
           });
         }
-
         if (applyBtn && !applyBtn.dataset.listenerAdded) {
           applyBtn.addEventListener("click", () => {
             const currentFile = getCurrentFileForInput(inputId);
             if (currentFile) {
               const img = new Image();
+              
               img.src = URL.createObjectURL(currentFile);
               img.onload = () => {
                 if (img.width > 1600 || img.height > 1600) {
                   window.postMessage({ type: "triggerApply", inputId }, "*");
                 } else {
-                  showError(toolbox, "Resolution is already under 1600px.");
+                  showError(
+                    toolbox,
+                    "Resolution is already under 1600x1600px, no resize needed."
+                  );
                 }
                 URL.revokeObjectURL(img.src);
               };
@@ -330,29 +366,33 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
             applyBtn.dataset.listenerAdded = "true";
           });
         }
-      }
-
-      if (dropdown.value === "compress") {
+      } else if (dropdown.value === "compress") {
+        resizeScale.classList.add("hidden");
         compress.classList.remove("hidden");
+        resize.classList.add("hidden");
+        convert.classList.add("hidden");
         applyBtn.classList.remove("hidden");
-
         if (applyBtn && !applyBtn.dataset.listenerAdded) {
           applyBtn.addEventListener("click", () => {
             const currentFile = getCurrentFileForInput(inputId);
             if (currentFile && currentFile.size > 1024 * 1024) {
+              // 1MB in bytes
               processFile("compress", currentFile, { quality: 0.7 }, inputId);
             } else {
-              showError(toolbox, "File size already under 1MB.");
+              showError(
+                toolbox,
+                "File size is already under 1MB, no compression needed."
+              );
             }
             applyBtn.dataset.listenerAdded = "true";
           });
         }
-      }
-
-      if (dropdown.value === "convert") {
+      } else if (dropdown.value === "convert") {
+        resizeScale.classList.add("hidden");
         convert.classList.remove("hidden");
+        resize.classList.add("hidden");
+        compress.classList.add("hidden");
         applyBtn.classList.remove("hidden");
-
         if (applyBtn && !applyBtn.dataset.listenerAdded) {
           applyBtn.addEventListener("click", () => {
             const currentFile = getCurrentFileForInput(inputId);
@@ -364,11 +404,16 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
             applyBtn.dataset.listenerAdded = "true";
           });
         }
+      } else {
+        resizeScale.classList.add("hidden");
+        resize.classList.add("hidden");
+        compress.classList.add("hidden");
+        convert.classList.add("hidden");
+        applyBtn.classList.add("hidden");
       }
     });
   }
 }
-
 
 const submitBtns = document.querySelectorAll(".submit-btn");
 for (let submitBtn of submitBtns) {
@@ -415,6 +460,7 @@ function processFile(operation, file, options, inputId) {
   }, 30000);
 
   if (operation !== "resize") {
+    // Skip resize, handled by toolbox.html
     window.postMessage(
       {
         type: operation,
@@ -431,7 +477,8 @@ function processFile(operation, file, options, inputId) {
 window.addEventListener("message", (event) => {
   if (event.source !== window) return;
 
-  const { type, inputId, file, error, timeoutId, originalOperation } = event.data;
+  const { type, inputId, file, error, timeoutId, originalOperation } =
+    event.data;
   const toolbox = document.querySelector(
     `.formease-toolbox[data-input-id="${inputId}"]`
   );
@@ -454,7 +501,7 @@ window.addEventListener("message", (event) => {
 
   if (type === "triggerApply") {
     const applyButton = toolbox?.querySelector("#apply");
-    if (applyButton) applyButton.click();
+    if (applyButton) applyButton.click(); // Trigger toolbox.html's apply logic
     return;
   }
 
@@ -472,6 +519,7 @@ window.addEventListener("message", (event) => {
 
     input.dispatchEvent(new Event("change", { bubbles: true }));
     input.dispatchEvent(new Event("input", { bubbles: true }));
+
     if (input.checkValidity) input.checkValidity();
 
     showDetailedSuccessMessage(
@@ -492,10 +540,50 @@ window.addEventListener("message", (event) => {
     console.error("[FormEase] Replacement failed:", err);
     showError(toolbox, "Failed to update file. Please try again.");
   }
+
+  // Handle Reset Request
+  if (type === "requestReset") {
+    const input = document.querySelector(
+      `input[data-form-ease-id="${inputId}"]`
+    );
+    const toolbox = document.querySelector(
+      `.formease-toolbox[data-input-id="${inputId}"]`
+    );
+    const feedbackArea = toolbox?.querySelector(".formease-feedback");
+
+    if (!input) {
+      showError(toolbox, "Input not found.");
+      return;
+    }
+
+    if (originalFiles && originalFiles.has(inputId)) {
+      const originalFile = originalFiles.get(inputId);
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(originalFile);
+      input.files = dataTransfer.files;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+
+      showDetailedSuccessMessage(toolbox, "Original file restored.");
+      if (feedbackArea) {
+        feedbackArea.innerHTML = "";
+        const imagePreview = toolbox.querySelector("#image-preview");
+        const imagePreviewArea = toolbox.querySelector("#image-preview-area");
+        if (imagePreview && imagePreviewArea) {
+          imagePreview.src = "#";
+          imagePreviewArea.style.display = "none";
+        }
+        setTimeout(() => (feedbackArea.style.display = "none"), 3000);
+      }
+    } else {
+      showError(toolbox, "No original file found to reset.");
+      if (feedbackArea)
+        setTimeout(() => (feedbackArea.style.display = "none"), 3000);
+    }
+  }
 });
 
 function showProcessingIndicator(toolbox, operation) {
-  const feedback = toolbox.querySelector(".formease-feedback");
+  const feedback = toolbox.querySelector(".formease-toolbox");
   if (feedback) {
     feedback.style.display = "block";
     feedback.style.backgroundColor = "#dbeafe";
@@ -505,7 +593,7 @@ function showProcessingIndicator(toolbox, operation) {
 }
 
 function hideProcessingIndicator(toolbox) {
-  const feedback = toolbox.querySelector(".formease-feedback");
+  const feedback = toolbox.querySelector(".formease-toolbox");
   if (feedback) {
     setTimeout(() => {
       feedback.style.display = "none";
@@ -514,7 +602,7 @@ function hideProcessingIndicator(toolbox) {
 }
 
 function showError(toolbox, message) {
-  const feedback = toolbox.querySelector(".formease-feedback");
+  const feedback = toolbox.querySelector(".formease-toolbox");
   if (feedback) {
     feedback.style.display = "block";
     feedback.style.backgroundColor = "#fef2f2";
@@ -524,13 +612,28 @@ function showError(toolbox, message) {
 }
 
 function showDetailedSuccessMessage(toolbox, message) {
-  const feedback = toolbox.querySelector(".formease-feedback");
+  const feedback = toolbox.querySelector(".formease-toolbox");
   if (feedback) {
     feedback.style.display = "block";
     feedback.style.backgroundColor = "#dcfce7";
     feedback.style.color = "#166534";
+    feedback.style.lineHeight = "1.4";
     feedback.innerHTML = message;
   }
+}
+
+function addVisualFeedback(toolbox, inputId) {
+  const feedbackContainer = document.createElement("div");
+  feedbackContainer.className = "formease-feedback";
+  feedbackContainer.dataset.inputId = inputId;
+  feedbackContainer.style.cssText = `
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    display: none;
+  `;
+  toolbox.appendChild(feedbackContainer);
 }
 
 function watchForDynamicInputs() {
@@ -544,7 +647,6 @@ function watchForDynamicInputs() {
         ) {
           setupFileInput(node);
         }
-
         const fileInputs = node.querySelectorAll?.('input[type="file"]') || [];
         fileInputs.forEach((input) => {
           if (!input.dataset.formEaseId) setupFileInput(input);
@@ -560,7 +662,9 @@ function watchForDynamicInputs() {
 function cleanup() {
   originalFiles.clear();
   processingState.clear();
-  document.querySelectorAll(".formease-toolbox").forEach((toolbox) => toolbox.remove());
+  document
+    .querySelectorAll(".formease-toolbox")
+    .forEach((toolbox) => toolbox.remove());
   console.log("[FormEase] Cleanup completed");
 }
 
