@@ -34,6 +34,10 @@
             value="100"
             class="ms-4"
           />
+          <br /><br />
+          <label for="resize-file-input">Upload File:</label>
+          <input type="file" id="resize-file-input" />
+
         </div>
       </div>
       <div id="resize-scale"></div>
@@ -90,6 +94,10 @@
         id="image-preview-area"
         style="margin-top: 15px; text-align: center; display: none"
       >
+      <!-- File Size Info Area -->
+      <div id="file-size-info" class="file-size-info-box" style="display: none;"></div>
+
+
         <img
           id="image-preview"
           src="#"
@@ -133,6 +141,78 @@
         feedbackArea.innerHTML = "Requesting reset...";
         feedbackArea.style.backgroundColor = "#dbeafe";
         feedbackArea.style.color = "#1d4ed8";
+      });
+      // 🔽 New Code for Dropdown and Apply Button 🔽
+      const dropdown = document.getElementById("task");
+      const applyButton = document.getElementById("apply");
+
+      // Show/hide sections based on dropdown
+      dropdown.addEventListener("change", () => {
+        const selected = dropdown.value;
+
+        document.querySelectorAll("#resize, #compress, #convert").forEach((section) => {
+          section.classList.add("hidden");
+        });
+
+        if (selected !== "nill") {
+          document.getElementById(selected).classList.remove("hidden");
+          applyButton.classList.remove("hidden");
+        } else {
+          applyButton.classList.add("hidden");
+        }
+      });
+      // Apply button functionality for resize
+      applyButton.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        const selected = dropdown.value;
+
+        if (selected === "resize") {
+          const fileInput = document.getElementById("resize-file-input");
+          const file = fileInput.files[0];
+
+          if (!file) {
+            alert("Please select a file before applying resize.");
+            return;
+          }
+          // Step 1: Store original file size
+          const originalSizeKB = file.size / 1024;
+          const originalSizeMB = originalSizeKB > 1024
+            ? (originalSizeKB / 1024).toFixed(2) + " MB"
+            : originalSizeKB.toFixed(1) + " KB";
+          // Step 2: Create a dummy blob (simulate resizing here)
+          // You should replace this logic with real resized image blob
+          const dummyCanvas = document.createElement("canvas");
+          const ctx = dummyCanvas.getContext("2d");
+          const img = new Image();
+          const fileReader = new FileReader();
+          fileReader.onload = (e) => {
+            img.onload = () => {
+              dummyCanvas.width = img.width * 0.5; // simulate 50% resize
+              dummyCanvas.height = img.height * 0.5;
+              ctx.drawImage(img, 0, 0, dummyCanvas.width, dummyCanvas.height);
+              dummyCanvas.toBlob((blob) => {
+                const finalSizeKB = blob.size / 1024;
+                const finalSizeMB = finalSizeKB > 1024
+                  ? (finalSizeKB / 1024).toFixed(2) + " MB"
+                  : finalSizeKB.toFixed(1) + " KB";
+                const savedPercent = (((file.size - blob.size) / file.size) * 100).toFixed(1);
+                // Display image
+                const imagePreview = document.getElementById("image-preview");
+                imagePreview.src = URL.createObjectURL(blob);
+                document.getElementById("image-preview-area").style.display = "block";
+                // Display file size info
+                const fileSizeInfo = document.getElementById("file-size-info");
+                fileSizeInfo.innerHTML = `Original: ${originalSizeMB} → Final: ${finalSizeMB} <br> Saved: ${savedPercent}%`;
+                fileSizeInfo.style.display = "block";
+              }, "image/jpeg"); // simulate conversion
+            };
+            img.src = e.target.result;
+          };
+
+          fileReader.readAsDataURL(file);
+          
+        }
       });
     </script>
   </body>

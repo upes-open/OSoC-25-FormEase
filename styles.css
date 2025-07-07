@@ -118,3 +118,13 @@ body {
 .hidden {
   display: none;
 }
+.file-size-info-box {
+  margin-top: 10px;
+  padding: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #1d4ed8;
+  background-color: #f0f9ff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
