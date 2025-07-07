@@ -255,11 +255,36 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
   const input = document.querySelector(`input[data-form-ease-id="${inputId}"]`);
   const dropdown = toolbox.querySelector("#task");
 
-  // Ensure toolbox is only for images
   if (!file || !file.type.startsWith("image/")) {
     toolbox.style.display = "none";
     return;
   }
+
+  const resolutionDisplay = toolbox.querySelector("#image-resolution");
+const sizeComparison = toolbox.querySelector("#size-comparison");
+
+if (file && resolutionDisplay) {
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
+  img.onload = () => {
+    const width = img.width;
+    const height = img.height;
+    const sizeKB = (file.size / 1024).toFixed(2);
+
+    resolutionDisplay.textContent = `Resolution: ${width} x ${height} px`;
+
+    if (sizeComparison) {
+      sizeComparison.innerHTML = `
+        <span style="background-color: #f3f4f6; padding: 4px 6px; border-radius: 4px;">
+          Original: ${sizeKB} KB
+        </span>
+      `;
+    }
+
+    URL.revokeObjectURL(img.src);
+  };
+}
+
 
   const resize = toolbox.querySelector("#resize");
   const resizeScale = toolbox.querySelector("#resize-scale");
@@ -324,6 +349,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
             const currentFile = getCurrentFileForInput(inputId);
             if (currentFile) {
               const img = new Image();
+              
               img.src = URL.createObjectURL(currentFile);
               img.onload = () => {
                 if (img.width > 1600 || img.height > 1600) {

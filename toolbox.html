@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -107,6 +108,10 @@
           "
         />
         <div id="resize-feedback" class="mt-2 text-sm text-gray-600"></div>
+        <div id="size-comparison" style="font-size: 0.85rem; color: #374151; margin-top: 4px;"></div>
+
+        <div id="image-resolution" style="font-size: 0.85rem; color: #374151; margin-top: 6px;"></div>
+
       </div>
     </div>
 
@@ -263,7 +268,9 @@
               resizedImg.src = previewURL;
               resizedImg.onload = () => {
                 const sizeKB = (blob.size / 1024).toFixed(2);
-                resizeFeedback.textContent = `Resolution: ${resizedImg.width}x${resizedImg.height}px, Size: ${sizeKB}KB`;
+                resizeFeedback.textContent = `Size: ${sizeKB}KB`;
+                document.getElementById("image-resolution").textContent = `Resolution: ${resizedImg.width} × ${resizedImg.height}px`;
+
               };
 
               feedbackArea.innerHTML = "Resizing complete.";
