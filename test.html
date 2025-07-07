@@ -257,31 +257,6 @@
     </div>
   </div>
 
-  <div style="display: flex; gap: 2rem; margin-top: 20px;">
-    <div id="profile-drop-zone" class="drop-zone hidden">Drop profile image here</div>
-    <div id="doc-drop-zone" class="drop-zone hidden">Drop document here</div>
-  </div>
-
-  <style>
-    .drop-zone {
-      flex: 1;
-      padding: 20px;
-      border: 2px dashed #ddd;
-      border-radius: 4px;
-      text-align: center;
-      background: #f9fafb;
-      transition: border-color 0.3s;
-    }
-
-    .drop-zone.dragover {
-      border-color: #2563eb;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
-
   <script>
     // File info and preview setup with validation
     function setupFileHandler(inputId, infoId, previewId, errorId, constraints = {}) {
@@ -298,20 +273,10 @@
 
         if (file) {
           const sizeInKB = (file.size / 1024).toFixed(2);
-          let resolution = "N/A";
-          if (file.type.startsWith("image/")) {
-            const img = new Image();
-            img.src = URL.createObjectURL(file);
-            img.onload = () => {
-              resolution = `${img.width}x${img.height}px`;
-              info.innerHTML = `<strong>Name:</strong> ${file.name}<br><strong>Size:</strong> ${sizeInKB} KB<br><strong>Resolution:</strong> ${resolution}<br><strong>Type:</strong> ${file.type}`;
-              URL.revokeObjectURL(img.src);
-            };
-          } else {
-            info.innerHTML = `<strong>Name:</strong> ${file.name}<br><strong>Size:</strong> ${sizeInKB} KB<br><strong>Type:</strong> ${file.type}`;
-          }
+          info.innerHTML = `<strong>Name:</strong> ${file.name}<br><strong>Size:</strong> ${sizeInKB} KB<br><strong>Type:</strong> ${file.type}`;
 
           let isValid = true;
+          // Match MIME type: use exact match or wildcard for images
           if (constraints.accept) {
             const acceptType = constraints.accept;
             if (acceptType === "image/*" && !file.type.startsWith("image/")) {
@@ -447,29 +412,12 @@
         const sizeInKB = (processedFile.size / 1024).toFixed(2);
         const originalSizeInKB = (originalFile.size / 1024).toFixed(2);
         const sizeDiff = (((originalFile.size - processedFile.size) / originalFile.size) * 100).toFixed(1);
-        let resolution = "N/A";
-        if (processedFile.type.startsWith("image/")) {
-          const img = new Image();
-          img.src = URL.createObjectURL(processedFile);
-          img.onload = () => {
-            resolution = `${img.width}x${img.height}px`;
-            info.innerHTML = `
-              <strong>Processed File:</strong> ${processedFile.name}<br>
-              <strong>Size:</strong> ${sizeInKB} KB (was ${originalSizeInKB} KB, ${sizeDiff}% reduction)<br>
-              <strong>Resolution:</strong> ${resolution}<br>
-              <strong>Type:</strong> ${processedFile.type}<br>
-              <em style="color: green;">✅ ${operation} completed!</em>
-            `;
-            URL.revokeObjectURL(img.src);
-          };
-        } else {
-          info.innerHTML = `
-            <strong>Processed File:</strong> ${processedFile.name}<br>
-            <strong>Size:</strong> ${sizeInKB} KB (was ${originalSizeInKB} KB, ${sizeDiff}% reduction)<br>
-            <strong>Type:</strong> ${processedFile.type}<br>
-            <em style="color: green;">✅ ${operation} completed!</em>
-          `;
-        }
+        info.innerHTML = `
+          <strong>Processed File:</strong> ${processedFile.name}<br>
+          <strong>Size:</strong> ${sizeInKB} KB (was ${originalSizeInKB} KB, ${sizeDiff}% reduction)<br>
+          <strong>Type:</strong> ${processedFile.type}<br>
+          <em style="color: green;">✅ ${operation} completed!</em>
+        `;
       }
     });
   </script>
