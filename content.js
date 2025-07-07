@@ -21,9 +21,7 @@ injectScript("scripts/convert.js");
 let fileInputCounter = 0;
 
 // Drag & Drop Processing
-const dropZones = document.querySelectorAll(
-  "#profile-drop-zone, #doc-drop-zone"
-);
+const dropZones = document.querySelectorAll(".drop-zone");
 const inputs = document.querySelectorAll(".input-file");
 
 // Preventing Default Behaviour of Windows
@@ -38,6 +36,7 @@ document.addEventListener("dragover", (e) => {
   for (let dropZone of dropZones) {
     dropZone.classList.remove("hidden");
   }
+
   for (let input of inputs) {
     input.classList.add("hidden");
   }
@@ -73,12 +72,17 @@ for (let dropZone of dropZones) {
 
   // Drop functionality
   dropZone.addEventListener("drop", (e) => {
-    e.preventDefault();
+    e.preventDefault(); // change
     dropZone.classList.remove("dragover");
     const input =
       dropZone.id === "profile-drop-zone"
         ? document.getElementById("profilePhoto")
+        : dropZone.id === "product-drop-zone"
+        ? document.getElementById("productImage")
+        : dropZone.id === "banner-drop-zone"
+        ? document.getElementById("bannerImage")
         : document.getElementById("documentFile");
+
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       const file = files[0];
@@ -89,16 +93,10 @@ for (let dropZone of dropZones) {
         const inputId = `formEaseInput-${fileInputCounter++}`;
         input.dataset.formEaseId = inputId;
       }
-      if (
-        dropZone.id === "profile-drop-zone" &&
-        file.type.startsWith("image/")
-      ) {
-        checkToolboxExistence(input, input.dataset.formEaseId, file);
-      } else if (
-        dropZone.id === "doc-drop-zone" &&
-        file.type === "application/pdf"
-      ) {
+      if (dropZone.id === "doc-drop-zone" && file.type === "application/pdf") {
         console.log("[FormEase] PDF dropped, no toolbox created.");
+      } else if (file.type.startsWith("image/")) {
+        checkToolboxExistence(input, input.dataset.formEaseId, file);
       } else {
         console.log(
           "[FormEase] Invalid file type for drop zone, no toolbox created."
@@ -261,30 +259,29 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
   }
 
   const resolutionDisplay = toolbox.querySelector("#image-resolution");
-const sizeComparison = toolbox.querySelector("#size-comparison");
+  const sizeComparison = toolbox.querySelector("#size-comparison");
 
-if (file && resolutionDisplay) {
-  const img = new Image();
-  img.src = URL.createObjectURL(file);
-  img.onload = () => {
-    const width = img.width;
-    const height = img.height;
-    const sizeKB = (file.size / 1024).toFixed(2);
+  if (file && resolutionDisplay) {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      const width = img.width;
+      const height = img.height;
+      const sizeKB = (file.size / 1024).toFixed(2);
 
-    resolutionDisplay.textContent = `Resolution: ${width} x ${height} px`;
+      resolutionDisplay.textContent = `Resolution: ${width} x ${height} px`;
 
-    if (sizeComparison) {
-      sizeComparison.innerHTML = `
+      if (sizeComparison) {
+        sizeComparison.innerHTML = `
         <span style="background-color: #f3f4f6; padding: 4px 6px; border-radius: 4px;">
           Original: ${sizeKB} KB
         </span>
       `;
-    }
+      }
 
-    URL.revokeObjectURL(img.src);
-  };
-}
-
+      URL.revokeObjectURL(img.src);
+    };
+  }
 
   const resize = toolbox.querySelector("#resize");
   const resizeScale = toolbox.querySelector("#resize-scale");
@@ -349,7 +346,7 @@ if (file && resolutionDisplay) {
             const currentFile = getCurrentFileForInput(inputId);
             if (currentFile) {
               const img = new Image();
-              
+
               img.src = URL.createObjectURL(currentFile);
               img.onload = () => {
                 if (img.width > 1600 || img.height > 1600) {
