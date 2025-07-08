@@ -343,20 +343,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
           applyBtn.addEventListener("click", () => {
             const currentFile = getCurrentFileForInput(inputId);
             if (currentFile) {
-              const img = new Image();
-
-              img.src = URL.createObjectURL(currentFile);
-              img.onload = () => {
-                if (img.width > 1600 || img.height > 1600) {
-                  window.postMessage({ type: "triggerApply", inputId }, "*");
-                } else {
-                  showError(
-                    toolbox,
-                    "Resolution is already under 1600x1600px, no resize needed."
-                  );
-                }
-                URL.revokeObjectURL(img.src);
-              };
+              window.postMessage({ type: "triggerApply", inputId }, "*");
             }
             applyBtn.dataset.listenerAdded = "true";
           });
