@@ -373,13 +373,15 @@
         const previewImg = preview?.querySelector("img");
 
         input.addEventListener("change", function (e) {
+          info.classList.remove("hidden");
           const file = e.target.files[0];
           error.style.display = "none";
-          info.innerHTML = "No file selected.";
+          info.innerText = "No file selected.";
 
           if (file) {
             const sizeInKB = (file.size / 1024).toFixed(2);
-            info.innerHTML = `<strong>Name:</strong> ${file.name}<br><strong>Size:</strong> ${sizeInKB} KB<br><strong>Type:</strong> ${file.type}`;
+            info.innerText = "";
+            info.classList.add("hidden");
 
             let isValid = true;
             // Match MIME type: use exact match or wildcard for images
