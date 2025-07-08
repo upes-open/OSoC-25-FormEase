@@ -135,11 +135,18 @@
 
         window.postMessage({ type: "requestReset", inputId }, "*");
 
-        // Temporary feedback
+
+
+        // Show blue feedback message
         feedbackArea.style.display = "block";
         feedbackArea.innerHTML = "Requesting reset...";
         feedbackArea.style.backgroundColor = "#dbeafe";
         feedbackArea.style.color = "#1d4ed8";
+
+        // Hide image preview
+        document.getElementById("image-preview-area").style.display = "none";
+        document.getElementById("image-preview").src = "#";
+
       });
       // 🔽 New Code for Dropdown and Apply Button 🔽
       const dropdown = document.getElementById("task");
@@ -149,17 +156,26 @@
       dropdown.addEventListener("change", () => {
         const selected = dropdown.value;
 
+        // Hide all sections
         document.querySelectorAll("#resize, #compress, #convert").forEach((section) => {
           section.classList.add("hidden");
         });
 
+        // Clear old outputs
+        feedbackArea.style.display = "none";
+        feedbackArea.innerHTML = "";
+        document.getElementById("image-preview-area").style.display = "none";
+        document.getElementById("image-preview").src = "#";
+
+        // Show selected section
         if (selected !== "nill") {
           document.getElementById(selected).classList.remove("hidden");
           applyButton.classList.remove("hidden");
-        } else {
-          applyButton.classList.add("hidden");
-        }
-      });
+          } else {
+            applyButton.classList.add("hidden");
+          }
+        });
+
       // Apply button functionality for resize
       applyButton.addEventListener("click", (e) => {
         e.preventDefault();
