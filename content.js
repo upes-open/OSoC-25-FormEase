@@ -357,14 +357,9 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         if (applyBtn && !applyBtn.dataset.listenerAdded) {
           applyBtn.addEventListener("click", () => {
             const currentFile = getCurrentFileForInput(inputId);
-            if (currentFile && currentFile.size > 1024 * 1024) {
-              // 1MB in bytes
+            if (currentFile) {
+              // Always compress, even if under 1MB
               processFile("compress", currentFile, { quality: 0.7 }, inputId);
-            } else {
-              showError(
-                toolbox,
-                "File size is already under 1MB, no compression needed."
-              );
             }
             applyBtn.dataset.listenerAdded = "true";
           });
