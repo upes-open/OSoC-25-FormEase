@@ -26,7 +26,34 @@
       <!-- Basic Range Control -->
       <div id="resize" class="hidden">
         <div id="resize-inner">
-          <label for="resize">Resize :</label>
+          <em
+            ><strong
+              ><p>
+                *Note: Either input the dimensions manually or use slider
+              </p></strong
+            ></em
+          >
+          <div class="manual-dimension">
+            <label for="resize">Resize :</label>
+            <span>
+              <input
+                type="number"
+                placeholder="width"
+                id="img-width"
+                min="1"
+                max="1600"
+              /> </span
+            ><span>X</span
+            ><span>
+              <input
+                type="number"
+                placeholder="height"
+                id="img-height"
+                min="1"
+                max="1600"
+              />
+            </span>
+          </div>
           <input
             type="range"
             id="resize-range"
@@ -69,13 +96,11 @@
       </div>
 
       <!-- Apply Button for all 3 actions (resize, compress, convert) -->
-      <button id="apply" class="hidden" style="margin-right: 10px">
-        Apply
-      </button>
+      <button id="apply" class="toolbox-btn hidden">Apply</button>
 
       <!-- Reset Button -->
       <div class="reset-section">
-        <button id="resetButton">Reset</button>
+        <button id="resetButton" class="toolbox-btn">Reset</button>
       </div>
 
       <!-- Feedback Area -->
@@ -187,116 +212,130 @@
         } else {
           applyButton.classList.add("hidden");
         }
-      });
 
-      // Apply button functionality for resize
-      applyButton.addEventListener("click", async (e) => {
-        e.preventDefault();
-
-        const selected = dropdown.value;
         const feedbackArea = document.querySelector(".formease-feedback");
         const file = fileInput.files[0];
 
+        // Apply button functionality for resize
         if (selected === "resize") {
-          const fileInput = document.getElementById("resize-file-input");
-          const originalSize = (file.size / 1024).toFixed(2);
+          applyButton.addEventListener("click", async (e) => {
+            const imgWidth = document.getElementById("img-width");
+            const imgHeight = document.getElementById("img-height");
+            const resizeScale = document.getElementById("resize-scale");
+            const resizeValue = Number(resizeScale.innerText);
+            e.preventDefault();
 
-          if (!file) {
-            feedbackArea.style.display = "block";
-            feedbackArea.innerHTML = "Please select a file before applying.";
-            feedbackArea.style.backgroundColor = "#fef2f2";
-            feedbackArea.style.color = "#dc2626";
-            setTimeout(() => (feedbackArea.style.display = "none"), 3000);
-            return;
-          }
-          if (!file) {
-            alert("Please select a file before applying resize.");
-            return;
-          }
+            if (
+              !imgWidth.value &&
+              !imgHeight.value &&
+              (!resizeValue || resizeValue < 10)
+            ) {
+              const fileInput = document.getElementById("resize-file-input");
+              const originalSize = (file.size / 1024).toFixed(2);
 
-          if (selected === "resize") {
-            feedbackArea.style.display = "block";
-            feedbackArea.innerHTML = "Resizing...";
-            feedbackArea.style.backgroundColor = "#dbeafe";
-            feedbackArea.style.color = "#1d4ed8";
+              if (!file) {
+                feedbackArea.style.display = "block";
+                feedbackArea.innerHTML =
+                  "Please select a file before applying.";
+                feedbackArea.style.backgroundColor = "#fef2f2";
+                feedbackArea.style.color = "#dc2626";
+                setTimeout(() => (feedbackArea.style.display = "none"), 3000);
+                return;
+              }
+              if (!file) {
+                alert("Please select a file before applying resize.");
+                return;
+              }
 
-            originalFile = file;
+              feedbackArea.style.display = "block";
+              feedbackArea.innerHTML = "Resizing...";
+              feedbackArea.style.backgroundColor = "#dbeafe";
+              feedbackArea.style.color = "#1d4ed8";
 
-            const img = new Image();
-            img.src = URL.createObjectURL(file);
+              originalFile = file;
 
-            try {
-              await new Promise((resolve) => (img.onload = resolve));
+              const img = new Image();
+              img.src = URL.createObjectURL(file);
 
-              const canvas = document.createElement("canvas");
-              const scale = document.getElementById("resize-range").value / 100;
-              canvas.width = img.width * scale;
-              canvas.height = img.height * scale;
+              try {
+                await new Promise((resolve) => (img.onload = resolve));
 
-              await createImageBitmap(img).then((bitmap) => {
-                return picaInstance.resize(bitmap, canvas, {
-                  filter: "lanczos",
-                  alpha: true,
-                  quality: 3,
-                  unsharpAmount: 160,
-                  unsharpRadius: 0.6,
-                  unsharpThreshold: 1,
+                const canvas = document.createElement("canvas");
+                const scale =
+                  document.getElementById("resize-range").value / 100;
+                canvas.width =
+                  img.width * scale ||
+                  document.getElementById("img-width").value;
+                canvas.height =
+                  img.height * scale ||
+                  document.getElementById("img-height").value;
+
+                await createImageBitmap(img).then((bitmap) => {
+                  return picaInstance.resize(bitmap, canvas, {
+                    filter: "lanczos",
+                    alpha: true,
+                    quality: 3,
+                    unsharpAmount: 160,
+                    unsharpRadius: 0.6,
+                    unsharpThreshold: 1,
+                  });
                 });
-              });
 
-              /* const format =
-                document.getElementById("convert-dropdown")?.value ||
-                file.type.split("/")[1];
-              const quality =
-                document.getElementById("compress-input")?.value / 100 || 0.9; */
-              const blob = await picaInstance.toBlob(canvas, `image/jpg`, 0.9);
+                const blob = await picaInstance.toBlob(
+                  canvas,
+                  `image/jpg`,
+                  0.9
+                );
 
-              const newFile = new File([blob], file.name, {
-                type: blob.type,
-                lastModified: Date.now(),
-              });
+                const newFile = new File([blob], file.name, {
+                  type: blob.type,
+                  lastModified: Date.now(),
+                });
 
-              const dataTransfer = new DataTransfer();
-              dataTransfer.items.add(newFile);
-              fileInput.files = dataTransfer.files;
-              fileInput.dispatchEvent(new Event("change", { bubbles: true }));
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(newFile);
+                fileInput.files = dataTransfer.files;
+                fileInput.dispatchEvent(new Event("change", { bubbles: true }));
 
-              const previewURL = URL.createObjectURL(blob);
-              previewImg.src = previewURL;
-              previewArea.style.display = "block";
+                const previewURL = URL.createObjectURL(blob);
+                previewImg.src = previewURL;
+                previewArea.style.display = "block";
 
-              const resizedImg = new Image();
-              resizedImg.src = previewURL;
-              resizedImg.onload = () => {
-                const newSizeKB = (blob.size / 1024).toFixed(2);
-                const sizeSaved = (originalSize - newSizeKB) / originalSize;
-                const percentSaved = (sizeSaved * 100).toFixed(2);
-                document.getElementById(
-                  "image-resolution"
-                ).textContent = `Resolution: ${resizedImg.width} × ${resizedImg.height}px`;
-                document.getElementById(
-                  "new-size"
-                ).textContent = `New Size : ${newSizeKB}`;
-                document.getElementById(
-                  "resize-feedback"
-                ).textContent = `Saved : ${percentSaved}%`;
-              };
+                const resizedImg = new Image();
+                resizedImg.src = previewURL;
+                resizedImg.onload = () => {
+                  const newSizeKB = (blob.size / 1024).toFixed(2);
+                  const sizeSaved = (originalSize - newSizeKB) / originalSize;
+                  const percentSaved = (sizeSaved * 100).toFixed(2);
+                  document.getElementById(
+                    "image-resolution"
+                  ).textContent = `Resolution: ${resizedImg.width} × ${resizedImg.height}px`;
+                  document.getElementById(
+                    "new-size"
+                  ).textContent = `New Size : ${newSizeKB}`;
+                  document.getElementById(
+                    "resize-feedback"
+                  ).textContent = `Saved : ${percentSaved}%`;
+                };
 
-              feedbackArea.innerHTML = "Resizing complete.";
-              feedbackArea.style.backgroundColor = "#d1fae5";
-              feedbackArea.style.color = "#065f46";
-            } catch (error) {
-              console.error("Resize error:", error);
-              feedbackArea.innerHTML = "Error resizing file.";
-              feedbackArea.style.backgroundColor = "#fef2f2";
-              feedbackArea.style.color = "#dc2626";
-            } finally {
-              setTimeout(() => (feedbackArea.style.display = "none"), 3000);
+                feedbackArea.innerHTML = "Resizing complete.";
+                feedbackArea.style.backgroundColor = "#d1fae5";
+                feedbackArea.style.color = "#065f46";
+              } catch (error) {
+                console.error("Resize error:", error);
+                feedbackArea.innerHTML = "Error resizing file.";
+                feedbackArea.style.backgroundColor = "#fef2f2";
+                feedbackArea.style.color = "#dc2626";
+              } finally {
+                setTimeout(() => (feedbackArea.style.display = "none"), 3000);
+              }
             }
-          }
-        }
+          });
 
-        console.log("Resizing:", file.name);
+          console.log("Resizing:", file.name);
+        } else {
+          alert("Please give valid dimensions for resize.");
+        }
       });
     </script>
   </body>

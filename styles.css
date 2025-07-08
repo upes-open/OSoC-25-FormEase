@@ -57,8 +57,35 @@ body {
   gap: 0.5rem;
 }
 
-/* Button inside toolbox */
-#apply {
+#resize-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Manual Resize Scale */
+.manual-dimension {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+#resize-range {
+  width: 50%;
+  margin-top: 0.75rem;
+}
+
+/* Resize slider label */
+#resize-scale {
+  margin-left: 0.5rem;
+  font-weight: bold;
+  color: #166534;
+}
+
+/* Buttons inside toolbox */
+.toolbox-btn {
   background-color: #4ade80; /* green */
   color: #065f46;
   border: none;
@@ -69,16 +96,20 @@ body {
   transition: background-color 0.2s ease;
 }
 
+/* Apply */
 #apply:hover {
   cursor: pointer;
   background-color: #22c55e; /* darker green */
 }
 
-/* Resize slider label */
-#resize-scale {
-  margin-left: 0.5rem;
-  font-weight: bold;
-  color: #166534;
+#resetButton {
+  background-color: rgba(128, 128, 128, 0.641);
+  color: #f0fdf4;
+}
+
+#resetButton:hover {
+  background-color: red;
+  cursor: pointer;
 }
 
 /* Toolbox Feedback container (success, error, processing) */
