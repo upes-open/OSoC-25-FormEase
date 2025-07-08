@@ -275,7 +275,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         sizeComparison.innerHTML = `
         <span style="background-color: #f3f4f6; padding: 4px 6px; border-radius: 4px;">
           Original: ${sizeKB} KB
-        </span>
+        </span><span id="new-size" style="background-color: #f3f4f6; padding: 4px 6px; border-radius: 4px;"></span>
       `;
       }
 

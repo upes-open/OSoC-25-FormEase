@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -107,11 +106,17 @@
             border: 1px solid #ddd;
           "
         />
+        <div
+          id="size-comparison"
+          style="font-size: 0.85rem; color: #374151; margin-top: 4px"
+        ></div>
+
+        <div
+          id="image-resolution"
+          style="font-size: 0.85rem; color: #374151; margin-top: 6px"
+        ></div>
+
         <div id="resize-feedback" class="mt-2 text-sm text-gray-600"></div>
-        <div id="size-comparison" style="font-size: 0.85rem; color: #374151; margin-top: 4px;"></div>
-
-        <div id="image-resolution" style="font-size: 0.85rem; color: #374151; margin-top: 6px;"></div>
-
       </div>
     </div>
 
@@ -190,12 +195,11 @@
 
         const selected = dropdown.value;
         const feedbackArea = document.querySelector(".formease-feedback");
-        const fileInput = document.getElementById("resize-file-input");
         const file = fileInput.files[0];
 
         if (selected === "resize") {
           const fileInput = document.getElementById("resize-file-input");
-          const file = fileInput.files[0];
+          const originalSize = (file.size / 1024).toFixed(2);
 
           if (!file) {
             feedbackArea.style.display = "block";
@@ -240,21 +244,18 @@
                 });
               });
 
-              const format =
+              /* const format =
                 document.getElementById("convert-dropdown")?.value ||
                 file.type.split("/")[1];
               const quality =
-                document.getElementById("compress-input")?.value / 100 || 0.9;
-              const blob = await picaInstance.toBlob(
-                canvas,
-                `image/${format}`,
-                quality
-              );
+                document.getElementById("compress-input")?.value / 100 || 0.9; */
+              const blob = await picaInstance.toBlob(canvas, `image/jpg`, 0.9);
 
               const newFile = new File([blob], file.name, {
                 type: blob.type,
                 lastModified: Date.now(),
               });
+
               const dataTransfer = new DataTransfer();
               dataTransfer.items.add(newFile);
               fileInput.files = dataTransfer.files;
@@ -267,10 +268,18 @@
               const resizedImg = new Image();
               resizedImg.src = previewURL;
               resizedImg.onload = () => {
-                const sizeKB = (blob.size / 1024).toFixed(2);
-                resizeFeedback.textContent = `Size: ${sizeKB}KB`;
-                document.getElementById("image-resolution").textContent = `Resolution: ${resizedImg.width} × ${resizedImg.height}px`;
-
+                const newSizeKB = (blob.size / 1024).toFixed(2);
+                const sizeSaved = (originalSize - newSizeKB) / originalSize;
+                const percentSaved = (sizeSaved * 100).toFixed(2);
+                document.getElementById(
+                  "image-resolution"
+                ).textContent = `Resolution: ${resizedImg.width} × ${resizedImg.height}px`;
+                document.getElementById(
+                  "new-size"
+                ).textContent = `New Size : ${newSizeKB}`;
+                document.getElementById(
+                  "resize-feedback"
+                ).textContent = `Saved : ${percentSaved}%`;
               };
 
               feedbackArea.innerHTML = "Resizing complete.";
