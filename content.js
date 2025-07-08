@@ -335,7 +335,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         applyBtn.classList.remove("hidden");
         if (resizeSlider && !resizeSlider.dataset.listenerAdded) {
           resizeSlider.addEventListener("input", (e) => {
-            if (resizeScale) resizeScale.textContent = `${e.target.value}%`;
+            if (resizeScale) resizeScale.textContent = `${e.target.value}`;
             resizeSlider.dataset.listenerAdded = "true";
           });
         }
