@@ -109,6 +109,9 @@
           "
         />
       </div>
+      <!-- Image Info Display Area -->
+      <div id="image-info" class="hidden"></div>
+
     </div>
 
     <script>
@@ -146,22 +149,31 @@
         // Hide image preview
         document.getElementById("image-preview-area").style.display = "none";
         document.getElementById("image-preview").src = "#";
+        document.getElementById("image-info").classList.add("hidden");
+        document.getElementById("image-info").innerHTML = "";
+
 
       });
       // 🔽 New Code for Dropdown and Apply Button 🔽
       const dropdown = document.getElementById("task");
       const applyButton = document.getElementById("apply");
 
+      let lastSelected = "nill"; // Track previously selected option
+
       // Show/hide sections based on dropdown
       dropdown.addEventListener("change", () => {
         const selected = dropdown.value;
+
+        // 🛑 If the selected option is same as last selected, do nothing
+        if (selected === lastSelected) return;
+        lastSelected = selected;
 
         // Hide all sections
         document.querySelectorAll("#resize, #compress, #convert").forEach((section) => {
           section.classList.add("hidden");
         });
 
-        // Clear old outputs
+        // Clear outputs
         feedbackArea.style.display = "none";
         feedbackArea.innerHTML = "";
         document.getElementById("image-preview-area").style.display = "none";
@@ -171,10 +183,10 @@
         if (selected !== "nill") {
           document.getElementById(selected).classList.remove("hidden");
           applyButton.classList.remove("hidden");
-          } else {
-            applyButton.classList.add("hidden");
-          }
-        });
+        } else {
+          applyButton.classList.add("hidden");
+        }
+      });
 
       // Apply button functionality for resize
       applyButton.addEventListener("click", (e) => {
@@ -219,15 +231,15 @@
                 // Display resolution and file sizes in .formease-feedback
                 const resolution = `${dummyCanvas.width} x ${dummyCanvas.height} px`;
 
-                feedbackArea.innerHTML = `
-                  <div style="border: 1px solid #ccc; padding: 10px; border-radius: 6px; font-family: sans-serif; background-color: #f9fafb;">
-                    <p><strong>Resolution:</strong> ${resolution}</p>
-                    <p><strong>Original Size:</strong> ${originalSizeMB}</p>
-                    <p><strong>Final Size:</strong> ${finalSizeMB}</p>
-                    <p><strong>Size Saved:</strong> ${savedPercent}%</p>
-                  </div>
+                const imageInfo = document.getElementById("image-info");
+                imageInfo.innerHTML = `
+                  <p><strong>Resolution:</strong> ${resolution}</p>
+                  <p><strong>Original Size:</strong> ${originalSizeMB}</p>
+                  <p><strong>Final Size:</strong> ${finalSizeMB}</p>
+                  <p><strong>Size Saved:</strong> ${savedPercent}%</p>
                 `;
-                feedbackArea.style.display = "block";
+                imageInfo.classList.remove("hidden");
+
 
               }, "image/jpeg"); // simulate conversion
             };
