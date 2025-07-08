@@ -307,15 +307,9 @@
                   const newSizeKB = (blob.size / 1024).toFixed(2);
                   const sizeSaved = (originalSize - newSizeKB) / originalSize;
                   const percentSaved = (sizeSaved * 100).toFixed(2);
-                  document.getElementById(
-                    "image-resolution"
-                  ).textContent = `Resolution: ${resizedImg.width} × ${resizedImg.height}px`;
-                  document.getElementById(
-                    "new-size"
-                  ).textContent = `New Size : ${newSizeKB}`;
-                  document.getElementById(
-                    "resize-feedback"
-                  ).textContent = `Saved : ${percentSaved}%`;
+                  feedbackArea.textContent = `Resolution: ${resizedImg.width} × ${resizedImg.height}px`;
+                  feedbackArea.textContent = `New Size : ${newSizeKB}`;
+                  feedbackArea.textContent = `Saved : ${percentSaved}%`;
                 };
 
                 feedbackArea.innerHTML = "Resizing complete.";

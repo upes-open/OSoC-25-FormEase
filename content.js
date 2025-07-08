@@ -258,10 +258,10 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     return;
   }
 
-  const resolutionDisplay = toolbox.querySelector("#image-resolution");
-  const sizeComparison = toolbox.querySelector("#size-comparison");
+  const formeasefeedback = toolbox.querySelector(".formease-feedback");
 
-  if (file && resolutionDisplay) {
+  if (file) {
+    formeasefeedback.style.display = "block";
     const img = new Image();
     img.src = URL.createObjectURL(file);
     img.onload = () => {
@@ -269,13 +269,11 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       const height = img.height;
       const sizeKB = (file.size / 1024).toFixed(2);
 
-      resolutionDisplay.textContent = `Resolution: ${width} x ${height} px`;
-
-      if (sizeComparison) {
-        sizeComparison.innerHTML = `
+      if (formeasefeedback) {
+        formeasefeedback.innerHTML = `<div>Resolution: ${width} x ${height} px</div><div>
         <span style="background-color: #f3f4f6; padding: 4px 6px; border-radius: 4px;">
           Original: ${sizeKB} KB
-        </span><span id="new-size" style="background-color: #f3f4f6; padding: 4px 6px; border-radius: 4px;"></span>
+        </span><span id="new-size" style="background-color: #f3f4f6; padding: 4px 6px; border-radius: 4px;"></span></div>
       `;
       }
 
