@@ -97,26 +97,22 @@
       <!-- Image Preview Area -->
       <div
         id="image-preview-area"
-        style="margin-top: 15px; text-align: center; display: none"
       >
 
         <img
           id="image-preview"
           src="#"
           alt="Image Preview"
-          style="
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-          "
         />
-        <div id="resize-feedback" class="mt-2 text-sm text-gray-600"></div>
-        <div id="size-comparison" style="font-size: 0.85rem; color: #374151; margin-top: 4px;"></div>
+        <div id="resize-feedback" ></div>
+        <div id="size-comparison" ></div>
 
-        <div id="image-resolution" style="font-size: 0.85rem; color: #374151; margin-top: 6px;"></div>
-
+        <div id="image-resolution"></div>
+        <!-- Image Info Display Area -->
+        <div id="image-info" class="hidden"></div>
       </div>
+      
+
     </div>
 
     <script>
@@ -154,6 +150,7 @@
         fileInput.dispatchEvent(new Event("change", { bubbles: true }));
         previewArea.style.display = "none";
         feedbackArea.style.display = "block";
+
         feedbackArea.innerHTML = "Original file restored.";
         feedbackArea.style.backgroundColor = "#d1fae5";
         feedbackArea.style.color = "#065f46";
@@ -168,17 +165,38 @@
           },
           "*"
          );
-       });
+        // Hide image preview
+        document.getElementById("image-preview-area").style.display = "none";
+        document.getElementById("image-preview").src = "#";
+        document.getElementById("image-info").classList.add("hidden");
+        document.getElementById("image-info").innerHTML = "";
+      });
+      
+      let lastSelected = "nill"; // Track previously selected option
+
+
       // Show/hide sections based on dropdown
       dropdown.addEventListener("change", () => {
         const selected = dropdown.value;
 
-        document
-          .querySelectorAll("#resize, #compress, #convert")
-          .forEach((section) => {
+        // 🛑 If the selected option is same as last selected, do nothing
+        if (selected === lastSelected) return;
+        lastSelected = selected;
+
+        // Hide all sections
+        document.querySelectorAll("#resize, #compress, #convert").forEach((section) => {
+
           section.classList.add("hidden");
          });
 
+
+        // Clear outputs
+        feedbackArea.style.display = "none";
+        feedbackArea.innerHTML = "";
+        document.getElementById("image-preview-area").style.display = "none";
+        document.getElementById("image-preview").src = "#";
+
+        // Show selected section
         if (selected !== "nill") {
           document.getElementById(selected).classList.remove("hidden");
           applyButton.classList.remove("hidden");
@@ -213,8 +231,10 @@
           const img = new Image();
           img.src = URL.createObjectURL(file);
 
+
           try {
             await new Promise((resolve) => (img.onload = resolve));
+
 
             const canvas = document.createElement("canvas");
             const scale = document.getElementById("resize-range").value / 100;
@@ -259,12 +279,24 @@
             const resizedImg = new Image();
             resizedImg.src = previewURL;
             resizedImg.onload = () => {
-              const sizeKB = (blob.size / 1024).toFixed(2);
-              resizeFeedback.textContent = `Size: ${sizeKB}KB`;
-              document.getElementById(
-                "image-resolution"
-              ).textContent = `Resolution: ${resizedImg.width} × ${resizedImg.height}px`;
+              const originalSizeMB = (file.size / 1024 / 1024).toFixed(2) + " MB";
+              const finalSizeMB = (blob.size / 1024 / 1024).toFixed(2) + " MB";
+              const savedPercent = (((file.size - blob.size) / file.size) * 100).toFixed(1);
+              const resolution = `${resizedImg.width} × ${resizedImg.height}`;
+
+              resizeFeedback.textContent = `Final Size: ${(blob.size / 1024).toFixed(2)} KB`;
+              document.getElementById("image-resolution").textContent = `Resolution: ${resolution}`;
+
+              const imageInfo = document.getElementById("image-info");
+              imageInfo.innerHTML = `
+                <p><strong>Resolution:</strong> ${resolution}</p>
+                <p><strong>Original Size:</strong> ${originalSizeMB}</p>
+                <p><strong>Final Size:</strong> ${finalSizeMB}</p>
+                <p><strong>Size Saved:</strong> ${savedPercent}%</p>
+              `;
+              imageInfo.classList.remove("hidden");
             };
+
 
             feedbackArea.innerHTML = "Resizing complete.";
             feedbackArea.style.backgroundColor = "#d1fae5";

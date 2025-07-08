@@ -172,4 +172,41 @@ due to precedence */
 .hidden {
   display: none;
 }
+#image-info {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: sans-serif;
+  background-color: #f9fafb;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+#image-preview-area {
+  margin-top: 15px;
+  text-align: center;
+  display: none;
+}
+
+#image-preview {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+#resize-feedback,
+#size-comparison,
+#image-resolution,
+#image-info {
+  font-size: 0.85rem;
+  color: #374151; /* Tailwind’s text-gray-700 */
+  margin-top: 6px;
+}
+
+#image-info.hidden {
+  margin-top: 12px;
+  display: none;
+}
+
 
