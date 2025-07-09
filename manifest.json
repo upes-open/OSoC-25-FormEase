@@ -13,7 +13,7 @@
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"],
-      "css": ["styles.css"] 
+      "css": ["styles.css"]
     }
   ],
   "web_accessible_resources": [
