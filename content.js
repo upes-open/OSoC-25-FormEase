@@ -17,6 +17,8 @@ function injectScript(filePath) {
 }
 
 // Inject processing scripts (remove pica.min.js since toolbox.html uses CDN)
+injectScript("scripts/pica.min.js");
+injectScript("scripts/resize.js");
 injectScript("scripts/compress.js");
 injectScript("scripts/convert.js");
 
@@ -311,7 +313,8 @@ function createToolboxForInput(input, inputId, toolbox, file = null) {
       .then((response) => response.text())
       .then((data) => {
         toolbox.innerHTML = data;
-        input.parentNode.insertBefore(toolbox, input.nextSibling);
+        input.parentNode.parentNode.parentNode.appendChild(toolbox);
+        // input.parentNode.insertBefore(toolbox, input.nextSibling);
         console.log("[FormEase] Toolbox inserted into DOM.", toolbox);
 
         setupToolboxEventListeners(toolbox, input.dataset.formEaseId, file);
@@ -405,7 +408,6 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
   const compress = toolbox.querySelector("#compress");
   const convert = toolbox.querySelector("#convert");
   const resizeSlider = toolbox.querySelector("#resize-range");
-  const applyBtn = toolbox.querySelector("#apply");
 
   // Display image preview
   if (file && file.type.startsWith('image/')) {
@@ -455,6 +457,8 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
 
   if (dropdown && !dropdown.dataset.listenerAdded) {
     dropdown.addEventListener("change", (e) => {
+      const applyBtn = toolbox.querySelector("#apply");
+
       dropdown.value = e.target.value;
       dropdown.dataset.listenerAdded = "true";
 
@@ -473,8 +477,9 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         if (applyBtn && !applyBtn.dataset.listenerAdded) {
           applyBtn.addEventListener("click", () => {
             const currentFile = getCurrentFileForInput(inputId);
+            console.log(currentFile);
             if (currentFile) {
-              window.postMessage({ type: "triggerApply", inputId }, "*");
+              window.postMessage({ type: "resize", inputId }, "*");
             }
             applyBtn.dataset.listenerAdded = "true";
           });
