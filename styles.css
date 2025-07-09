@@ -203,3 +203,9 @@ due to precedence */
 .hidden {
   display: none;
 }
+/* 
+// Highlighting elements */
+.highlight{
+  outline: 2px solid #60a5fa;
+  box-shadow: 0 0 10px #60a5fa;
+}
