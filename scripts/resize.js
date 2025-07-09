@@ -81,13 +81,13 @@ window.addEventListener("message", async (event) => {
         return bitmap;
       };
 
-      // const createSourceCanvas = (originalWidth, originalHeight, bitmap) => {
-      //   const sourceCanvas = document.createElement("canvas");
-      //   sourceCanvas.width = originalWidth;
-      //   sourceCanvas.height = originalHeight;
-      //   sourceCanvas.getContext("2d").drawImage(bitmap, 0, 0);
-      //   return sourceCanvas;
-      // };
+      const createSourceCanvas = (originalWidth, originalHeight, bitmap) => {
+        const sourceCanvas = document.createElement("canvas");
+        sourceCanvas.width = originalWidth;
+        sourceCanvas.height = originalHeight;
+        sourceCanvas.getContext("2d").drawImage(bitmap, 0, 0);
+        return sourceCanvas;
+      };
 
       const resize = async (sourceCanvas, targetCanvas) => {
         await picaInstance.resize(sourceCanvas, targetCanvas, {
@@ -175,10 +175,7 @@ window.addEventListener("message", async (event) => {
           originalWidth = bitmap.width;
           originalHeight = bitmap.height;
 
-          const sourceCanvas = document.createElement("canvas");
-          sourceCanvas.width = originalWidth;
-          sourceCanvas.height = originalHeight;
-          sourceCanvas.getContext("2d").drawImage(bitmap, 0, 0);
+          createSourceCanvas(originalWidth, originalHeight, bitmap);
 
           const targetCanvas = document.createElement("canvas");
           targetCanvas.width = imgWidth.value;
@@ -203,10 +200,7 @@ window.addEventListener("message", async (event) => {
           originalWidth = bitmap.width;
           originalHeight = bitmap.height;
 
-          const sourceCanvas = document.createElement("canvas");
-          sourceCanvas.width = originalWidth;
-          sourceCanvas.height = originalHeight;
-          sourceCanvas.getContext("2d").drawImage(bitmap, 0, 0);
+          createSourceCanvas(originalWidth, originalHeight, bitmap);
 
           const targetCanvas = document.createElement("canvas");
           targetCanvas.width = Math.round(bitmap.width * (resizeValue / 100));
