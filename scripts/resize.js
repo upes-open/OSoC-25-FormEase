@@ -175,7 +175,11 @@ window.addEventListener("message", async (event) => {
           originalWidth = bitmap.width;
           originalHeight = bitmap.height;
 
-          createSourceCanvas(originalWidth, originalHeight, bitmap);
+          const sourceCanvas = createSourceCanvas(
+            originalWidth,
+            originalHeight,
+            bitmap
+          );
 
           const targetCanvas = document.createElement("canvas");
           targetCanvas.width = imgWidth.value;
@@ -200,7 +204,11 @@ window.addEventListener("message", async (event) => {
           originalWidth = bitmap.width;
           originalHeight = bitmap.height;
 
-          createSourceCanvas(originalWidth, originalHeight, bitmap);
+          const sourceCanvas = createSourceCanvas(
+            originalWidth,
+            originalHeight,
+            bitmap
+          );
 
           const targetCanvas = document.createElement("canvas");
           targetCanvas.width = Math.round(bitmap.width * (resizeValue / 100));
