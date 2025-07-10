@@ -86,20 +86,36 @@ body {
 
 /* Buttons inside toolbox */
 .toolbox-btn {
-  background-color: #4ade80; /* green */
-  color: #065f46;
+  background-color: #4ade80;       /* Green (Base) */
+  color: #065f46;                  /* Dark green text */
   border: none;
   border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
-  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s ease-in-out;
+}
+#apply {
+  background-color: #4ade80; /* Base green */
+  color: #065f46; /* Dark green text */
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease-in-out, transform 0.15s ease;
+  display: inline-block;
 }
 
 /* Apply */
 #apply:hover {
+  background-color: #22c55e; /* Darker green */
   cursor: pointer;
-  background-color: #22c55e; /* darker green */
+  transform: translateY(-1px); /* subtle lift */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 #resetButton {
@@ -111,15 +127,64 @@ body {
   background-color: red;
   cursor: pointer;
 }
-
-/* Toolbox Feedback container (success, error, processing) */
 .formease-feedback {
-  margin-top: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 13px;
-  line-height: 1.4;
+  background-color: #ecfdf5;
+  border: 1px solid #10b981;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 700px;
+  color: #065f46;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15);
+  text-align: center;
+  transition: all 0.3s ease;
 }
+
+.formease-feedback h5 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #047857;
+  margin-bottom: 1rem;
+}
+
+.feedback-details {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.feedback-block {
+  flex: 1 1 45%;
+  max-width: 200px;
+  text-align: center;
+}
+
+.feedback-block img {
+  width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+  border: 1px solid #d1fae5;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.feedback-block h6 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #064e3b;
+  margin-bottom: 0.25rem;
+}
+
+#feedback-message {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #047857;
+}
+
 
 /* test.html styling */
 
@@ -209,3 +274,5 @@ due to precedence */
   outline: 2px solid #60a5fa;
   box-shadow: 0 0 10px #60a5fa;
 }
+
+/* Improved Feedback Wrapper */

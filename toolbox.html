@@ -96,25 +96,32 @@
       </div>
 
       <!-- Apply Button for all 3 actions (resize, compress, convert) -->
-      <button id="apply" class="toolbox-btn hidden">Apply</button>
+      <button id="apply" class="toolbox-btn ">Apply</button>
 
       <!-- Reset Button -->
       <div class="reset-section">
         <button id="resetButton" class="toolbox-btn">Reset</button>
       </div>
-
       <!-- Feedback Area -->
-      <div
-        class="formease-feedback"
-        style="
-          display: none;
-          margin-top: 10px;
-          padding: 8px;
-          border-radius: 4px;
-        "
-      ></div>
+      <div class="formease-feedback hidden">
+        <h5>Result Summary</h5>
+        <div class="feedback-details">
+          <div class="feedback-block">
+            <h6>Original</h6>
+            <img id="original-preview" src="#" alt="Original Image" />
+            <p id="original-size">Size: --</p>
+          </div>
+          <div class="feedback-block">
+            <h6>Modified</h6>
+            <img id="modified-preview" src="#" alt="Modified Image" />
+            <p id="modified-size">Size: --</p>
+          </div>
+        </div>
+        <p id="feedback-message">Processing complete.</p>
+      </div>
 
-      <!-- Image Preview Area -->
+
+      <!-- Image Preview Area Apply -->
       <div
         id="image-preview-area"
         style="margin-top: 15px; text-align: center; display: none"
@@ -138,18 +145,27 @@
     <button id="confirm-btn" class="toolbox-btn hidden">Confirm</button>
 
     <script>
-      // Selecting Buttons
-      let resetButton = document.querySelector("#resetButton");
-      let feedbackArea = document.querySelector(".formease-feedback");
       const dropdown = document.getElementById("task");
-      const previewArea = document.getElementById("image-preview-area");
+      const applyButton = document.getElementById("apply");
+      const fileInput = document.getElementById("resize-file-input");
       const previewImg = document.getElementById("image-preview");
+      const previewArea = document.getElementById("image-preview-area");
+      const feedbackArea = document.querySelector(".formease-feedback");
+      const resetButton = document.querySelector("#resetButton");
+
       let originalFile = null;
 
-      // Reset Button Functionality
+      fileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          originalFile = file;
+          previewImg.src = URL.createObjectURL(file);
+          previewArea.style.display = "block";
+        }
+      });
+
       resetButton.addEventListener("click", () => {
         const toolbox = document.querySelector(".formease-toolbox");
-        const fileInput = document.getElementById("resize-file-input");
 
         if (!fileInput || !originalFile) {
           feedbackArea.style.display = "block";
@@ -172,7 +188,6 @@
         feedbackArea.style.color = "#065f46";
         setTimeout(() => (feedbackArea.style.display = "none"), 3000);
 
-        // Notify content.js to sync originalFiles
         window.postMessage(
           {
             type: "storeOriginal",
@@ -183,17 +198,28 @@
         );
       });
 
-      // Show/hide sections based on dropdown
-      dropdown.addEventListener("change", () => {
-        const applyButton = document.getElementById("apply");
+      function showFeedback(originalFile, modifiedFile) {
+        const originalPreview = document.getElementById("original-preview");
+        const modifiedPreview = document.getElementById("modified-preview");
+        const originalSize = document.getElementById("original-size");
+        const modifiedSize = document.getElementById("modified-size");
+        const feedbackMsg = document.getElementById("feedback-message");
 
+        originalPreview.src = URL.createObjectURL(originalFile);
+        modifiedPreview.src = URL.createObjectURL(modifiedFile);
+        originalSize.textContent = `Size: ${(originalFile.size / 1024).toFixed(2)} KB`;
+        modifiedSize.textContent = `Size: ${(modifiedFile.size / 1024).toFixed(2)} KB`;
+        feedbackMsg.textContent = "Successfully processed and previewed!";
+
+        feedbackArea.classList.remove("hidden");
+      }
+
+      dropdown.addEventListener("change", () => {
         const selected = dropdown.value;
 
         document
           .querySelectorAll("#resize, #compress, #convert")
-          .forEach((section) => {
-            section.classList.add("hidden");
-          });
+          .forEach((section) => section.classList.add("hidden"));
 
         if (selected !== "nill") {
           document.getElementById(selected).classList.remove("hidden");
@@ -201,9 +227,11 @@
         } else {
           applyButton.classList.add("hidden");
         }
-        applyButton.addEventListener("click", () => {
-          console.log("Clicked in toolbox");
-        });
+      });
+
+      applyButton.addEventListener("click", () => {
+        console.log("Clicked in toolbox");
+        // Here you'd call your processing logic and then showFeedback()
       });
     </script>
   </body>
