@@ -104,6 +104,7 @@ body {
   padding: 0.5rem 1.25rem;
   margin-top: 1rem;
   font-size: 0.9rem;
+  padding-bottom: 10px;
   font-weight: 600;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   transition: background-color 0.2s ease-in-out, transform 0.15s ease;
@@ -121,6 +122,7 @@ body {
 #resetButton {
   background-color: rgba(128, 128, 128, 0.641);
   color: #f0fdf4;
+  margin-top: 10px;
 }
 
 #resetButton:hover {
@@ -188,7 +190,7 @@ body {
 
 /* test.html styling */
 
-/* Floating Edit Button */
+/* Floating Edit Button reset*/
 /*Editing the class name because it create a confusion*/
 .formease-edit-btn {
   position: absolute;
