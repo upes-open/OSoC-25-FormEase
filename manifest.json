@@ -23,6 +23,7 @@
         "toolbox.html",
         "styles.css",
         "content.js",
+        "scripts/reset.js",
         "scripts/pica.min.js",
         "scripts/resize.js",
         "scripts/compress.js",

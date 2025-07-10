@@ -34,8 +34,9 @@
             ></em
           >
           <div class="manual-dimension">
-            <label for="resize">Resize :</label>
+            <label for="resize-range">Resize :</label>
             <span>
+              <label for="img-width">Width</label>
               <input
                 type="number"
                 placeholder="width"
@@ -45,6 +46,7 @@
               /> </span
             ><span>X</span
             ><span>
+              <label for="img-height">Height</label>
               <input
                 type="number"
                 placeholder="height"
@@ -88,22 +90,23 @@
         <div id="convert-inner">
           <label for="convert-dropdown">Convert to : </label>
           <select id="convert-dropdown" name="convert">
-            <option value="PNG" selected>PNG</option>
-            <option value="JPG">JPG</option>
-            <option value="JPEG">JPEG</option>
+            <option value="PNG" id="PNG" selected>PNG</option>
+            <option value="JPG" id="JPG">JPG</option>
+            <option value="JPEG" id="JPEG">JPEG</option>
           </select>
         </div>
       </div>
 
       <!-- Apply Button for all 3 actions (resize, compress, convert) -->
-      <button id="apply" class="toolbox-btn ">Apply</button>
+      <button id="apply" class="toolbox-btn">Apply</button>
 
       <!-- Reset Button -->
       <div class="reset-section">
         <button id="resetButton" class="toolbox-btn">Reset</button>
       </div>
+
       <!-- Feedback Area -->
-      <div class="formease-feedback hidden">
+      <div class="formease-feedback">
         <h5>Result Summary</h5>
         <div class="feedback-details">
           <div class="feedback-block">
@@ -119,7 +122,6 @@
         </div>
         <p id="feedback-message">Processing complete.</p>
       </div>
-
 
       <!-- Image Preview Area Apply -->
       <div
@@ -143,96 +145,5 @@
 
     <!-- Confirm Button to add resized image to input -->
     <button id="confirm-btn" class="toolbox-btn hidden">Confirm</button>
-
-    <script>
-      const dropdown = document.getElementById("task");
-      const applyButton = document.getElementById("apply");
-      const fileInput = document.getElementById("resize-file-input");
-      const previewImg = document.getElementById("image-preview");
-      const previewArea = document.getElementById("image-preview-area");
-      const feedbackArea = document.querySelector(".formease-feedback");
-      const resetButton = document.querySelector("#resetButton");
-
-      let originalFile = null;
-
-      fileInput.addEventListener("change", (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          originalFile = file;
-          previewImg.src = URL.createObjectURL(file);
-          previewArea.style.display = "block";
-        }
-      });
-
-      resetButton.addEventListener("click", () => {
-        const toolbox = document.querySelector(".formease-toolbox");
-
-        if (!fileInput || !originalFile) {
-          feedbackArea.style.display = "block";
-          feedbackArea.innerHTML = "Error: Input or original file not found.";
-          feedbackArea.style.backgroundColor = "#fef2f2";
-          feedbackArea.style.color = "#dc2626";
-          setTimeout(() => (feedbackArea.style.display = "none"), 3000);
-          return;
-        }
-
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(originalFile);
-        fileInput.files = dataTransfer.files;
-        fileInput.dispatchEvent(new Event("change", { bubbles: true }));
-
-        previewArea.style.display = "none";
-        feedbackArea.style.display = "block";
-        feedbackArea.innerHTML = "Original file restored.";
-        feedbackArea.style.backgroundColor = "#d1fae5";
-        feedbackArea.style.color = "#065f46";
-        setTimeout(() => (feedbackArea.style.display = "none"), 3000);
-
-        window.postMessage(
-          {
-            type: "storeOriginal",
-            inputId: toolbox.dataset.inputId,
-            file: originalFile,
-          },
-          "*"
-        );
-      });
-
-      function showFeedback(originalFile, modifiedFile) {
-        const originalPreview = document.getElementById("original-preview");
-        const modifiedPreview = document.getElementById("modified-preview");
-        const originalSize = document.getElementById("original-size");
-        const modifiedSize = document.getElementById("modified-size");
-        const feedbackMsg = document.getElementById("feedback-message");
-
-        originalPreview.src = URL.createObjectURL(originalFile);
-        modifiedPreview.src = URL.createObjectURL(modifiedFile);
-        originalSize.textContent = `Size: ${(originalFile.size / 1024).toFixed(2)} KB`;
-        modifiedSize.textContent = `Size: ${(modifiedFile.size / 1024).toFixed(2)} KB`;
-        feedbackMsg.textContent = "Successfully processed and previewed!";
-
-        feedbackArea.classList.remove("hidden");
-      }
-
-      dropdown.addEventListener("change", () => {
-        const selected = dropdown.value;
-
-        document
-          .querySelectorAll("#resize, #compress, #convert")
-          .forEach((section) => section.classList.add("hidden"));
-
-        if (selected !== "nill") {
-          document.getElementById(selected).classList.remove("hidden");
-          applyButton.classList.remove("hidden");
-        } else {
-          applyButton.classList.add("hidden");
-        }
-      });
-
-      applyButton.addEventListener("click", () => {
-        console.log("Clicked in toolbox");
-        // Here you'd call your processing logic and then showFeedback()
-      });
-    </script>
   </body>
 </html>

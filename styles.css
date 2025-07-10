@@ -86,8 +86,8 @@ body {
 
 /* Buttons inside toolbox */
 .toolbox-btn {
-  background-color: #4ade80;       /* Green (Base) */
-  color: #065f46;                  /* Dark green text */
+  background-color: #4ade80; /* Green (Base) */
+  color: #065f46; /* Dark green text */
   border: none;
   border-radius: 0.5rem;
   padding: 0.6rem 1.2rem;
@@ -121,6 +121,7 @@ body {
 #resetButton {
   background-color: rgba(128, 128, 128, 0.641);
   color: #f0fdf4;
+  margin-top: 1rem;
 }
 
 #resetButton:hover {
@@ -184,7 +185,6 @@ body {
   font-size: 0.95rem;
   color: #047857;
 }
-
 
 /* test.html styling */
 
@@ -259,6 +259,15 @@ body {
   }
 }
 
+/* 
+// Highlighting elements */
+.highlight {
+  outline: 2px solid #60a5fa;
+  box-shadow: 0 0 10px #60a5fa;
+}
+
+/* Improved Feedback Wrapper */
+
 /* Add other styles before this comment */
 
 /* For hiding and unhiding objects */
@@ -268,11 +277,3 @@ due to precedence */
 .hidden {
   display: none;
 }
-/* 
-// Highlighting elements */
-.highlight{
-  outline: 2px solid #60a5fa;
-  box-shadow: 0 0 10px #60a5fa;
-}
-
-/* Improved Feedback Wrapper */

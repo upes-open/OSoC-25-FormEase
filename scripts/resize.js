@@ -9,6 +9,8 @@ window.addEventListener("message", async (event) => {
   if (event.source === window && event.data.type === "resize") {
     const { inputId } = event.data;
 
+    const feedbackArea = document.querySelector(".formease-feedback");
+
     console.log(
       `[FormEase-Resize] Processing resize request for input ${inputId}`
     );
@@ -30,8 +32,6 @@ window.addEventListener("message", async (event) => {
         fileInput.files[0]
       );
 
-      const feedbackArea = document.querySelector(".formease-feedback");
-
       let originalSize = 0;
       let originalWidth = 0;
       let originalHeight = 0;
@@ -47,11 +47,6 @@ window.addEventListener("message", async (event) => {
       const confirmButton = document.getElementById("confirm-btn");
 
       const file = fileInput.files[0];
-      const originalFile = fileInput.files[0];
-      console.log(
-        "[FormEase-Resize] Original file stored for reset functionality : ",
-        originalFile
-      );
 
       originalSize = (file.size / 1024).toFixed(2);
 
@@ -102,33 +97,39 @@ window.addEventListener("message", async (event) => {
       };
 
       const convertToBlob = async (targetCanvas) => {
-        await targetCanvas.toBlob(
-          (resizedBlob) => {
-            console.log("[FormEase-Resize] Image Resized Successfully");
-            console.log("[FormEase-Resize] Resized Blob : ", resizedBlob);
+        return new Promise((resolve, reject) => {
+          targetCanvas.toBlob(
+            (resizedBlob) => {
+              console.log("[FormEase-Resize] Image Resized Successfully");
+              console.log("[FormEase-Resize] Resized Blob : ", resizedBlob);
 
-            blob = resizedBlob;
+              blob = resizedBlob;
 
-            const targetHeight = targetCanvas.height;
-            const targetWidth = targetCanvas.width;
+              const targetHeight = targetCanvas.height;
+              const targetWidth = targetCanvas.width;
 
-            const previewURL = URL.createObjectURL(resizedBlob);
-            previewImg.src = previewURL;
-            previewArea.style.display = "block";
-            confirmButton.classList.remove("hidden");
+              const previewURL = URL.createObjectURL(resizedBlob);
+              previewImg.src = previewURL;
+              previewArea.style.display = "block";
+              confirmButton.classList.remove("hidden");
 
-            previewImg.onload = () => {
-              const newSize = (resizedBlob.size / 1024).toFixed(2);
-              const sizeSaved = (originalSize - newSize) / originalSize;
-              const percentSaved = (sizeSaved * 100).toFixed(2);
-              feedbackArea.innerHTML = `<div>Resized, please review.</div><div>Press the confirm button below the image preview to add this image to the input field.</div><div><span>Original Resolution : ${originalWidth} X ${originalHeight}</span><span>New Resolution : ${targetWidth} X ${targetHeight}</span></div><div><span>Original Size : ${originalSize} kB</span><span>New Size : ${newSize}</span></div><div>Saved : ${percentSaved}%</div>`;
-              console.log("[FormEase] Image loaded and ready to insert.");
-            };
-          },
-          "image/jpeg",
-          0.9
-        );
-        return;
+              previewImg.onload = () => {
+                const newSize = (resizedBlob.size / 1024).toFixed(2);
+                const sizeSaved = (originalSize - newSize) / originalSize;
+                const percentSaved = (sizeSaved * 100).toFixed(2);
+                console.log("[FormEase] Image loaded and ready to insert.");
+
+                resolve([targetHeight, targetWidth, percentSaved, newSize]);
+              };
+
+              previewImg.onerror = () => {
+                reject(new Error("Failed to load preview image"));
+              };
+            },
+            "image/jpeg",
+            0.9
+          );
+        });
       };
 
       confirmButton.addEventListener("click", () => {
@@ -187,12 +188,15 @@ window.addEventListener("message", async (event) => {
 
           await resize(sourceCanvas, targetCanvas);
 
-          convertToBlob(targetCanvas);
+          const [targetHeight, targetWidth, percentSaved, newSize] =
+            await convertToBlob(targetCanvas);
+
+          feedbackArea.innerHTML = `<div>Resized, please review.</div><div>Press the confirm button below the image preview to add this image to the input field.</div><div><span>Original Resolution : ${originalWidth} X ${originalHeight}</span><span>New Resolution : ${targetWidth} X ${targetHeight}</span></div><div><span>Original Size : ${originalSize} kB</span><span>New Size : ${newSize} kB</span></div><div>Saved : ${percentSaved}%</div>`;
+
+          setTimeout(() => (feedbackArea.style.display = "none"), 1500);
         } catch (error) {
           console.error("Resize error:", error);
           errorFeedback();
-        } finally {
-          setTimeout(() => (feedbackArea.style.display = "none"), 10000);
         }
       } else if (resizeValue > 0) {
         resizingFeedback();
@@ -216,12 +220,15 @@ window.addEventListener("message", async (event) => {
 
           await resize(sourceCanvas, targetCanvas);
 
-          convertToBlob(targetCanvas);
+          const [targetHeight, targetWidth, percentSaved, newSize] =
+            await convertToBlob(targetCanvas);
+
+          feedbackArea.innerHTML = `<div>Resized, please review.</div><div>Press the confirm button below the image preview to add this image to the input field.</div><div><span style="margin-right: 1rem">Original Resolution : ${originalWidth} X ${originalHeight}</span><span>New Resolution : ${targetWidth} X ${targetHeight}</span></div><div><span style="margin-right: 1rem">Original Size : ${originalSize} kB</span><span>New Size : ${newSize} kB</span></div><div>Saved : ${percentSaved}%</div>`;
+
+          setTimeout(() => (feedbackArea.style.display = "none"), 1500);
         } catch (error) {
           console.error("Resize error:", error);
           errorFeedback();
-        } finally {
-          setTimeout(() => (feedbackArea.style.display = "none"), 10000);
         }
       } else {
         alert("Please provide valid dimensions for resize.");

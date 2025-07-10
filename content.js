@@ -21,9 +21,12 @@ injectScript("scripts/pica.min.js");
 injectScript("scripts/resize.js");
 injectScript("scripts/compress.js");
 injectScript("scripts/convert.js");
+injectScript("scripts/reset.js");
 
 // Initialise File Input Counter
 let fileInputCounter = 0;
+
+let OriginalFile = null;
 
 // Drag & Drop Processing
 const dropZones = document.querySelectorAll(".drop-zone");
@@ -374,7 +377,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         } </div>
         <div>
         <span style="background-color: #f3f4f6; padding: 4px 6px; border-radius: 4px;">
-          Original: ${sizeKB} KB
+          Original size : ${sizeKB} KB
         </span><span id="new-size" style="background-color: #f3f4f6; padding: 4px 6px; border-radius: 4px;"></span></div>
       `;
       }
@@ -453,9 +456,12 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
   if (dropdown && !dropdown.dataset.listenerAdded) {
     dropdown.addEventListener("change", (e) => {
       const applyBtn = toolbox.querySelector("#apply");
+      const resetBtn = toolbox.querySelector("#resetButton");
 
       dropdown.value = e.target.value;
       dropdown.dataset.listenerAdded = "true";
+
+      const currentFile = getCurrentFileForInput(inputId);
 
       if (dropdown.value === "resize") {
         resizeScale.classList.remove("hidden");
@@ -471,13 +477,23 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         }
         if (applyBtn && !applyBtn.dataset.listenerAdded) {
           applyBtn.addEventListener("click", () => {
-            const currentFile = getCurrentFileForInput(inputId);
             console.log(currentFile);
+
+            OriginalFile = currentFile;
 
             if (currentFile) {
               window.postMessage({ type: "resize", inputId }, "*");
             }
             applyBtn.dataset.listenerAdded = "true";
+          });
+        }
+        if (resetBtn && !resetBtn.dataset.listenerAdded) {
+          resetBtn.addEventListener("click", () => {
+            if (OriginalFile) {
+              window.postMessage({ type: "reset", inputId, OriginalFile }, "*");
+              OriginalFile = null;
+            }
+            resetBtn.dataset.listenerAdded = "true";
           });
         }
       } else if (dropdown.value === "compress") {
@@ -496,6 +512,15 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
             applyBtn.dataset.listenerAdded = "true";
           });
         }
+        if (resetBtn && !resetBtn.dataset.listenerAdded) {
+          resetBtn.addEventListener("click", () => {
+            if (OriginalFile) {
+              window.postMessage({ type: "reset", inputId, OriginalFile }, "*");
+              OriginalFile = null;
+            }
+            resetBtn.dataset.listenerAdded = "true";
+          });
+        }
       } else if (dropdown.value === "convert") {
         resizeScale.classList.add("hidden");
         convert.classList.remove("hidden");
@@ -511,6 +536,15 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
               showError(toolbox, "Please select a file first");
             }
             applyBtn.dataset.listenerAdded = "true";
+          });
+        }
+        if (resetBtn && !resetBtn.dataset.listenerAdded) {
+          resetBtn.addEventListener("click", () => {
+            if (OriginalFile) {
+              window.postMessage({ type: "reset", inputId, OriginalFile }, "*");
+              OriginalFile = null;
+            }
+            resetBtn.dataset.listenerAdded = "true";
           });
         }
       } else {
