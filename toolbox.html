@@ -147,14 +147,25 @@
     <!-- Confirm Button to add resized image to input -->
     <button id="confirm-btn" class="toolbox-btn hidden">Save Changes</button>
     <script>
-      document.getElementById("confirm-btn").addEventListener("click", () => {
-        document.getElementById("resize-range").value = 100;
-        const widthInput = document.getElementById("img-width");
-        const heightInput = document.getElementById("img-height");
-        if (widthInput) widthInput.value = "";
-        if (heightInput) heightInput.value = "";
+      document.addEventListener("DOMContentLoaded", () => {
+        const confirmBtn = document.getElementById("confirm-btn");
+        const resizeSlider = document.getElementById("resize-range");
+        const imgWidth = document.getElementById("img-width");
+        const imgHeight = document.getElementById("img-height");
+
+        confirmBtn.addEventListener("click", () => {
+          // ✅ Reset range to 100
+          resizeSlider.value = 100;
+
+          // ✅ Optionally clear manual dimension inputs
+          if (imgWidth) imgWidth.value = "";
+          if (imgHeight) imgHeight.value = "";
+
+          console.log("[Toolbox] Reset slider and manual inputs on Save Changes");
+        });
       });
     </script>
+
 
 
   </body>
