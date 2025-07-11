@@ -58,7 +58,7 @@ window.addEventListener("message", async (event) => {
     };
     setTimeout(() => {
       feedbackArea.style.display = "block";
-      feedbackArea.innerHTML = `<div>Original file restored.</div><div><em>Click <strong>Confirm</strong> button below the image preview to add original file to input field.</em></div><div>Resolution : ${width} X ${height}</div><div>Original Size : ${sizeKB} kB`;
+      feedbackArea.innerHTML = `<div>Original file restored.</div><div><em>Click <strong><em>Save Changes</em></strong> button below the image preview to add original file to input field.</em></div><div>Resolution : ${width} X ${height}</div><div>Original Size : ${sizeKB} kB`;
       feedbackArea.style.backgroundColor = "#d1fae5";
       feedbackArea.style.color = "#065f46";
     }, 100);

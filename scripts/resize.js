@@ -11,6 +11,10 @@ window.addEventListener("message", async (event) => {
 
     const feedbackArea = document.querySelector(".formease-feedback");
 
+    const toolbox = document.querySelector(
+      `.formease-toolbox[data-input-id="${inputId}"]`
+    );
+
     console.log(
       `[FormEase-Resize] Processing resize request for input ${inputId}`
     );
@@ -52,16 +56,17 @@ window.addEventListener("message", async (event) => {
 
       const resizingFeedback = () => {
         feedbackArea.style.display = "block";
-        feedbackArea.innerHTML = "<span>Resizing...</span>";
+        feedbackArea.innerHTML = "<span>ℹ️Resizing...</span>";
         feedbackArea.style.backgroundColor = "#dbeafe";
         feedbackArea.style.color = "#1d4ed8";
         return;
       };
 
       const errorFeedback = () => {
-        feedbackArea.innerHTML = "<span>Error resizing file.</span>";
+        feedbackArea.innerHTML = "<span>⚠️Error resizing file.</span>";
         feedbackArea.style.backgroundColor = "#fef2f2";
         feedbackArea.style.color = "#dc2626";
+        feedbackArea.style.boxShadow = "rgba(219, 0, 0, 1) 0px 5px 15px;";
         return;
       };
 
@@ -137,7 +142,7 @@ window.addEventListener("message", async (event) => {
               };
             },
             file.type, // use the original MIME type
-            file.type === "image/jpeg" ? 0.9 : undefined 
+            file.type === "image/jpeg" ? 0.9 : undefined
           );
         });
       };
@@ -159,11 +164,26 @@ window.addEventListener("message", async (event) => {
         confirmButton.classList.add("hidden");
         imgHeight.value = 0;
         imgWidth.value = 0;
+
+        setTimeout(() => {
+          previewArea.remove();
+          toolbox.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          feedbackArea.style.display = "block";
+          feedbackArea.innerHTML = "<div>✅ File Injected Successfully!";
+          feedbackArea.style.boxShadow = "rgba(46, 242, 11, 1) 0px 5px 15px;";
+        }, 100);
+
+        setTimeout(() => {
+          toolbox.remove();
+        }, 3000);
       });
 
       if (!file) {
         feedbackArea.style.display = "block";
-        feedbackArea.innerHTML = "Please select a file before applying.";
+        feedbackArea.innerHTML = "⚠️ Please select a file before applying.";
         feedbackArea.style.backgroundColor = "#fef2f2";
         feedbackArea.style.color = "#dc2626";
         alert("Please select a file before applying resize.");
@@ -201,9 +221,19 @@ window.addEventListener("message", async (event) => {
           const [targetHeight, targetWidth, percentSaved, newSize] =
             await convertToBlob(targetCanvas);
 
-          feedbackArea.innerHTML = `<div>Resized, please review.</div><div>Press the confirm button below the image preview to add this image to the input field.</div><div><span>Original Resolution : ${originalWidth} X ${originalHeight}</span><span>New Resolution : ${targetWidth} X ${targetHeight}</span></div><div><span>Original Size : ${originalSize} kB</span><span>New Size : ${newSize} kB</span></div><div>Saved : ${percentSaved}%</div>`;
+          feedbackArea.innerHTML = `<div style="margin-bottom:1rem;">✅Resized, please review.</div><div><ul><li><span>Original Resolution : ${originalWidth} X ${originalHeight}</span></li><li><span>New Resolution : ${targetWidth} X ${targetHeight}</span></li><li><span>Original Size : ${originalSize} kB</span></li><li><span>New Size : ${newSize} kB</span></li></ul></div><div style="margin-top: 1rem;">Saved : ${percentSaved}%</div>`;
+          feedbackArea.style.backgroundColor = "#d1fae5";
+          feedbackArea.style.color = "#065f46";
 
           setTimeout(() => (feedbackArea.style.display = "none"), 1500);
+
+          setTimeout(() => {
+            feedbackArea.style.display = "block";
+            feedbackArea.innerHTML =
+              "<div>ℹ️ Press the <strong><em>Save Changes</em></strong></div> below the image to finalize and inject the file in the input.";
+            feedbackArea.style.backgroundColor = "#d1fae5";
+            feedbackArea.style.color = "#065f46";
+          }, 1500);
         } catch (error) {
           console.error("Resize error:", error);
           errorFeedback();
@@ -233,9 +263,19 @@ window.addEventListener("message", async (event) => {
           const [targetHeight, targetWidth, percentSaved, newSize] =
             await convertToBlob(targetCanvas);
 
-          feedbackArea.innerHTML = `<div>Resized, please review.</div><div>Press the confirm button below the image preview to add this image to the input field.</div><div><span style="margin-right: 1rem">Original Resolution : ${originalWidth} X ${originalHeight}</span><span>New Resolution : ${targetWidth} X ${targetHeight}</span></div><div><span style="margin-right: 1rem">Original Size : ${originalSize} kB</span><span>New Size : ${newSize} kB</span></div><div>Saved : ${percentSaved}%</div>`;
+          feedbackArea.innerHTML = `<div style="margin-bottom:1rem;margin-inline: auto;">✅Resized, please review.</div><div style="margin-inline:auto; width: 300px; text-align:left;"><ul><li><span>Original Resolution : ${originalWidth} X ${originalHeight}</span></li><li><span>New Resolution : ${targetWidth} X ${targetHeight}</span></li><li><span>Original Size : ${originalSize} kB</span></li><li><span>New Size : ${newSize} kB</span></li></ul></div><div style="margin-top: 1rem;margin-inline: auto">Saved : ${percentSaved}%</div>`;
+          feedbackArea.style.backgroundColor = "#d1fae5";
+          feedbackArea.style.color = "#065f46";
 
           setTimeout(() => (feedbackArea.style.display = "none"), 1500);
+
+          setTimeout(() => {
+            feedbackArea.style.display = "block";
+            feedbackArea.innerHTML =
+              "<div>ℹ️ Press the <strong><em>Save Changes</em></strong></div> below the image to finalize and inject the file in the input.";
+            feedbackArea.style.backgroundColor = "#d1fae5";
+            feedbackArea.style.color = "#065f46";
+          }, 1500);
         } catch (error) {
           console.error("Resize error:", error);
           errorFeedback();
