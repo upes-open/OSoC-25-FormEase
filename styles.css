@@ -118,6 +118,10 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
+#confirm-btn:hover {
+  cursor: pointer;
+}
+
 #resetButton {
   background-color: rgba(128, 128, 128, 0.641);
   color: #f0fdf4;
