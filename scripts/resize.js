@@ -67,8 +67,15 @@ window.addEventListener("message", async (event) => {
 
       const createBitmap = async (file) => {
         const img = new Image();
-        img.src = URL.createObjectURL(file);
 
+        const reader = new FileReader();
+        const dataURL = await new Promise((resolve, reject) => {
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+        img.src = dataURL;
         await img.decode();
 
         const bitmap = await createImageBitmap(img);
@@ -108,10 +115,13 @@ window.addEventListener("message", async (event) => {
               const targetHeight = targetCanvas.height;
               const targetWidth = targetCanvas.width;
 
-              const previewURL = URL.createObjectURL(resizedBlob);
-              previewImg.src = previewURL;
-              previewArea.style.display = "block";
-              confirmButton.classList.remove("hidden");
+              const reader = new FileReader();
+              reader.onload = () => {
+                previewImg.src = reader.result;
+                previewArea.style.display = "block";
+                confirmButton.classList.remove("hidden");
+              };
+              reader.readAsDataURL(resizedBlob);
 
               previewImg.onload = () => {
                 const newSize = (resizedBlob.size / 1024).toFixed(2);
@@ -134,7 +144,7 @@ window.addEventListener("message", async (event) => {
 
       confirmButton.addEventListener("click", () => {
         console.log("[FormEase-Resize] Confirm Button click event fired.");
-        const newFile = new File([blob], file.name, {
+        const newFile = new File([blob], `Resized: ${file.name}`, {
           type: blob.type,
           lastModified: Date.now(),
         });
