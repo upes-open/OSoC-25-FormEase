@@ -136,7 +136,11 @@ window.addEventListener("message", async (event) => {
       console.log(
         "[FormEase-Compress] Confirm Button click event fired for compress."
       );
-      const newFile = new File([blob], `Resized: ${file.name}`, {
+      const extension = fileType.split("/")[1]; // "jpeg", "png", etc.
+      const baseName = file.name.replace(/\.[^/.]+$/, ""); // strip existing extension
+      const newFileName = `${baseName}.${extension}`;
+
+      const newFile = new File([blob], `Converted: ${newFileName}`, {
         type: fileType,
         lastModified: Date.now(),
       });

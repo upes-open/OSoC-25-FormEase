@@ -133,7 +133,7 @@ window.addEventListener("message", async (event) => {
       console.log(
         "[FormEase-Compress] Confirm Button click event fired for compress."
       );
-      const newFile = new File([blob], `Resized: ${file.name}`, {
+      const newFile = new File([blob], `Compressed: ${file.name}`, {
         type: blob.type,
         lastModified: Date.now(),
       });

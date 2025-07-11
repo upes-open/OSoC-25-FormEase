@@ -4,14 +4,14 @@
   "version": "1.0",
   "description": "Resize, compress, and convert files before uploading, directly in-browser.",
   "permissions": ["scripting", "activeTab"],
-  "host_permissions": ["https://docs.google.com/*"],
+  "host_permissions": ["<all_urls>"],
   "action": {
     "default_icon": "icons/logo.png",
     "default_title": "FormEase"
   },
   "content_scripts": [
     {
-      "matches": ["https://docs.google.com/*"],
+      "matches": ["<all_urls>"],
       "js": ["content.js"],
       "css": ["styles.css"],
       "all_frames": true
