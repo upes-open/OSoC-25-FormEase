@@ -58,6 +58,7 @@
           </div>
           <input
             type="range"
+            for="resizing"
             id="resize-range"
             min="10"
             max="100"
@@ -145,5 +146,16 @@
 
     <!-- Confirm Button to add resized image to input -->
     <button id="confirm-btn" class="toolbox-btn hidden">Save Changes</button>
+    <script>
+      document.getElementById("confirm-btn").addEventListener("click", () => {
+        document.getElementById("resize-range").value = 100;
+        const widthInput = document.getElementById("img-width");
+        const heightInput = document.getElementById("img-height");
+        if (widthInput) widthInput.value = "";
+        if (heightInput) heightInput.value = "";
+      });
+    </script>
+
+
   </body>
 </html>
