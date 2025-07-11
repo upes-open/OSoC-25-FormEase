@@ -221,7 +221,7 @@ window.addEventListener("message", async (event) => {
           const [targetHeight, targetWidth, percentSaved, newSize] =
             await convertToBlob(targetCanvas);
 
-          feedbackArea.innerHTML = `<div>✅Resized, please review.</div><div>Press the confirm button below the image preview to add this image to the input field.</div><div><span>Original Resolution : ${originalWidth} X ${originalHeight}</span><span>New Resolution : ${targetWidth} X ${targetHeight}</span></div><div><span>Original Size : ${originalSize} kB</span><span>New Size : ${newSize} kB</span></div><div>Saved : ${percentSaved}%</div>`;
+          feedbackArea.innerHTML = `<div style="margin-bottom:1rem;">✅Resized, please review.</div><div><ul><li><span>Original Resolution : ${originalWidth} X ${originalHeight}</span></li><li><span>New Resolution : ${targetWidth} X ${targetHeight}</span></li><li><span>Original Size : ${originalSize} kB</span></li><li><span>New Size : ${newSize} kB</span></li></ul></div><div style="margin-top: 1rem;">Saved : ${percentSaved}%</div>`;
           feedbackArea.style.backgroundColor = "#d1fae5";
           feedbackArea.style.color = "#065f46";
 
@@ -263,7 +263,7 @@ window.addEventListener("message", async (event) => {
           const [targetHeight, targetWidth, percentSaved, newSize] =
             await convertToBlob(targetCanvas);
 
-          feedbackArea.innerHTML = `<div>✅Resized, please review.</div><div>Press the confirm button below the image preview to add this image to the input field.</div><div><span style="margin-right: 1rem">Original Resolution : ${originalWidth} X ${originalHeight}</span><span>New Resolution : ${targetWidth} X ${targetHeight}</span></div><div><span style="margin-right: 1rem">Original Size : ${originalSize} kB</span><span>New Size : ${newSize} kB</span></div><div>Saved : ${percentSaved}%</div>`;
+          feedbackArea.innerHTML = `<div style="margin-bottom:1rem;margin-inline: auto;">✅Resized, please review.</div><div style="margin-inline:auto; width: 300px; text-align:left;"><ul><li><span>Original Resolution : ${originalWidth} X ${originalHeight}</span></li><li><span>New Resolution : ${targetWidth} X ${targetHeight}</span></li><li><span>Original Size : ${originalSize} kB</span></li><li><span>New Size : ${newSize} kB</span></li></ul></div><div style="margin-top: 1rem;margin-inline: auto">Saved : ${percentSaved}%</div>`;
           feedbackArea.style.backgroundColor = "#d1fae5";
           feedbackArea.style.color = "#065f46";
 
