@@ -1,137 +1,212 @@
-
 /**
  * FormEase Compress Script
  * Handles image compression to reduce file size while maintaining reasonable quality
  * Communicates with the main content script via postMessage API
  */
 
-window.addEventListener('message', (event) => {
+window.addEventListener("message", async (event) => {
   // Only process compress requests from the same window
-  if (event.source === window && event.data.type === 'compress') {
-    const { inputId, file, quality, timeoutId } = event.data;
-    
-    console.log(`[FormEase-Compress] Processing compress request for input ${inputId}, quality: ${quality}`);
-    
-    // Call the compress function with enhanced callback
-    compressImage(file, quality, (compressedFile, error) => {
-      if (error) {
-        console.error(`[FormEase-Compress] Compression failed for input ${inputId}:`, error);
-        window.postMessage({ 
-          type: 'fileProcessingError', 
-          error: error.message, 
-          inputId: inputId, 
-          operation: 'compress',
-          timeoutId: timeoutId
-        }, '*');
-      } else {
-        const compressionRatio = ((file.size - compressedFile.size) / file.size * 100).toFixed(1);
-        console.log(`[FormEase-Compress] Compression completed for input ${inputId}. Size reduced by ${compressionRatio}%`);
-        window.postMessage({ 
-          type: 'fileProcessed', 
-          file: compressedFile, 
-          inputId: inputId, 
-          originalOperation: 'compress',
-          originalSize: file.size,
-          newSize: compressedFile.size,
-          compressionRatio: compressionRatio,
-          timeoutId: timeoutId
-        }, '*');
-      }
+  if (event.source === window && event.data.type === "compress") {
+    const { inputId } = event.data;
+
+    const feedbackArea = document.querySelector(".formease-feedback");
+
+    const toolbox = document.querySelector(
+      `.formease-toolbox[data-input-id="${inputId}"]`
+    );
+
+    console.log(
+      `[FormEase-Compress] Processing compress request for input ${inputId}`
+    );
+
+    console.log("[FormEase-Compress] Compress Logic called");
+
+    const fileInput = document.querySelector(
+      `input[type="file"][data-form-ease-id=${inputId}]`
+    );
+    console.log(
+      `[FormEase-Compress] File taken for compressing with formeaseId ${inputId} : `,
+      fileInput.files[0]
+    );
+
+    let blob = null;
+
+    const previewArea = document.getElementById("image-preview-area");
+    const previewImg = document.getElementById("image-preview");
+
+    const compressInput = document.getElementById("compress-input");
+    const quality = (100 - compressInput.value) / 100;
+    const confirmButton = document.getElementById("confirm-btn");
+
+    const file = fileInput.files[0];
+
+    originalSize = (file.size / 1024).toFixed(2);
+
+    const compressingFeedback = () => {
+      feedbackArea.style.display = "block";
+      feedbackArea.innerHTML = "<span>ℹ️ Compressing...</span>";
+      feedbackArea.style.backgroundColor = "#dbeafe";
+      feedbackArea.style.color = "#1d4ed8";
+      return;
+    };
+
+    const errorFeedback = () => {
+      feedbackArea.innerHTML = "<span>⚠️ Error compressing file.</span>";
+      feedbackArea.style.backgroundColor = "#fef2f2";
+      feedbackArea.style.color = "#dc2626";
+      feedbackArea.style.boxShadow = "rgba(219, 0, 0, 1) 0px 5px 15px;";
+      return;
+    };
+
+    const createBitmap = async (file) => {
+      const img = new Image();
+
+      const reader = new FileReader();
+      const dataURL = await new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      img.src = dataURL;
+      await img.decode();
+
+      const bitmap = await createImageBitmap(img);
+
+      return bitmap;
+    };
+
+    const createTargetCanvas = (bitmap) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+
+      const ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.drawImage(bitmap, 0, 0);
+
+      return canvas;
+    };
+
+    const convertToBlob = (canvas, file, quality) => {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(
+          (resizedBlob) => {
+            console.log("[FormEase-Compress] Image Compressed Successfully");
+            console.log("[FormEase-Compress] Compressed Blob : ", resizedBlob);
+
+            blob = resizedBlob;
+
+            const reader = new FileReader();
+            reader.onload = () => {
+              previewImg.src = reader.result;
+              previewArea.style.display = "block";
+              confirmButton.classList.remove("hidden");
+            };
+            reader.readAsDataURL(resizedBlob);
+
+            previewImg.onload = () => {
+              const newSize = (resizedBlob.size / 1024).toFixed(2);
+              const sizeSaved = (originalSize - newSize) / originalSize;
+              const percentSaved = (sizeSaved * 100).toFixed(2);
+              console.log(
+                "[FormEase-Compress] Image loaded and ready to insert."
+              );
+
+              resolve([percentSaved, newSize]);
+            };
+
+            previewImg.onerror = () => {
+              reject(new Error("Failed to load preview image"));
+            };
+          },
+          file,
+          quality
+        );
+      });
+    };
+
+    confirmButton.addEventListener("click", () => {
+      console.log(
+        "[FormEase-Compress] Confirm Button click event fired for compress."
+      );
+      const newFile = new File([blob], `Resized: ${file.name}`, {
+        type: blob.type,
+        lastModified: Date.now(),
+      });
+
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(newFile);
+      fileInput.files = dataTransfer.files;
+      fileInput.dispatchEvent(new Event("change", { bubbles: true }));
+
+      console.log("[FormEase-Compress] Resized Image added to Input.");
+
+      confirmButton.classList.add("hidden");
+      compressInput.value = 0;
+
+      setTimeout(() => {
+        previewArea.remove();
+        toolbox.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+        feedbackArea.style.display = "block";
+        feedbackArea.innerHTML = "<div>✅ File Injected Successfully!";
+        feedbackArea.style.boxShadow = "rgba(46, 242, 11, 1) 0px 5px 15px;";
+      }, 100);
+
+      setTimeout(() => {
+        toolbox.remove();
+      }, 3000);
     });
+
+    if (!file) {
+      feedbackArea.style.display = "block";
+      feedbackArea.innerHTML = "⚠️ Please select a file before applying.";
+      feedbackArea.style.backgroundColor = "#fef2f2";
+      feedbackArea.style.color = "#dc2626";
+      alert("Please select a file before applying resize.");
+      setTimeout(() => (feedbackArea.style.display = "none"), 3000);
+      return;
+    }
+
+    if (quality > 0) {
+      compressingFeedback();
+
+      console.log("[FormEase-Compress] Compressing the file.");
+
+      try {
+        const bitmap = await createBitmap(file);
+
+        const canvas = createTargetCanvas(bitmap);
+
+        const [percentSaved, newSize] = await convertToBlob(
+          canvas,
+          "image/jpeg",
+          quality
+        );
+
+        feedbackArea.innerHTML = `<div style="margin-bottom:1rem;">✅ Compressed, please review.</div><div><ul><li><span>Original Size : ${originalSize} kB</span></li><li><span>New Size : ${newSize} kB</span></li></ul></div><div style="margin-top: 1rem;">Saved : ${percentSaved}%</div>`;
+        feedbackArea.style.backgroundColor = "#d1fae5";
+        feedbackArea.style.color = "#065f46";
+
+        setTimeout(() => (feedbackArea.style.display = "none"), 1500);
+
+        setTimeout(() => {
+          feedbackArea.style.display = "block";
+          feedbackArea.innerHTML =
+            "<div>ℹ️ Press the <strong><em>Save Changes</em></strong></div> below the image to finalize and inject the file in the input.";
+          feedbackArea.style.backgroundColor = "#d1fae5";
+          feedbackArea.style.color = "#065f46";
+        }, 1500);
+      } catch (error) {
+        console.error("Resize error:", error);
+        errorFeedback();
+      }
+    }
   }
 });
-
-/**
- * Compress an image file to reduce file size
- * @param {File} file - The original image file
- * @param {number} quality - Compression quality (0.1-1.0)
- * @param {Function} callback - Callback function (compressedFile, error)
- */
-function compressImage(file, quality, callback) {
-  // Validate input parameters
-  if (!file || !file.type.startsWith('image/')) {
-    callback(null, new Error('Invalid file type. Only image files are supported.'));
-    return;
-  }
-  
-  if (quality < 0.1 || quality > 1.0) {
-    callback(null, new Error('Quality must be between 0.1 and 1.0'));
-    return;
-  }
-  
-  const reader = new FileReader();
-  
-  // Handle file reading errors
-  reader.onerror = function() {
-    callback(null, new Error('Failed to read the file'));
-  };
-  
-  reader.onload = function(event) {
-    const img = new Image();
-    
-    // Handle image loading errors
-    img.onerror = function() {
-      callback(null, new Error('Failed to load the image. The file may be corrupted.'));
-    };
-    
-    img.onload = function() {
-      try {
-        console.log(`[FormEase-Compress] Compressing image: ${img.width}x${img.height}, quality: ${quality}`);
-        
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        
-        const ctx = canvas.getContext('2d');
-        
-        // Set background color for images with transparency
-        // This ensures consistent compression results
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Draw the image onto canvas
-        ctx.drawImage(img, 0, 0);
-        
-        // Convert to blob with specified quality
-        canvas.toBlob((blob) => {
-          if (!blob) {
-            callback(null, new Error('Failed to compress the image'));
-            return;
-          }
-          
-          // Generate filename with appropriate extension
-          let fileName = file.name;
-          const lastDotIndex = fileName.lastIndexOf('.');
-          if (lastDotIndex !== -1) {
-            fileName = fileName.substring(0, lastDotIndex) + '.jpg';
-          } else {
-            fileName = fileName + '.jpg';
-          }
-          
-          // Create new File object with compressed data
-          const compressedFile = new File([blob], fileName, {
-            type: 'image/jpeg',
-            lastModified: Date.now()
-          });
-          
-          // Check if compression was effective
-          if (compressedFile.size >= file.size) {
-            console.warn(`[FormEase-Compress] Compressed file is not smaller than original. Original: ${file.size}, Compressed: ${compressedFile.size}`);
-          }
-          
-          console.log(`[FormEase-Compress] Compression successful. Original: ${file.size} bytes, Compressed: ${blob.size} bytes`);
-          callback(compressedFile, null);
-          
-        }, 'image/jpeg', quality);
-        
-      } catch (error) {
-        console.error('[FormEase-Compress] Unexpected error during compression:', error);
-        callback(null, new Error(`Unexpected error: ${error.message}`));
-      }
-    };
-    
-    img.src = event.target.result;
-  };
-  
-  reader.readAsDataURL(file);
-}

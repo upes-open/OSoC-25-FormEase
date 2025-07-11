@@ -407,7 +407,6 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
   const convert = toolbox.querySelector("#convert");
   const resizeSlider = toolbox.querySelector("#resize-range");
 
-  // Display image preview
   if (file && file.type.startsWith("image/")) {
     console.log(
       "[FormEase] File provided to setupToolboxEventListeners, attempting to display preview."
@@ -458,10 +457,18 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       const applyBtn = toolbox.querySelector("#apply");
       const resetBtn = toolbox.querySelector("#resetButton");
 
+      applyBtn.dataset.listenerAdded = "false";
+
       dropdown.value = e.target.value;
       dropdown.dataset.listenerAdded = "true";
 
       const currentFile = getCurrentFileForInput(inputId);
+
+      const convertDropdown = document.getElementById("convert-dropdown");
+      let mimeType = "";
+      convertDropdown.addEventListener("change", (e) => {
+        mimeType = e.target.value;
+      });
 
       if (dropdown.value === "resize") {
         resizeScale.classList.remove("hidden");
@@ -475,10 +482,12 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
             resizeSlider.dataset.listenerAdded = "true";
           });
         }
-        if (applyBtn && !applyBtn.dataset.listenerAdded) {
+        if (
+          applyBtn &&
+          (!applyBtn.dataset.listenerAdded ||
+            applyBtn.dataset.listenerAdded === "false")
+        ) {
           applyBtn.addEventListener("click", () => {
-            console.log(currentFile);
-
             OriginalFile = currentFile;
 
             if (currentFile) {
@@ -502,12 +511,16 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         resize.classList.add("hidden");
         convert.classList.add("hidden");
         applyBtn.classList.remove("hidden");
-        if (applyBtn && !applyBtn.dataset.listenerAdded) {
+        if (
+          applyBtn &&
+          (!applyBtn.dataset.listenerAdded ||
+            applyBtn.dataset.listenerAdded === "false")
+        ) {
           applyBtn.addEventListener("click", () => {
-            const currentFile = getCurrentFileForInput(inputId);
+            OriginalFile = currentFile;
+
             if (currentFile) {
-              // Always compress, even if under 1MB
-              processFile("compress", currentFile, { quality: 0.7 }, inputId);
+              window.postMessage({ type: "compress", inputId });
             }
             applyBtn.dataset.listenerAdded = "true";
           });
@@ -527,13 +540,17 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         resize.classList.add("hidden");
         compress.classList.add("hidden");
         applyBtn.classList.remove("hidden");
-        if (applyBtn && !applyBtn.dataset.listenerAdded) {
+
+        if (
+          applyBtn &&
+          (!applyBtn.dataset.listenerAdded ||
+            applyBtn.dataset.listenerAdded === "false")
+        ) {
           applyBtn.addEventListener("click", () => {
-            const currentFile = getCurrentFileForInput(inputId);
-            if (currentFile) {
-              processFile("convert", currentFile, { format: "jpeg" }, inputId);
-            } else {
-              showError(toolbox, "Please select a file first");
+            OriginalFile = currentFile;
+
+            if (currentFile || fileType !== "") {
+              window.postMessage({ type: "convert", inputId, mimeType }, "*");
             }
             applyBtn.dataset.listenerAdded = "true";
           });
@@ -642,12 +659,6 @@ window.addEventListener("message", (event) => {
     return;
   }
 
-  if (type === "triggerApply") {
-    const applyButton = toolbox?.querySelector("#apply");
-    if (applyButton) applyButton.click(); // Trigger toolbox.html's apply logic
-    return;
-  }
-
   if (type !== "fileProcessed" || !input || !file) return;
 
   if (state) {
@@ -655,34 +666,34 @@ window.addEventListener("message", (event) => {
     state.lastProcessedFile = file;
   }
 
-  try {
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(file);
-    input.files = dataTransfer.files;
+  // try {
+  //   const dataTransfer = new DataTransfer();
+  //   dataTransfer.items.add(file);
+  //   input.files = dataTransfer.files;
 
-    input.dispatchEvent(new Event("change", { bubbles: true }));
-    input.dispatchEvent(new Event("input", { bubbles: true }));
+  //   input.dispatchEvent(new Event("change", { bubbles: true }));
+  //   input.dispatchEvent(new Event("input", { bubbles: true }));
 
-    if (input.checkValidity) input.checkValidity();
+  //   if (input.checkValidity) input.checkValidity();
 
-    showDetailedSuccessMessage(
-      toolbox,
-      `✅ File ${originalOperation}ed successfully! Ready for upload.`
-    );
+  //   showDetailedSuccessMessage(
+  //     toolbox,
+  //     `✅ File ${originalOperation}ed successfully! Ready for upload.`
+  //   );
 
-    const customEvent = new CustomEvent("formease:fileProcessed", {
-      detail: {
-        inputId,
-        originalFile: originalFiles.get(inputId),
-        processedFile: file,
-      },
-      bubbles: true,
-    });
-    input.dispatchEvent(customEvent);
-  } catch (err) {
-    console.error("[FormEase] Replacement failed:", err);
-    showError(toolbox, "Failed to update file. Please try again.");
-  }
+  //   const customEvent = new CustomEvent("formease:fileProcessed", {
+  //     detail: {
+  //       inputId,
+  //       originalFile: originalFiles.get(inputId),
+  //       processedFile: file,
+  //     },
+  //     bubbles: true,
+  //   });
+  //   input.dispatchEvent(customEvent);
+  // } catch (err) {
+  //   console.error("[FormEase] Replacement failed:", err);
+  //   showError(toolbox, "Failed to update file. Please try again.");
+  // }
 
   // Handle Reset Request
   if (type === "requestReset") {
