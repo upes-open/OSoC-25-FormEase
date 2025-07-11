@@ -136,8 +136,8 @@ window.addEventListener("message", async (event) => {
                 reject(new Error("Failed to load preview image"));
               };
             },
-            "image/jpeg",
-            0.9
+            file.type, // use the original MIME type
+            file.type === "image/jpeg" ? 0.9 : undefined 
           );
         });
       };
