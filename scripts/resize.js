@@ -56,7 +56,7 @@ window.addEventListener("message", async (event) => {
 
       const resizingFeedback = () => {
         feedbackArea.style.display = "block";
-        feedbackArea.innerHTML = "<span>ℹ️Resizing...</span>";
+        feedbackArea.innerHTML = "<span>ℹ️ Resizing...</span>";
         feedbackArea.style.backgroundColor = "#dbeafe";
         feedbackArea.style.color = "#1d4ed8";
         return;
@@ -92,6 +92,7 @@ window.addEventListener("message", async (event) => {
         const sourceCanvas = document.createElement("canvas");
         sourceCanvas.width = originalWidth;
         sourceCanvas.height = originalHeight;
+
         sourceCanvas.getContext("2d").drawImage(bitmap, 0, 0);
         return sourceCanvas;
       };
@@ -132,7 +133,9 @@ window.addEventListener("message", async (event) => {
                 const newSize = (resizedBlob.size / 1024).toFixed(2);
                 const sizeSaved = (originalSize - newSize) / originalSize;
                 const percentSaved = (sizeSaved * 100).toFixed(2);
-                console.log("[FormEase] Image loaded and ready to insert.");
+                console.log(
+                  "[FormEase-Resize] Image loaded and ready to insert."
+                );
 
                 resolve([targetHeight, targetWidth, percentSaved, newSize]);
               };
@@ -142,13 +145,15 @@ window.addEventListener("message", async (event) => {
               };
             },
             file.type, // use the original MIME type
-            file.type === "image/jpeg" ? 0.9 : undefined
+            0.9
           );
         });
       };
 
       confirmButton.addEventListener("click", () => {
-        console.log("[FormEase-Resize] Confirm Button click event fired.");
+        console.log(
+          "[FormEase-Resize] Confirm Button click event fired for Resize."
+        );
         const newFile = new File([blob], `Resized: ${file.name}`, {
           type: blob.type,
           lastModified: Date.now(),
@@ -159,7 +164,7 @@ window.addEventListener("message", async (event) => {
         fileInput.files = dataTransfer.files;
         fileInput.dispatchEvent(new Event("change", { bubbles: true }));
 
-        console.log("[FormEase] Resized Image added to Input.");
+        console.log("[FormEase-Resize] Resized Image added to Input.");
 
         confirmButton.classList.add("hidden");
         imgHeight.value = 0;
