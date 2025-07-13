@@ -9,7 +9,13 @@ window.addEventListener("message", async (event) => {
   if (event.source === window && event.data.type === "resize") {
     const { inputId } = event.data;
 
-    const feedbackArea = document.querySelector(".formease-feedback");
+    const resizeFeedbackArea = document.querySelector(
+      ".formease-feedback-resize"
+    );
+    document.querySelector(".formease-feedback").innerHTML = "";
+    document.querySelector(".formease-feedback-compress").innerHTML = "";
+    document.querySelector(".formease-feedback-convert").innerHTML = "";
+    document.querySelector(".formease-feedback-reset").innerHTML = "";
 
     const toolbox = document.querySelector(
       `.formease-toolbox[data-input-id="${inputId}"]`
@@ -55,18 +61,16 @@ window.addEventListener("message", async (event) => {
       originalSize = (file.size / 1024).toFixed(2);
 
       const resizingFeedback = () => {
-        feedbackArea.style.display = "block";
-        feedbackArea.innerHTML = "<span>ℹ️ Resizing...</span>";
-        feedbackArea.style.backgroundColor = "#dbeafe";
-        feedbackArea.style.color = "#1d4ed8";
+        resizeFeedbackArea.style.display = "block";
+        resizeFeedbackArea.innerHTML = "<span>ℹ️ Resizing...</span>";
+        resizeFeedbackArea.style.color = "#1d4ed8";
         return;
       };
 
       const errorFeedback = () => {
-        feedbackArea.innerHTML = "<span>⚠️Error resizing file.</span>";
-        feedbackArea.style.backgroundColor = "#fef2f2";
-        feedbackArea.style.color = "#dc2626";
-        feedbackArea.style.boxShadow = "rgba(219, 0, 0, 1) 0px 5px 15px;";
+        resizeFeedbackArea.innerHTML = "<span>⚠️Error resizing file.</span>";
+        resizeFeedbackArea.style.color = "#dc2626";
+        resizeFeedbackArea.style.boxShadow = "rgba(219, 0, 0, 1) 0px 5px 15px;";
         return;
       };
 
@@ -176,9 +180,10 @@ window.addEventListener("message", async (event) => {
             behavior: "smooth",
             block: "center",
           });
-          feedbackArea.style.display = "block";
-          feedbackArea.innerHTML = "<div>✅ File Injected Successfully!";
-          feedbackArea.style.boxShadow = "rgba(46, 242, 11, 1) 0px 5px 15px;";
+          resizeFeedbackArea.style.display = "block";
+          resizeFeedbackArea.innerHTML = "<div>✅ File Injected Successfully!";
+          resizeFeedbackArea.style.boxShadow =
+            "rgba(46, 242, 11, 1) 0px 5px 15px;";
         }, 100);
 
         setTimeout(() => {
@@ -187,12 +192,12 @@ window.addEventListener("message", async (event) => {
       });
 
       if (!file) {
-        feedbackArea.style.display = "block";
-        feedbackArea.innerHTML = "⚠️ Please select a file before applying.";
-        feedbackArea.style.backgroundColor = "#fef2f2";
-        feedbackArea.style.color = "#dc2626";
+        resizeFeedbackArea.style.display = "block";
+        resizeFeedbackArea.innerHTML =
+          "⚠️ Please select a file before applying.";
+        resizeFeedbackArea.style.color = "#dc2626";
         alert("Please select a file before applying resize.");
-        setTimeout(() => (feedbackArea.style.display = "none"), 3000);
+        setTimeout(() => (resizeFeedbackArea.style.display = "none"), 3000);
         return;
       }
 
@@ -226,19 +231,16 @@ window.addEventListener("message", async (event) => {
           const [targetHeight, targetWidth, percentSaved, newSize] =
             await convertToBlob(targetCanvas);
 
-          feedbackArea.innerHTML = `<div style="margin-bottom:1rem;margin-inline: auto;">✅Resized, please review.</div><div style="margin-inline:auto; width: 300px; text-align:left;"><ul><li><span>Original Resolution : ${originalWidth} X ${originalHeight}</span></li><li><span>New Resolution : ${targetWidth} X ${targetHeight}</span></li><li><span>Original Size : ${originalSize} kB</span></li><li><span>New Size : ${newSize} kB</span></li></ul></div><div style="margin-top: 1rem;margin-inline: auto">Saved : ${percentSaved}%</div>`;
-          feedbackArea.style.backgroundColor = "#d1fae5";
-          feedbackArea.style.color = "#065f46";
-
-          setTimeout(() => (feedbackArea.style.display = "none"), 1500);
+          resizeFeedbackArea.innerHTML = `<div style="margin-bottom:1rem;margin-inline: auto;">✅Resized, please review.</div><div style="margin-inline:auto; width: 300px; text-align:left;"><ul><li><span>Original Resolution : ${originalWidth} X ${originalHeight}</span></li><li><span>New Resolution : ${targetWidth} X ${targetHeight}</span></li><li><span>Original Size : ${originalSize} kB</span></li><li><span>New Size : ${newSize} kB</span></li></ul></div><div style="margin-top: 1rem;margin-inline: auto">Saved : ${percentSaved}%</div>`;
+          resizeFeedbackArea.style.color = "#065f46";
 
           setTimeout(() => {
-            feedbackArea.style.display = "block";
-            feedbackArea.innerHTML =
+            resizeFeedbackArea.style.display = "block";
+            resizeFeedbackArea.innerHTML =
               "<div>ℹ️ Press the <strong><em>Save Changes</em></strong></div> below the image to finalize and inject the file in the input.";
-            feedbackArea.style.backgroundColor = "#d1fae5";
-            feedbackArea.style.color = "#065f46";
-          }, 1500);
+
+            resizeFeedbackArea.style.color = "#065f46";
+          }, 3000);
         } catch (error) {
           console.error("Resize error:", error);
           errorFeedback();
@@ -268,26 +270,24 @@ window.addEventListener("message", async (event) => {
           const [targetHeight, targetWidth, percentSaved, newSize] =
             await convertToBlob(targetCanvas);
 
-          feedbackArea.innerHTML = `<div style="margin-bottom:1rem;margin-inline: auto;">✅Resized, please review.</div><div style="margin-inline:auto; width: 300px; text-align:left;"><ul><li><span>Original Resolution : ${originalWidth} X ${originalHeight}</span></li><li><span>New Resolution : ${targetWidth} X ${targetHeight}</span></li><li><span>Original Size : ${originalSize} kB</span></li><li><span>New Size : ${newSize} kB</span></li></ul></div><div style="margin-top: 1rem;margin-inline: auto">Saved : ${percentSaved}%</div>`;
-          feedbackArea.style.backgroundColor = "#d1fae5";
-          feedbackArea.style.color = "#065f46";
+          resizeFeedbackArea.innerHTML = `<div style="margin-bottom:1rem;margin-inline: auto;">✅Resized, please review.</div><div style="margin-inline:auto; width: 300px; text-align:left;"><ul><li><span>Original Resolution : ${originalWidth} X ${originalHeight}</span></li><li><span>New Resolution : ${targetWidth} X ${targetHeight}</span></li><li><span>Original Size : ${originalSize} kB</span></li><li><span>New Size : ${newSize} kB</span></li></ul></div><div style="margin-top: 1rem;margin-inline: auto">Saved : ${percentSaved}%</div>`;
 
-          setTimeout(() => (feedbackArea.style.display = "none"), 1500);
+          resizeFeedbackArea.style.color = "#065f46";
 
           setTimeout(() => {
-            feedbackArea.style.display = "block";
-            feedbackArea.innerHTML =
+            resizeFeedbackArea.style.display = "block";
+            resizeFeedbackArea.innerHTML =
               "<div>ℹ️ Press the <strong><em>Save Changes</em></strong></div> below the image to finalize and inject the file in the input.";
-            feedbackArea.style.backgroundColor = "#d1fae5";
-            feedbackArea.style.color = "#065f46";
-          }, 1500);
+
+            resizeFeedbackArea.style.color = "#065f46";
+          }, 3500);
         } catch (error) {
           console.error("Resize error:", error);
           errorFeedback();
         }
       } else {
         alert("Please provide valid dimensions for resize.");
-        console.log("[FormEase] Error... Resize Dimensions Not Valid.");
+        console.log("[FormEase-Resize] Error... Resize Dimensions Not Valid.");
       }
     }
   }

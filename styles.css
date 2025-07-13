@@ -11,22 +11,6 @@
   flex-direction: column;
   align-items: center;
 }
-.formease-toolbox body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9fafb;
-}
-
-/* toolbox.html styling */
-
-/* Floating Toolbox Container */
-.formease-toolbox .container-0,
-.formease-toolbox .container-1 {
-  margin: 0;
-  padding: 0;
-}
-
-/* Toolbox Container */
-
 
 /* Toolbox Heading */
 .formease-toolbox h4 {
@@ -118,7 +102,7 @@
   cursor: pointer;
 }
 
-.formease-toolbox .formease-feedback {
+.formease-feedback-area {
   background-color: #ecfdf5;
   border: 1px solid #10b981;
   border-radius: 1rem;

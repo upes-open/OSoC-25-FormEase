@@ -9,7 +9,13 @@ window.addEventListener("message", async (event) => {
   if (event.source === window && event.data.type === "compress") {
     const { inputId } = event.data;
 
-    const feedbackArea = document.querySelector(".formease-feedback");
+    const compressFeedbackArea = document.querySelector(
+      ".formease-feedback-compress"
+    );
+    document.querySelector(".formease-feedback").innerHTML = "";
+    document.querySelector(".formease-feedback-resize").innerHTML = "";
+    document.querySelector(".formease-feedback-convert").innerHTML = "";
+    document.querySelector(".formease-feedback-reset").innerHTML = "";
 
     const toolbox = document.querySelector(
       `.formease-toolbox[data-input-id="${inputId}"]`
@@ -43,18 +49,17 @@ window.addEventListener("message", async (event) => {
     originalSize = (file.size / 1024).toFixed(2);
 
     const compressingFeedback = () => {
-      feedbackArea.style.display = "block";
-      feedbackArea.innerHTML = "<span>ℹ️ Compressing...</span>";
-      feedbackArea.style.backgroundColor = "#dbeafe";
-      feedbackArea.style.color = "#1d4ed8";
+      compressFeedbackArea.style.display = "block";
+      compressFeedbackArea.innerHTML = "<span>ℹ️ Compressing...</span>";
+      compressFeedbackArea.style.color = "#1d4ed8";
       return;
     };
 
     const errorFeedback = () => {
-      feedbackArea.innerHTML = "<span>⚠️ Error compressing file.</span>";
-      feedbackArea.style.backgroundColor = "#fef2f2";
-      feedbackArea.style.color = "#dc2626";
-      feedbackArea.style.boxShadow = "rgba(219, 0, 0, 1) 0px 5px 15px;";
+      compressFeedbackArea.innerHTML =
+        "<span>⚠️ Error compressing file.</span>";
+      compressFeedbackArea.style.color = "#dc2626";
+      compressFeedbackArea.style.boxShadow = "rgba(219, 0, 0, 1) 0px 5px 15px;";
       return;
     };
 
@@ -154,9 +159,10 @@ window.addEventListener("message", async (event) => {
           behavior: "smooth",
           block: "center",
         });
-        feedbackArea.style.display = "block";
-        feedbackArea.innerHTML = "<div>✅ File Injected Successfully!";
-        feedbackArea.style.boxShadow = "rgba(46, 242, 11, 1) 0px 5px 15px;";
+        compressFeedbackArea.style.display = "block";
+        compressFeedbackArea.innerHTML = "<div>✅ File Injected Successfully!";
+        compressFeedbackArea.style.boxShadow =
+          "rgba(46, 242, 11, 1) 0px 5px 15px;";
       }, 100);
 
       setTimeout(() => {
@@ -165,12 +171,12 @@ window.addEventListener("message", async (event) => {
     });
 
     if (!file) {
-      feedbackArea.style.display = "block";
-      feedbackArea.innerHTML = "⚠️ Please select a file before applying.";
-      feedbackArea.style.backgroundColor = "#fef2f2";
-      feedbackArea.style.color = "#dc2626";
+      compressFeedbackArea.style.display = "block";
+      compressFeedbackArea.innerHTML =
+        "⚠️ Please select a file before applying.";
+      compressFeedbackArea.style.color = "#dc2626";
       alert("Please select a file before applying resize.");
-      setTimeout(() => (feedbackArea.style.display = "none"), 3000);
+      setTimeout(() => (compressFeedbackArea.style.display = "none"), 3000);
       return;
     }
 
@@ -190,19 +196,16 @@ window.addEventListener("message", async (event) => {
           quality
         );
 
-        feedbackArea.innerHTML = `<div style="margin-bottom:1rem;">✅ Compressed, please review.</div><div><ul><li><span>Original Size : ${originalSize} kB</span></li><li><span>New Size : ${newSize} kB</span></li></ul></div><div style="margin-top: 1rem;">Saved : ${percentSaved}%</div>`;
-        feedbackArea.style.backgroundColor = "#d1fae5";
-        feedbackArea.style.color = "#065f46";
-
-        setTimeout(() => (feedbackArea.style.display = "none"), 1500);
+        compressFeedbackArea.innerHTML = `<div style="margin-bottom:1rem;">✅ Compressed, please review.</div><div><ul><li><span>Original Size : ${originalSize} kB</span></li><li><span>New Size : ${newSize} kB</span></li></ul></div><div style="margin-top: 1rem;">Saved : ${percentSaved}%</div>`;
+        compressFeedbackArea.style.backgroundColor = "#d1fae5";
+        compressFeedbackArea.style.color = "#065f46";
 
         setTimeout(() => {
-          feedbackArea.style.display = "block";
-          feedbackArea.innerHTML =
+          compressFeedbackArea.style.display = "block";
+          compressFeedbackArea.innerHTML =
             "<div>ℹ️ Press the <strong><em>Save Changes</em></strong></div> below the image to finalize and inject the file in the input.";
-          feedbackArea.style.backgroundColor = "#d1fae5";
-          feedbackArea.style.color = "#065f46";
-        }, 1500);
+          compressFeedbackArea.style.color = "#065f46";
+        }, 3000);
       } catch (error) {
         console.error("Resize error:", error);
         errorFeedback();

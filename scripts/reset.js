@@ -27,19 +27,24 @@ window.addEventListener("message", async (event) => {
       fileInput
     );
 
-    const feedbackArea = document.querySelector(".formease-feedback");
+    const resetFeedbackArea = document.querySelector(
+      ".formease-feedback-convert"
+    );
+    document.querySelector(".formease-feedback").innerHTML = "";
+    document.querySelector(".formease-feedback-resize").innerHTML = "";
+    document.querySelector(".formease-feedback-compress").innerHTML = "";
+    document.querySelector(".formease-feedback-convert").innerHTML = "";
 
     let width = 0;
     let height = 0;
     const sizeKB = (OriginalFile.size / 1024).toFixed(2);
 
     if (!fileInput || !OriginalFile) {
-      feedbackArea.style.display = "block";
-      feedbackArea.innerHTML =
+      resetFeedbackArea.style.display = "block";
+      resetFeedbackArea.innerHTML =
         "<div>Error: Input or original file not found.</div>";
-      feedbackArea.style.backgroundColor = "#fef2f2";
-      feedbackArea.style.color = "#dc2626";
-      setTimeout(() => (feedbackArea.style.display = "none"), 10000);
+      resetFeedbackArea.style.color = "#dc2626";
+      setTimeout(() => (resetFeedbackArea.style.display = "none"), 10000);
       return;
     }
 
@@ -57,10 +62,9 @@ window.addEventListener("message", async (event) => {
       height = img.height;
     };
     setTimeout(() => {
-      feedbackArea.style.display = "block";
-      feedbackArea.innerHTML = `<div>Original file restored.</div><div><em>Click <strong><em>Save Changes</em></strong> button below the image preview to add original file to input field.</em></div><div>Resolution : ${width} X ${height}</div><div>Original Size : ${sizeKB} kB`;
-      feedbackArea.style.backgroundColor = "#d1fae5";
-      feedbackArea.style.color = "#065f46";
+      resetFeedbackArea.style.display = "block";
+      resetFeedbackArea.innerHTML = `<div>Original file restored.</div><div><em>Click <strong><em>Save Changes</em></strong> button below the image preview to add original file to input field.</em></div><div>Resolution : ${width} X ${height}</div><div>Original Size : ${sizeKB} kB`;
+      resetFeedbackArea.style.color = "#065f46";
     }, 100);
   }
 });
