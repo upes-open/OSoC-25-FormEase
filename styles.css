@@ -272,6 +272,18 @@ body {
   box-shadow: 0 0 10px #60a5fa;
 }
 
+.formease-close-btn{
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #888;
+  z-index: 9999;
+}
+
 /* Improved Feedback Wrapper */
 
 /* Add other styles before this comment */
