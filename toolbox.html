@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Toolbox</title>
-    <script src="https://cdn.jsdelivr.net/npm/pica@9.0.1/dist/pica.min.js"></script>
   </head>
 
   <body>
@@ -109,21 +108,12 @@
       </div>
 
       <!-- Feedback Area -->
-      <div class="formease-feedback">
-        <h5>Result Summary</h5>
-        <div class="feedback-details">
-          <div class="feedback-block">
-            <h6>Original</h6>
-            <img id="original-preview" src="#" alt="Original Image" />
-            <p id="original-size">Size: --</p>
-          </div>
-          <div class="feedback-block">
-            <h6>Modified</h6>
-            <img id="modified-preview" src="#" alt="Modified Image" />
-            <p id="modified-size">Size: --</p>
-          </div>
-        </div>
-        <p id="feedback-message">Processing complete.</p>
+      <div class="formease-feedback-area">
+        <div class="formease-feedback"></div>
+        <div class="formease-feedback-resize"></div>
+        <div class="formease-feedback-compress"></div>
+        <div class="formease-feedback-convert"></div>
+        <div class="formease-feedback-reset"></div>
       </div>
 
       <!-- Image Preview Area Apply -->

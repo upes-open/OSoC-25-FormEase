@@ -494,7 +494,6 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       });
 
       if (dropdown.value === "resize") {
-        console.log(resizeBtn);
         resizeScale.classList.remove("hidden");
         resize.classList.remove("hidden");
         compress.classList.add("hidden");
