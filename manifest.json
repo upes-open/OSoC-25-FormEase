@@ -23,12 +23,14 @@
         "toolbox.html",
         "styles.css",
         "content.js",
-        "scripts/reset.js",
+        "scripts/pdf-lib.min.js",
         "scripts/pica.min.js",
         "scripts/resize.js",
         "scripts/compress.js",
         "scripts/convert.js",
-        "scripts/compressVideo.js"
+        "scripts/compressVideo.js",
+        "scripts/compressPDF.js",
+        "scripts/reset.js"
       ],
       "matches": ["<all_urls>"]
     }
