@@ -12,22 +12,53 @@ console.log("[FormEase] content.js loaded✅");
 
 function injectScript(filePath) {
   const script = document.createElement("script");
-  script.src = filePath.startsWith("http") ? filePath : chrome.runtime.getURL(filePath);
+  script.src = filePath.startsWith("http")
+    ? filePath
+    : chrome.runtime.getURL(filePath);
   (document.head || document.documentElement).appendChild(script);
+}
+
+function injectScriptInOrder(filePath) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = filePath.startsWith("http")
+      ? filePath
+      : chrome.runtime.getURL(filePath);
+    script.onload = () => {
+      console.log(`✅ ${filePath} loaded`);
+      resolve();
+    };
+    script.onerror = (e) => {
+      console.error(`❌ Failed to load ${filePath}`, e);
+      reject(e);
+    };
+    (document.head || document.documentElement).appendChild(script);
+  });
 }
 
 // Inject processing scripts (remove pica.min.js since toolbox.html uses CDN)
 // Load the FFmpeg CDN first
-injectScript("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.js");
+injectScript(
+  "https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.js"
+);
 
 // Load your wrapper script (already in your extension)
 injectScript("scripts/compressVideo.js");
 
-injectScript("scripts/pica.min.js");
-injectScript("scripts/resize.js");
-injectScript("scripts/compress.js");
-injectScript("scripts/convert.js");
-injectScript("scripts/reset.js");
+(async () => {
+  try {
+    await injectScriptInOrder("scripts/pdf-lib.min.js");
+    await injectScriptInOrder("scripts/pica.min.js");
+    await injectScriptInOrder("scripts/resize.js");
+    await injectScriptInOrder("scripts/compress.js");
+    await injectScriptInOrder("scripts/convert.js");
+    await injectScriptInOrder("scripts/compressPDF.js");
+    await injectScriptInOrder("scripts/reset.js");
+    console.log(`✅ All Scripts Loaded and Ready to Use.`);
+  } catch (err) {
+    console.error("❌ Script loading failed:", err);
+  }
+})();
 
 // Initialise File Input Counter
 let fileInputCounter = 0;
@@ -319,7 +350,7 @@ function createToolboxForInput(input, inputId, toolbox, file = null) {
       "with file:",
       file
     );
-    injectStyles()
+    injectStyles();
 
     fetch(chrome.runtime.getURL("toolbox.html"))
       .then((response) => response.text())
