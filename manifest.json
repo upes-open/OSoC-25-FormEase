@@ -28,7 +28,7 @@
         "scripts/resize.js",
         "scripts/compress.js",
         "scripts/convert.js",
-        "scripts/ffmpeg.min.js"
+        "scripts/compressVideo.js"
       ],
       "matches": ["<all_urls>"]
     }

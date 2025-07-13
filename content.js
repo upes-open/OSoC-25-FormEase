@@ -12,11 +12,17 @@ console.log("[FormEase] content.js loaded✅");
 
 function injectScript(filePath) {
   const script = document.createElement("script");
-  script.src = chrome.runtime.getURL(filePath);
+  script.src = filePath.startsWith("http") ? filePath : chrome.runtime.getURL(filePath);
   (document.head || document.documentElement).appendChild(script);
 }
 
 // Inject processing scripts (remove pica.min.js since toolbox.html uses CDN)
+// Load the FFmpeg CDN first
+injectScript("https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.js");
+
+// Load your wrapper script (already in your extension)
+injectScript("scripts/compressVideo.js");
+
 injectScript("scripts/pica.min.js");
 injectScript("scripts/resize.js");
 injectScript("scripts/compress.js");
