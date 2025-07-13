@@ -1,11 +1,5 @@
 <p align="center">
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-<img src=".github/formease.jpg" alt="FormEase Preview" width="100%" />
+  <img src=".github/formease.jpg" alt="FormEase Preview" width="100%" />
 </p>
 
 
@@ -37,8 +31,8 @@ Users can **resize, compress, and convert images or videos** directly inside any
 | Extension Framework | Chrome Extension (Manifest V3) |
 | Scripting Language | JavaScript            |
 | UI Styling         | HTML, TailwindCSS     |
-| Image Processing   | [Pica.js]             |
-| Video Processing   | [ffmpeg.wasm]         |
+| Image Processing   | [Pica.js](https://github.com/nodeca/pica)             |
+| Video Processing   | [ffmpeg.wasm](https://github.com/ffmpegwasm/ffmpeg.wasm)         |
 | File Handling      | FileReader, DataTransfer APIs |
 ---
 
@@ -125,24 +119,34 @@ Together, let’s build something useful, beautiful, and beginner-friendly — o
 
 <p align="center"><strong>FormEase – One Tab, Fewer Hassles.</strong></p>
 
----
-
-## Contributors ✨
+---## ✨ Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/vatssomya"><img src="https://github.com/vatssomya.png" width="100px;" alt="Somya Vats"/><br /><sub><b>Somya Vats</b></sub></a><br /><a href="#code-vatssomya" title="Code">💻</a> <a href="#design-vatssomya" title="Design">🎨</a></td>
+    <td align="center"><a href="https://github.com/ArpitKaushik2025"><img src="https://github.com/ArpitKaushik2025.png" width="100px;" alt="Arpit Kaushik"/><br /><sub><b>Arpit Kaushik</b></sub></a><br /><a href="#code-ArpitKaushik2025" title="Code">💻</a> <a href="#bug-ArpitKaushik2025" title="Bug Reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/Donniedarko45"><img src="https://github.com/Donniedarko45.png" width="100px;" alt="Donniedarko45"/><br /><sub><b>Donniedarko45</b></sub></a><br /><a href="#code-Donniedarko45" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/fli-09"><img src="https://github.com/fli-09.png" width="100px;" alt="fli-09"/><br /><sub><b>fli-09</b></sub></a><br /><a href="#code-fli-09" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/itsmepraksh"><img src="https://github.com/itsmepraksh.png" width="100px;" alt="itsmepraksh"/><br /><sub><b>itsmepraksh</b></sub></a><br /><a href="#code-itsmepraksh" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/shagunkimothi"><img src="https://github.com/shagunkimothi.png" width="100px;" alt="shagunkimothi"/><br /><sub><b>shagunkimothi</b></sub></a><br /><a href="#code-shagunkimothi" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Aman-Dinesh-Mishra"><img src="https://github.com/Aman-Dinesh-Mishra.png" width="100px;" alt="Aman-Dinesh-Mishra"/><br /><sub><b>Aman Dinesh Mishra</b></sub></a><br /><a href="#code-Aman-Dinesh-Mishra" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/VemulaSarvagna"><img src="https://github.com/VemulaSarvagna.png" width="100px;" alt="VemulaSarvagna"/><br /><sub><b>Vemula Sarvagna</b></sub></a><br /><a href="#code-VemulaSarvagna" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/Sidd-04"><img src="https://github.com/Sidd-04.png" width="100px;" alt="Sidd-04"/><br /><sub><b>Sidd-04</b></sub></a><br /><a href="#code-Sidd-04" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Sushmeta1"><img src="https://github.com/Sushmeta1.png" width="100px;" alt="Sushmeta1"/><br /><sub><b>Sushmeta1</b></sub></a><br /><a href="#code-Sushmeta1" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/billayamini18"><img src="https://github.com/billayamini18.png" width="100px;" alt="billayamini18"/><br /><sub><b>billayamini18</b></sub></a><br /><a href="#code-billayamini18" title="Code">💻</a></td>
+  </tr>
+</table>
+
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
