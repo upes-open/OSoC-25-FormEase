@@ -476,10 +476,11 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
 
   if (dropdown && !dropdown.dataset.listenerAdded) {
     dropdown.addEventListener("change", (e) => {
-      const applyBtn = toolbox.querySelector("#apply");
-      const resetBtn = toolbox.querySelector("#resetButton");
+      const resizeBtn = toolbox.querySelector("#resize-btn");
+      const compressBtn = toolbox.querySelector("#compress-btn");
+      const convertBtn = toolbox.querySelector("#convert-btn");
 
-      applyBtn.dataset.listenerAdded = "false";
+      const resetBtn = toolbox.querySelector("#resetButton");
 
       dropdown.value = e.target.value;
       dropdown.dataset.listenerAdded = "true";
@@ -493,31 +494,30 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       });
 
       if (dropdown.value === "resize") {
+        console.log(resizeBtn);
         resizeScale.classList.remove("hidden");
         resize.classList.remove("hidden");
         compress.classList.add("hidden");
         convert.classList.add("hidden");
-        applyBtn.classList.remove("hidden");
+        resizeBtn.classList.remove("hidden");
+        compressBtn.classList.add("hidden");
+        convertBtn.classList.add("hidden");
+
         if (resizeSlider && !resizeSlider.dataset.listenerAdded) {
           resizeSlider.addEventListener("input", (e) => {
             if (resizeScale) resizeScale.textContent = `${e.target.value}`;
             resizeSlider.dataset.listenerAdded = "true";
           });
         }
-        if (
-          applyBtn &&
-          (!applyBtn.dataset.listenerAdded ||
-            applyBtn.dataset.listenerAdded === "false")
-        ) {
-          applyBtn.addEventListener("click", () => {
-            OriginalFile = currentFile;
 
-            if (currentFile) {
-              window.postMessage({ type: "resize", inputId }, "*");
-            }
-            applyBtn.dataset.listenerAdded = "true";
-          });
-        }
+        resizeBtn.addEventListener("click", () => {
+          OriginalFile = currentFile;
+
+          if (currentFile) {
+            window.postMessage({ type: "resize", inputId }, "*");
+          }
+        });
+
         if (resetBtn && !resetBtn.dataset.listenerAdded) {
           resetBtn.addEventListener("click", () => {
             if (OriginalFile) {
@@ -532,21 +532,18 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         compress.classList.remove("hidden");
         resize.classList.add("hidden");
         convert.classList.add("hidden");
-        applyBtn.classList.remove("hidden");
-        if (
-          applyBtn &&
-          (!applyBtn.dataset.listenerAdded ||
-            applyBtn.dataset.listenerAdded === "false")
-        ) {
-          applyBtn.addEventListener("click", () => {
-            OriginalFile = currentFile;
+        compressBtn.classList.remove("hidden");
+        resizeBtn.classList.add("hidden");
+        convertBtn.classList.add("hidden");
 
-            if (currentFile) {
-              window.postMessage({ type: "compress", inputId });
-            }
-            applyBtn.dataset.listenerAdded = "true";
-          });
-        }
+        compressBtn.addEventListener("click", () => {
+          OriginalFile = currentFile;
+
+          if (currentFile) {
+            window.postMessage({ type: "compress", inputId });
+          }
+        });
+
         if (resetBtn && !resetBtn.dataset.listenerAdded) {
           resetBtn.addEventListener("click", () => {
             if (OriginalFile) {
@@ -561,22 +558,18 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         convert.classList.remove("hidden");
         resize.classList.add("hidden");
         compress.classList.add("hidden");
-        applyBtn.classList.remove("hidden");
+        convertBtn.classList.remove("hidden");
+        resizeBtn.classList.add("hidden");
+        compressBtn.classList.add("hidden");
 
-        if (
-          applyBtn &&
-          (!applyBtn.dataset.listenerAdded ||
-            applyBtn.dataset.listenerAdded === "false")
-        ) {
-          applyBtn.addEventListener("click", () => {
-            OriginalFile = currentFile;
+        convertBtn.addEventListener("click", () => {
+          OriginalFile = currentFile;
 
-            if (currentFile || fileType !== "") {
-              window.postMessage({ type: "convert", inputId, mimeType }, "*");
-            }
-            applyBtn.dataset.listenerAdded = "true";
-          });
-        }
+          if (currentFile || fileType !== "") {
+            window.postMessage({ type: "convert", inputId, mimeType }, "*");
+          }
+        });
+
         if (resetBtn && !resetBtn.dataset.listenerAdded) {
           resetBtn.addEventListener("click", () => {
             if (OriginalFile) {
@@ -591,7 +584,9 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         resize.classList.add("hidden");
         compress.classList.add("hidden");
         convert.classList.add("hidden");
-        applyBtn.classList.add("hidden");
+        resizeBtn.classList.add("hidden");
+        compressBtn.classList.add("hidden");
+        convertBtn.classList.add("hidden");
       }
     });
   }
@@ -603,7 +598,6 @@ for (let submitBtn of submitBtns) {
     closeToolboxOnSubmit(submitBtn);
   });
 }
-
 
 function closeToolboxOnSubmit(submitBtn) {
   const inputId = submitBtn.closest("form").querySelector('input[type="file"]')
@@ -688,35 +682,6 @@ window.addEventListener("message", (event) => {
     state.isProcessing = false;
     state.lastProcessedFile = file;
   }
-
-  // try {
-  //   const dataTransfer = new DataTransfer();
-  //   dataTransfer.items.add(file);
-  //   input.files = dataTransfer.files;
-
-  //   input.dispatchEvent(new Event("change", { bubbles: true }));
-  //   input.dispatchEvent(new Event("input", { bubbles: true }));
-
-  //   if (input.checkValidity) input.checkValidity();
-
-  //   showDetailedSuccessMessage(
-  //     toolbox,
-  //     `✅ File ${originalOperation}ed successfully! Ready for upload.`
-  //   );
-
-  //   const customEvent = new CustomEvent("formease:fileProcessed", {
-  //     detail: {
-  //       inputId,
-  //       originalFile: originalFiles.get(inputId),
-  //       processedFile: file,
-  //     },
-  //     bubbles: true,
-  //   });
-  //   input.dispatchEvent(customEvent);
-  // } catch (err) {
-  //   console.error("[FormEase] Replacement failed:", err);
-  //   showError(toolbox, "Failed to update file. Please try again.");
-  // }
 
   // Handle Reset Request
   if (type === "requestReset") {

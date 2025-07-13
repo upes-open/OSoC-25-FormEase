@@ -93,14 +93,15 @@
           <label for="convert-dropdown">Convert to : </label>
           <select id="convert-dropdown" name="convert">
             <option value="PNG" id="PNG" selected>PNG</option>
-            <option value="JPG" id="JPG">JPG</option>
             <option value="JPEG" id="JPEG">JPEG</option>
           </select>
         </div>
       </div>
 
-      <!-- Apply Button for all 3 actions (resize, compress, convert) -->
-      <button id="apply" class="toolbox-btn">Apply</button>
+      <!--  Button for all 3 actions (resize, compress, convert) -->
+      <button id="resize-btn" class="toolbox-btn hidden">Resize</button>
+      <button id="compress-btn" class="toolbox-btn hidden">Compress</button>
+      <button id="convert-btn" class="toolbox-btn hidden">Convert</button>
 
       <!-- Reset Button -->
       <div class="reset-section">
@@ -162,12 +163,11 @@
           if (imgWidth) imgWidth.value = "";
           if (imgHeight) imgHeight.value = "";
 
-          console.log("[Toolbox] Reset slider and manual inputs on Save Changes");
+          console.log(
+            "[Toolbox] Reset slider and manual inputs on Save Changes"
+          );
         });
       });
     </script>
-
-
-
   </body>
 </html>
