@@ -95,31 +95,15 @@ body {
   font-weight: 600;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.25s ease-in-out;
-}
-#apply {
-  background-color: #4ade80; /* Base green */
-  color: #065f46; /* Dark green text */
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1.25rem;
   margin-top: 1rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  transition: background-color 0.2s ease-in-out, transform 0.15s ease;
-  display: inline-block;
 }
 
 /* Apply */
-#apply:hover {
+.toolbox-btn:hover {
   background-color: #22c55e; /* Darker green */
   cursor: pointer;
   transform: translateY(-1px); /* subtle lift */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-}
-
-#confirm-btn:hover {
-  cursor: pointer;
 }
 
 #resetButton {
@@ -190,7 +174,6 @@ body {
   font-size: 0.95rem;
   color: #047857;
 }
-
 
 /* test.html styling */
 
@@ -272,7 +255,7 @@ body {
   box-shadow: 0 0 10px #60a5fa;
 }
 
-.formease-close-btn{
+.formease-close-btn {
   position: absolute;
   top: 6px;
   right: 8px;
