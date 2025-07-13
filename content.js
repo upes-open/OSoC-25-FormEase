@@ -337,7 +337,29 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
   const imagePreview = toolbox.querySelector("#image-preview");
   const imagePreviewArea = toolbox.querySelector("#image-preview-area");
   const formeasefeedback = toolbox.querySelector(".formease-feedback");
+  const closeBtn = toolbox.querySelector(".formease-close-btn");
+  if (closeBtn && !closeBtn.dataset.listenerAdded) {
+    closeBtn.addEventListener("click", () => {
+      toolbox.style.display = "none"; // Hide toolbox
 
+      const imagePreview = toolbox.querySelector("#image-preview");
+      const imagePreviewArea = toolbox.querySelector("#image-preview-area");
+      const feedback = toolbox.querySelector(".formease-feedback");
+
+      if (imagePreview && imagePreviewArea) {
+        imagePreview.src = "#";
+        imagePreviewArea.style.display = "none";
+      }
+
+      if (feedback) {
+        feedback.innerHTML = "";
+        feedback.style.display = "none";
+      }
+
+      console.log(`[FormEase] ❌ Closed toolbox for ${inputId}`);
+    });
+    closeBtn.dataset.listenerAdded = "true";
+  }
   if (file && !file.type.startsWith("image/")) {
     toolbox.style.display = "none";
 
@@ -581,6 +603,7 @@ for (let submitBtn of submitBtns) {
     closeToolboxOnSubmit(submitBtn);
   });
 }
+
 
 function closeToolboxOnSubmit(submitBtn) {
   const inputId = submitBtn.closest("form").querySelector('input[type="file"]')
