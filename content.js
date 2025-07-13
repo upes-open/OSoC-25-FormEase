@@ -192,6 +192,15 @@ function setupFileInput(input) {
     input.dataset.formEaseButtonInjected = "true";
   }
 }
+function injectStyles() {
+  if (document.getElementById("formease-styles")) return; // Avoid duplicate
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.type = "text/css";
+  link.href = chrome.runtime.getURL("styles.css");
+  link.id = "formease-styles";
+  document.head.appendChild(link);
+}
 
 function injectFloatingEditButton(input) {
   console.log("injectflotaing edit button working ✅!!!!");
@@ -304,6 +313,7 @@ function createToolboxForInput(input, inputId, toolbox, file = null) {
       "with file:",
       file
     );
+    injectStyles()
 
     fetch(chrome.runtime.getURL("toolbox.html"))
       .then((response) => response.text())

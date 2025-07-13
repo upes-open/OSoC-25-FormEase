@@ -13,7 +13,6 @@
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"],
-      "css": ["styles.css"],
       "all_frames": true
     }
   ],

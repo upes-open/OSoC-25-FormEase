@@ -1,21 +1,6 @@
 /* Custom styles + Tailwind can be imported here */
 /* For now: simple placeholder */
 /* Base styles */
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9fafb;
-}
-
-/* toolbox.html styling */
-
-/* Floating Toolbox Container */
-.container-0,
-.container-1 {
-  margin: 0;
-  padding: 0;
-}
-
-/* Toolbox Container */
 .formease-toolbox {
   background-color: #f0fdf4; /* light green */
   border-radius: 1rem;
@@ -26,6 +11,22 @@ body {
   flex-direction: column;
   align-items: center;
 }
+.formease-toolbox body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafb;
+}
+
+/* toolbox.html styling */
+
+/* Floating Toolbox Container */
+.formease-toolbox .container-0,
+.formease-toolbox .container-1 {
+  margin: 0;
+  padding: 0;
+}
+
+/* Toolbox Container */
+
 
 /* Toolbox Heading */
 .formease-toolbox h4 {
@@ -36,28 +37,28 @@ body {
 }
 
 /* Toolbox Dropdown */
-#dropdown {
+.formease-toolbox #dropdown {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
 }
 
-#task {
+.formease-toolbox #task {
   padding: 0.5rem;
   margin-inline-start: 10px;
   border-radius: 1rem;
 }
 
 /* Toolbox Range */
-#resize-inner,
-#compress-inner,
-#convert-inner {
+.formease-toolbox #resize-inner,
+.formease-toolbox #compress-inner,
+.formease-toolbox #convert-inner {
   display: flex;
   gap: 0.5rem;
 }
 
-#resize-inner {
+.formease-toolbox #resize-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -65,27 +66,27 @@ body {
 }
 
 /* Manual Resize Scale */
-.manual-dimension {
+.formease-toolbox .manual-dimension {
   display: flex;
   gap: 1rem;
   justify-content: center;
   align-items: center;
 }
 
-#resize-range {
+.formease-toolbox #resize-range {
   width: 50%;
   margin-top: 0.75rem;
 }
 
 /* Resize slider label */
-#resize-scale {
+.formease-toolbox #resize-scale {
   margin-left: 0.5rem;
   font-weight: bold;
   color: #166534;
 }
 
 /* Buttons inside toolbox */
-.toolbox-btn {
+.formease-toolbox .toolbox-btn {
   background-color: #4ade80; /* Green (Base) */
   color: #065f46; /* Dark green text */
   border: none;
@@ -99,25 +100,25 @@ body {
 }
 
 /* Apply */
-.toolbox-btn:hover {
+.formease-toolbox .toolbox-btn:hover {
   background-color: #22c55e; /* Darker green */
   cursor: pointer;
   transform: translateY(-1px); /* subtle lift */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
-#resetButton {
+.formease-toolbox #resetButton {
   background-color: rgba(128, 128, 128, 0.641);
   color: #f0fdf4;
   margin-top: 1rem;
 }
 
-#resetButton:hover {
+.formease-toolbox #resetButton:hover {
   background-color: red;
   cursor: pointer;
 }
 
-.formease-feedback {
+.formease-toolbox .formease-feedback {
   background-color: #ecfdf5;
   border: 1px solid #10b981;
   border-radius: 1rem;
@@ -131,14 +132,14 @@ body {
   transition: all 0.3s ease;
 }
 
-.formease-feedback h5 {
+.formease-toolbox .formease-feedback h5 {
   font-size: 1.25rem;
   font-weight: 700;
   color: #047857;
   margin-bottom: 1rem;
 }
 
-.feedback-details {
+.formease-toolbox .feedback-details {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -147,13 +148,13 @@ body {
   margin-bottom: 1rem;
 }
 
-.feedback-block {
+.formease-toolbox .feedback-block {
   flex: 1 1 45%;
   max-width: 200px;
   text-align: center;
 }
 
-.feedback-block img {
+.formease-toolbox .feedback-block img {
   width: 100%;
   max-height: 150px;
   object-fit: contain;
@@ -162,14 +163,14 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.feedback-block h6 {
+.formease-toolbox .feedback-block h6 {
   font-size: 1rem;
   font-weight: 600;
   color: #064e3b;
   margin-bottom: 0.25rem;
 }
 
-#feedback-message {
+.formease-toolbox #feedback-message {
   font-weight: 600;
   font-size: 0.95rem;
   color: #047857;
