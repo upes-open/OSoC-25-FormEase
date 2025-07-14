@@ -316,7 +316,12 @@ function checkToolboxExistence(input, inputId, file = null) {
   const fileType = file?.type || "";
 
   // Suppress toolbox for non-image files
-  if (file && !file.type.startsWith("image/") && fileType !== "application/pdf" && !fileType.startsWith("video/")) {
+  if (
+    file &&
+    !file.type.startsWith("image/") &&
+    fileType !== "application/pdf" &&
+    !fileType.startsWith("video/")
+  ) {
     if (existingToolbox) {
       existingToolbox.remove();
       console.log(
@@ -550,7 +555,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       imagePreviewArea.style.display = "none";
     }
   }
-//
+  //
   if (dropdown && !dropdown.dataset.listenerAdded) {
     dropdown.addEventListener("change", (e) => {
       const resizeBtn = toolbox.querySelector("#resize-btn");
@@ -851,7 +856,23 @@ function addVisualFeedback(toolbox, inputId) {
     font-size: 12px;
     display: none;
   `;
+
+  // for pdf
+  const pdfFeedback = document.createElement("div");
+  pdfFeedback.className = "formease-feedback-pdf";
+  pdfFeedback.style.marginTop = "5px";
+  pdfFeedback.style.color = "#007bff";
+
+  // for video
+  const videoFeedback = document.createElement("div");
+  videoFeedback.className = "formease-feedback-video";
+  videoFeedback.style.marginTop = "5px";
+  videoFeedback.style.color = "#28a745";
+
   toolbox.appendChild(feedbackContainer);
+  toolbox.appendChild(pdfFeedback);
+  toolbox.appendChild(videoFeedback);
+
 }
 
 function findAllInputsDeep(selector = 'input[type="file"]') {
