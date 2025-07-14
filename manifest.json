@@ -28,6 +28,7 @@
         "scripts/resize.js",
         "scripts/compress.js",
         "scripts/convert.js",
+        "scripts/ffmpeg.js",
         "scripts/compressVideo.js",
         "scripts/compressPDF.js",
         "scripts/reset.js"

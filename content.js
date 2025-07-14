@@ -39,7 +39,7 @@ function injectScriptInOrder(filePath) {
 // Inject processing scripts (remove pica.min.js since toolbox.html uses CDN)
 // Load the FFmpeg CDN first
 injectScript(
-  "https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.js"
+  "scripts/ffmpeg.js"
 );
 
 // Load your wrapper script (already in your extension)
@@ -102,6 +102,43 @@ document.addEventListener("drop", (e) => {
     input.classList.remove("hidden");
   }
 });
+
+window.addEventListener("message", async (event) => {
+  if (event.source !== window) return;
+
+  if (event.data.type === "compressPDF") {
+    const { inputId } = event.data;
+    const file = getCurrentFileForInput(inputId);
+
+    if (file && file.type === "application/pdf") {
+      try {
+        console.log(`[FormEase] 🔧 Compressing PDF for input: ${inputId}`);
+        await compressPDF(file, inputId);
+      } catch (err) {
+        console.error(`[FormEase] ❌ PDF compression failed:`, err);
+      }
+    }
+  }
+});
+
+window.addEventListener("message", async (event) => {
+  if (event.source !== window) return;
+
+  if (event.data.type === "compressVideo") {
+    const { inputId } = event.data;
+    const file = getCurrentFileForInput(inputId);
+
+    if (file && file.type.startsWith("video/")) {
+      try {
+        console.log(`[FormEase] 🎬 Compressing video for input: ${inputId}`);
+        await compressVideo(file, inputId);
+      } catch (err) {
+        console.error(`[FormEase] ❌ Video compression failed:`, err);
+      }
+    }
+  }
+});
+
 
 // Drop Box Event Listeners
 for (let dropZone of dropZones) {
@@ -585,7 +622,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
             resizeSlider.dataset.listenerAdded = "true";
           });
         }
-
+//window.postMessage({ type: "compress", inputId });
         resizeBtn.addEventListener("click", () => {
           OriginalFile = currentFile;
 
@@ -616,7 +653,13 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
           OriginalFile = currentFile;
 
           if (currentFile) {
-            window.postMessage({ type: "compress", inputId });
+            if (currentFile.type === "application/pdf") {
+              window.postMessage({ type: "compressPDF", inputId }, "*");
+            } else if (currentFile.type.startsWith("video/")) {
+              window.postMessage({ type: "compressVideo", inputId }, "*");
+            } else {
+              window.postMessage({ type: "compress", inputId }, "*");
+            }
           }
         });
 
