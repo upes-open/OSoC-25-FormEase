@@ -525,7 +525,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       imagePreviewArea.style.display = "none";
     }
   }
-
+//
   if (dropdown && !dropdown.dataset.listenerAdded) {
     dropdown.addEventListener("change", (e) => {
       const resizeBtn = toolbox.querySelector("#resize-btn");
