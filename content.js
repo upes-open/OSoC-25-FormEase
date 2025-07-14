@@ -313,8 +313,10 @@ function checkToolboxExistence(input, inputId, file = null) {
     `.formease-toolbox[data-input-id="${formEaseId}"]`
   );
 
+  const fileType = file?.type || "";
+
   // Suppress toolbox for non-image files
-  if (file && !file.type.startsWith("image/")) {
+  if (file && !file.type.startsWith("image/") && fileType !== "application/pdf" && !fileType.startsWith("video/")) {
     if (existingToolbox) {
       existingToolbox.remove();
       console.log(
@@ -327,12 +329,15 @@ function checkToolboxExistence(input, inputId, file = null) {
   if (!existingToolbox) {
     const toolbox = document.createElement("div");
     toolbox.className = `formease-toolbox container-${inputId}`;
+    toolbox.dataset.inputId = formEaseId;
     createToolboxForInput(input, inputId, toolbox, file);
     toolbox.dataset.initialized = "true"; // Prevent duplicate creation
   } else if (!existingToolbox.dataset.initialized) {
+    existingToolbox.dataset.fileType = fileType;
     createToolboxForInput(input, inputId, existingToolbox, file);
     existingToolbox.dataset.initialized = "true";
   } else {
+    existingToolbox.dataset.fileType = fileType;
     console.log(
       `[FormEase] Reusing existing toolbox for input: ${formEaseId}, updating preview`
     );
@@ -520,7 +525,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       imagePreviewArea.style.display = "none";
     }
   }
-
+//
   if (dropdown && !dropdown.dataset.listenerAdded) {
     dropdown.addEventListener("change", (e) => {
       const resizeBtn = toolbox.querySelector("#resize-btn");
