@@ -844,7 +844,10 @@ function addVisualFeedback(toolbox, inputId) {
   videoFeedback.style.marginTop = "5px";
   videoFeedback.style.color = "#28a745";
 
-  toolbox.appendChild(feedbackContainer, pdfFeedback, videoFeedback);
+  toolbox.appendChild(feedbackContainer);
+  toolbox.appendChild(pdfFeedback);
+  toolbox.appendChild(videoFeedback);
+
 }
 
 function findAllInputsDeep(selector = 'input[type="file"]') {
