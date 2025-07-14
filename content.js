@@ -383,6 +383,31 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     "with file:",
     file
   );
+  if (file) {
+    const fileType = file.type;
+    toolbox.dataset.fileType = fileType;
+
+    const resizeSection = toolbox.querySelector(".resize-section");
+    const compressSection = toolbox.querySelector(".compress-section");
+    const convertSection = toolbox.querySelector(".convert-section");
+    const compressDocSection = toolbox.querySelector(".compress-doc-section");
+    const compressVideoSection = toolbox.querySelector(".compress-video-section");
+
+    // Hide all by default
+    [resizeSection, compressSection, convertSection, compressDocSection, compressVideoSection].forEach(section => {
+      if (section) section.classList.add("hidden");
+    });
+
+    if (fileType.startsWith("image/")) {
+      resizeSection?.classList.remove("hidden");
+      compressSection?.classList.remove("hidden");
+      convertSection?.classList.remove("hidden");
+    } else if (fileType === "application/pdf") {
+      compressDocSection?.classList.remove("hidden");
+    } else if (fileType.startsWith("video/")) {
+      compressVideoSection?.classList.remove("hidden");
+    }
+  }
   const input = document.querySelector(`input[data-form-ease-id="${inputId}"]`);
   const dropdown = toolbox.querySelector("#task");
 
