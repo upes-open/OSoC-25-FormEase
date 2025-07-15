@@ -505,9 +505,14 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         formeasefeedback.style.display = "block";
       }
     };
-  } else {
+  } else if (file && file.type === "application/pdf") {
     if (formeasefeedback) {
       formeasefeedback.innerHTML = "<div>PDF File Selected.</div>";
+      formeasefeedback.style.display = "block";
+    }
+  } else {
+    if (formeasefeedback) {
+      formeasefeedback.innerHTML = "<div>No File Selected.</div>";
       formeasefeedback.style.display = "block";
     }
   }
