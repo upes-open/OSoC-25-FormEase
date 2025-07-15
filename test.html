@@ -276,6 +276,45 @@
         </form>
       </div>
 
+      <!-- Video Test -->
+      <div class="form-section">
+        <h2>Video</h2>
+        <form
+          id="videoForm"
+          action="#"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <div class="form-group">
+            <label for="video">Video (Any Video):</label>
+            <div class="drop-zone hidden" id="video-drop-zone"></div>
+            <input
+              type="file"
+              id="video"
+              class="input-file"
+              name="video"
+              accept="video/*"
+              required
+            />
+            <div class="preview" id="videoPreview">
+              <video id="videoPreviewArea" src="#" alt="Video Preview" />
+            </div>
+            <div class="file-info" id="videoInfo">No file selected.</div>
+          </div>
+          <div class="form-group">
+            <label for="videoDescription">Video Description:</label>
+            <input
+              type="text"
+              id="videoDescription"
+              name="videoDescription"
+              placeholder="Enter video description"
+              required
+            />
+          </div>
+          <button type="submit" class="submit-btn">Submit Video</button>
+        </form>
+      </div>
+
       <!-- PDF Test: Document Submission -->
       <div class="form-section">
         <h2>Official Document Upload</h2>
