@@ -38,9 +38,7 @@ function injectScriptInOrder(filePath) {
 
 // Inject processing scripts (remove pica.min.js since toolbox.html uses CDN)
 // Load the FFmpeg CDN first
-injectScript(
-  "scripts/ffmpeg.js"
-);
+injectScript("scripts/ffmpeg.js");
 
 // Load your wrapper script (already in your extension)
 injectScript("scripts/compressVideo.js");
@@ -138,7 +136,6 @@ window.addEventListener("message", async (event) => {
     }
   }
 });
-
 
 // Drop Box Event Listeners
 for (let dropZone of dropZones) {
@@ -352,22 +349,6 @@ function checkToolboxExistence(input, inputId, file = null) {
 
   const fileType = file?.type || "";
 
-  // Suppress toolbox for non-image files
-  if (
-    file &&
-    !file.type.startsWith("image/") &&
-    fileType !== "application/pdf" &&
-    !fileType.startsWith("video/")
-  ) {
-    if (existingToolbox) {
-      existingToolbox.remove();
-      console.log(
-        `[FormEase] Removed toolbox for non-image input: ${formEaseId}`
-      );
-    }
-    return;
-  }
-
   if (!existingToolbox) {
     const toolbox = document.createElement("div");
     toolbox.className = `formease-toolbox container-${inputId}`;
@@ -433,10 +414,18 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     const compressSection = toolbox.querySelector(".compress-section");
     const convertSection = toolbox.querySelector(".convert-section");
     const compressDocSection = toolbox.querySelector(".compress-doc-section");
-    const compressVideoSection = toolbox.querySelector(".compress-video-section");
+    const compressVideoSection = toolbox.querySelector(
+      ".compress-video-section"
+    );
 
     // Hide all by default
-    [resizeSection, compressSection, convertSection, compressDocSection, compressVideoSection].forEach(section => {
+    [
+      resizeSection,
+      compressSection,
+      convertSection,
+      compressDocSection,
+      compressVideoSection,
+    ].forEach((section) => {
       if (section) section.classList.add("hidden");
     });
 
@@ -479,24 +468,8 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     });
     closeBtn.dataset.listenerAdded = "true";
   }
-  if (file && !file.type.startsWith("image/")) {
-    toolbox.style.display = "none";
 
-    if (imagePreview && imagePreviewArea) {
-      imagePreview.src = "#";
-      imagePreviewArea.style.display = "none";
-    }
-
-    if (formeasefeedback) {
-      formeasefeedback.innerHTML = "<div>Non-image file selected.</div>";
-      formeasefeedback.style.display = "block";
-    }
-    return;
-  } else {
-    toolbox.style.display = "block";
-  }
-
-  if (file) {
+  if (file && file.type.startsWith("/image")) {
     if (formeasefeedback) {
       formeasefeedback.style.display = "block";
     }
@@ -548,9 +521,42 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
   const convert = toolbox.querySelector("#convert");
   const resizeSlider = toolbox.querySelector("#resize-range");
 
-  if (file && file.type.startsWith("image/")) {
+  const resizeBtn = toolbox.querySelector("#resize-btn");
+  const compressBtn = toolbox.querySelector("#compress-btn");
+  const convertBtn = toolbox.querySelector("#convert-btn");
+
+  const resetBtn = toolbox.querySelector("#resetButton");
+
+  const currentFile = getCurrentFileForInput(inputId);
+
+  if (file && file.type === "application/pdf") {
+    console.log("[FormEase] PDF File provided to setupToolboxEventListeners.");
+
+    dropdown.classList.add("hidden");
+    resizeBtn.classList.add("hidden");
+    convertBtn.classList.add("hidden");
+    compressBtn.classList.remove("hidden");
+
+    compressBtn.addEventListener("click", () => {
+      OriginalFile = currentFile;
+
+      if (currentFile) {
+        window.postMessage({ type: "compress-PDF", inputId }, "*");
+      }
+    });
+
+    if (resetBtn && !resetBtn.dataset.listenerAdded) {
+      resetBtn.addEventListener("click", () => {
+        if (OriginalFile) {
+          window.postMessage({ type: "reset", inputId, OriginalFile }, "*");
+          OriginalFile = null;
+        }
+        resetBtn.dataset.listenerAdded = "true";
+      });
+    }
+  } else if (file && file.type.startsWith("image/")) {
     console.log(
-      "[FormEase] File provided to setupToolboxEventListeners, attempting to display preview."
+      "[FormEase] Image File provided to setupToolboxEventListeners, attempting to display preview."
     );
     const reader = new FileReader();
     reader.onload = function (e) {
@@ -592,19 +598,11 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       imagePreviewArea.style.display = "none";
     }
   }
-  //
+
   if (dropdown && !dropdown.dataset.listenerAdded) {
     dropdown.addEventListener("change", (e) => {
-      const resizeBtn = toolbox.querySelector("#resize-btn");
-      const compressBtn = toolbox.querySelector("#compress-btn");
-      const convertBtn = toolbox.querySelector("#convert-btn");
-
-      const resetBtn = toolbox.querySelector("#resetButton");
-
       dropdown.value = e.target.value;
       dropdown.dataset.listenerAdded = "true";
-
-      const currentFile = getCurrentFileForInput(inputId);
 
       const convertDropdown = document.getElementById("convert-dropdown");
       let mimeType = "";
@@ -627,7 +625,6 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
             resizeSlider.dataset.listenerAdded = "true";
           });
         }
-//window.postMessage({ type: "compress", inputId });
         resizeBtn.addEventListener("click", () => {
           OriginalFile = currentFile;
 
@@ -658,13 +655,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
           OriginalFile = currentFile;
 
           if (currentFile) {
-            if (currentFile.type === "application/pdf") {
-              window.postMessage({ type: "compressPDF", inputId }, "*");
-            } else if (currentFile.type.startsWith("video/")) {
-              window.postMessage({ type: "compressVideo", inputId }, "*");
-            } else {
-              window.postMessage({ type: "compress", inputId }, "*");
-            }
+            window.postMessage({ type: "compress", inputId }, "*");
           }
         });
 
@@ -915,7 +906,6 @@ function addVisualFeedback(toolbox, inputId) {
   toolbox.appendChild(feedbackContainer);
   toolbox.appendChild(pdfFeedback);
   toolbox.appendChild(videoFeedback);
-
 }
 
 function findAllInputsDeep(selector = 'input[type="file"]') {
