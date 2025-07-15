@@ -1,129 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toolbox</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Toolbox</title>
-</head>
+  <body>
+    <div class="formease-toolbox">
+      <!---Basic Template-->
+      <h4>FormEase Toolbox</h4>
+      <button class="formease-close-btn" title="Close Toolbox">❌</button>
 
-<body>
-  <div class="formease-toolbox">
-    <!---Basic Template-->
-    <h4>FormEase Toolbox</h4>
-    <button class="formease-close-btn" title="Close Toolbox">❌</button>
-
-    <!-- Dropdown -->
-    <div id="dropdown">
-      <label for="task">Choose what you want to do : </label>
-      <select id="task" name="task">
-        <option value="nill">Select</option>
-        <option value="resize">Resize</option>
-        <option value="compress">Compress</option>
-        <option value="convert">Convert</option>
-      </select>
-    </div>
-
-    <!-- Basic Range Control -->
-    <div id="resize" class="hidden">
-      <div id="resize-inner">
-        <em><strong>
-            <p>
-              *Note: Either input the dimensions manually or use slider
-            </p>
-          </strong></em>
-        <div class="manual-dimension">
-          <label for="resize-range">Resize :</label>
-          <span>
-            <label for="img-width">Width</label>
-            <input type="number" placeholder="width" id="img-width" min="0" max="1600" /> </span><span>X</span><span>
-            <label for="img-height">Height</label>
-            <input type="number" placeholder="height" id="img-height" min="0" max="1600" />
-          </span>
-        </div>
-        <input type="range" for="resizing" id="resize-range" min="10" max="100" value="100" class="ms-4" />
-      </div>
-    </div>
-
-    <!-- Resize Scale -->
-    <div id="resize-scale"></div>
-
-    <!-- Compress Input -->
-    <div id="compress" class="hidden">
-      <div id="compress-inner">
-        <label for="compress-input">Compress to : </label>
-        <input type="number" id="compress-input" name="compress" min="1" max="100" />
-        <span>%</span>
-      </div>
-    </div>
-
-    <!-- Convert Dropdown -->
-    <div id="convert" class="hidden">
-      <div id="convert-inner">
-        <label for="convert-dropdown">Convert to : </label>
-        <select id="convert-dropdown" name="convert">
-          <option value="PNG" id="PNG" selected>PNG</option>
-          <option value="JPEG" id="JPEG">JPEG</option>
+      <!-- Dropdown -->
+      <div id="dropdown">
+        <label for="task">Choose what you want to do : </label>
+        <select id="task" name="task">
+          <option value="nill">Select</option>
+          <option value="resize">Resize</option>
+          <option value="compress">Compress</option>
+          <option value="convert">Convert</option>
         </select>
       </div>
-    </div>
 
-    <!--  Button for all 3 actions (resize, compress, convert) -->
-    <button id="resize-btn" class="toolbox-btn hidden">Resize</button>
-    <button id="compress-btn" class="toolbox-btn hidden">Compress</button>
-    <button id="convert-btn" class="toolbox-btn hidden">Convert</button>
+      <!-- Basic Range Control -->
+      <div id="resize" class="hidden">
+        <div id="resize-inner">
+          <em
+            ><strong>
+              <p>*Note: Either input the dimensions manually or use slider</p>
+            </strong></em
+          >
+          <div class="manual-dimension">
+            <label for="resize-range">Resize :</label>
+            <span>
+              <label for="img-width">Width</label>
+              <input
+                type="number"
+                placeholder="width"
+                id="img-width"
+                min="0"
+                max="1600"
+              /> </span
+            ><span>X</span
+            ><span>
+              <label for="img-height">Height</label>
+              <input
+                type="number"
+                placeholder="height"
+                id="img-height"
+                min="0"
+                max="1600"
+              />
+            </span>
+          </div>
+          <input
+            type="range"
+            for="resizing"
+            id="resize-range"
+            min="10"
+            max="100"
+            value="100"
+            class="ms-4"
+          />
+        </div>
+      </div>
 
-    <!-- Reset Button -->
-    <div class="reset-section">
-      <button id="resetButton" class="toolbox-btn">Reset</button>
-    </div>
+      <!-- Resize Scale -->
+      <div id="resize-scale"></div>
 
-    <!-- Feedback Area -->
-    <div class="formease-feedback-area">
-      <div class="formease-feedback"></div>
-      <div class="formease-feedback-pdf" style="margin-top: 5px; color: #007bff;"></div>
-      <div class="formease-feedback-video" style="margin-top: 5px; color: #28a745;"></div>
-      <div class="formease-feedback-resize"></div>
-      <div class="formease-feedback-compress"></div>
-      <div class="formease-feedback-convert"></div>
-      <div class="formease-feedback-reset"></div>
-    </div>
+      <!-- Compress Input -->
+      <div id="compress" class="hidden">
+        <div id="compress-inner">
+          <label for="compress-input">Compress to : </label>
+          <input
+            type="number"
+            id="compress-input"
+            name="compress"
+            min="1"
+            max="100"
+          />
+          <span>%</span>
+        </div>
+      </div>
 
-    <!-- Image Preview Area Apply -->
-    <div id="image-preview-area" style="margin-top: 15px; text-align: center; display: none">
-      <div class="spinner"></div>
-      <img id="image-preview" src="#" alt="Image Preview" style="
+      <!-- Convert Dropdown -->
+      <div id="convert" class="hidden">
+        <div id="convert-inner">
+          <label for="convert-dropdown">Convert to : </label>
+          <select id="convert-dropdown" name="convert">
+            <option value="PNG" id="PNG" selected>PNG</option>
+            <option value="JPEG" id="JPEG">JPEG</option>
+          </select>
+        </div>
+      </div>
+
+      <!--  Button for all 3 actions (resize, compress, convert) -->
+      <button id="resize-btn" class="toolbox-btn hidden">Resize</button>
+      <button id="compress-btn" class="toolbox-btn hidden">Compress</button>
+      <button id="convert-btn" class="toolbox-btn hidden">Convert</button>
+
+      <!-- Reset Button -->
+      <div class="reset-section">
+        <button id="resetButton" class="toolbox-btn">Reset</button>
+      </div>
+
+      <!-- Feedback Area -->
+      <div class="formease-feedback-area">
+        <div class="formease-feedback"></div>
+        <div
+          class="formease-feedback-pdf"
+          style="margin-top: 5px; color: #007bff"
+        ></div>
+        <div
+          class="formease-feedback-video"
+          style="margin-top: 5px; color: #28a745"
+        ></div>
+        <div class="formease-feedback-resize"></div>
+        <div class="formease-feedback-compress"></div>
+        <div class="formease-feedback-convert"></div>
+        <div class="formease-feedback-reset"></div>
+      </div>
+
+      <!-- Image Preview Area Apply -->
+      <div
+        id="image-preview-area"
+        style="margin-top: 15px; text-align: center; display: none"
+      >
+        <div class="spinner"></div>
+        <img
+          id="image-preview"
+          src="#"
+          alt="Image Preview"
+          style="
             max-width: 100%;
             height: auto;
             border-radius: 8px;
             border: 1px solid #ddd;
-          " />
+          "
+        />
+      </div>
     </div>
-  </div>
 
-  <!-- Confirm Button to add resized image to input -->
-  <button id="confirm-btn" class="toolbox-btn hidden">Save Changes</button>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const confirmBtn = document.getElementById("confirm-btn");
-      const resizeSlider = document.getElementById("resize-range");
-      const imgWidth = document.getElementById("img-width");
-      const imgHeight = document.getElementById("img-height");
+    <!-- Confirm Button to add resized image to input -->
+    <button id="confirm-btn" class="toolbox-btn hidden">Save Changes</button>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const confirmBtn = document.getElementById("confirm-btn");
+        const resizeSlider = document.getElementById("resize-range");
+        const imgWidth = document.getElementById("img-width");
+        const imgHeight = document.getElementById("img-height");
 
-      confirmBtn.addEventListener("click", () => {
-        // ✅ Reset range to 100
-        resizeSlider.value = 100;
+        confirmBtn.addEventListener("click", () => {
+          // ✅ Reset range to 100
+          resizeSlider.value = 100;
 
-        // ✅ Optionally clear manual dimension inputs
-        if (imgWidth) imgWidth.value = "";
-        if (imgHeight) imgHeight.value = "";
+          // ✅ Optionally clear manual dimension inputs
+          if (imgWidth) imgWidth.value = "";
+          if (imgHeight) imgHeight.value = "";
 
-        console.log(
-          "[Toolbox] Reset slider and manual inputs on Save Changes"
-        );
+          console.log(
+            "[Toolbox] Reset slider and manual inputs on Save Changes"
+          );
+        });
       });
-    });
-  </script>
-</body>
-
+    </script>
+  </body>
 </html>
