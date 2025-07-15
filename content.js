@@ -439,6 +439,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       compressVideoSection?.classList.remove("hidden");
     }
   }
+
   const input = document.querySelector(`input[data-form-ease-id="${inputId}"]`);
   const dropdown = toolbox.querySelector("#task");
 
@@ -469,7 +470,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     closeBtn.dataset.listenerAdded = "true";
   }
 
-  if (file && file.type.startsWith("/image")) {
+  if (file && file.type.startsWith("image/")) {
     if (formeasefeedback) {
       formeasefeedback.style.display = "block";
     }
@@ -484,11 +485,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
 
       if (formeasefeedback) {
         formeasefeedback.innerHTML = `
-        <div>${
-          file.type.startsWith("image/")
-            ? `Resolution : ${width} x ${height} px`
-            : `File Type:${file.type}`
-        } </div>
+        <div>Resolution : ${width} X ${height} px</div>
         <div>
         <span style="background-color: #f3f4f6; padding: 4px 6px; border-radius: 4px;">
           Original size : ${sizeKB} KB

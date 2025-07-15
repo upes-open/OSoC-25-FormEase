@@ -19,6 +19,7 @@ window.addEventListener("message", async (event) => {
     document.querySelector(".formease-feedback-resize").innerHTML = "";
     document.querySelector(".formease-feedback-compress").innerHTML = "";
     document.querySelector(".formease-feedback-reset").innerHTML = "";
+    document.querySelector(".formease-feedback-pdf").innerHTML = "";
 
     const toolbox = document.querySelector(
       `.formease-toolbox[data-input-id="${inputId}"]`

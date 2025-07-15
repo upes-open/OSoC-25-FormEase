@@ -8,6 +8,8 @@ window.addEventListener("message", async (event) => {
 
     console.log("[FormEase-Reset] Reset Logic called");
 
+    document.getElementById("confirm-btn").classList.add("hidden");
+
     document.getElementById("resize-scale").innerText = "";
 
     document.getElementById("resize-range").value = 100;
@@ -28,12 +30,13 @@ window.addEventListener("message", async (event) => {
     );
 
     const resetFeedbackArea = document.querySelector(
-      ".formease-feedback-convert"
+      ".formease-feedback-reset"
     );
-    document.querySelector(".formease-feedback").innerHTML = "";
+    document.querySelector(".formease-feedback-pdf").innerHTML = "";
     document.querySelector(".formease-feedback-resize").innerHTML = "";
     document.querySelector(".formease-feedback-compress").innerHTML = "";
     document.querySelector(".formease-feedback-convert").innerHTML = "";
+    document.querySelector(".formease-feedback-compress").innerHTML = "";
 
     let width = 0;
     let height = 0;
@@ -61,10 +64,32 @@ window.addEventListener("message", async (event) => {
       width = img.width;
       height = img.height;
     };
+
+    if (OriginalFile.type.startsWith("image/")) {
+      setTimeout(() => {
+        resetFeedbackArea.style.display = "block";
+        resetFeedbackArea.innerHTML = `<div>ℹ️ Original file restored.</div><div>Resolution : ${width} X ${height}</div><div>Original Size : ${sizeKB} kB`;
+        resetFeedbackArea.style.color = "#065f46";
+      }, 100);
+    }
+
+    if (OriginalFile.type === "application/pdf") {
+      setTimeout(() => {
+        resetFeedbackArea.style.display = "block";
+        resetFeedbackArea.innerHTML = `<div>ℹ️ Original file restored.</div><div>Original Size : ${sizeKB} kB`;
+        resetFeedbackArea.style.color = "#065f46";
+      }, 100);
+    }
+
     setTimeout(() => {
-      resetFeedbackArea.style.display = "block";
-      resetFeedbackArea.innerHTML = `<div>Original file restored.</div><div><em>Click <strong><em>Save Changes</em></strong> button below the image preview to add original file to input field.</em></div><div>Resolution : ${width} X ${height}</div><div>Original Size : ${sizeKB} kB`;
-      resetFeedbackArea.style.color = "#065f46";
-    }, 100);
+      document.querySelector(".formease-feedback").innerHTML = "";
+    }, 200);
+
+    setTimeout(() => {
+      document.querySelector(".formease-feedback-resize").innerHTML = "";
+      document.querySelector(".formease-feedback-compress").innerHTML = "";
+      document.querySelector(".formease-feedback-convert").innerHTML = "";
+      document.querySelector(".formease-feedback-pdf").innerHTML = "";
+    }, 2000);
   }
 });
