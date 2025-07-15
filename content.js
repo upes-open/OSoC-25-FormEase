@@ -122,18 +122,32 @@ window.addEventListener("message", async (event) => {
 window.addEventListener("message", async (event) => {
   if (event.source !== window) return;
 
-  if (event.data.type === "compressVideo") {
-    const { inputId } = event.data;
-    const file = getCurrentFileForInput(inputId);
+  if (event.data.type === "compress-result") {
+    const { inputId, file: compressedData } = event.data;
+    if (!inputId || !compressedData) return;
 
-    if (file && file.type.startsWith("video/")) {
-      try {
-        console.log(`[FormEase] 🎬 Compressing video for input: ${inputId}`);
-        await compressVideo(file, inputId);
-      } catch (err) {
-        console.error(`[FormEase] ❌ Video compression failed:`, err);
-      }
+    console.log(`[FormEase] 📥 Received compressed video for input: ${inputId}`);
+
+    const input = document.querySelector(`input[data-form-ease-id="${inputId}"]`);
+    if (!input) {
+      console.error(`[FormEase] ❌ No input found for ${inputId}`);
+      return;
     }
+    const compressedBlob = new Blob([compressedData.data], { type: compressedData.type });
+    const compressedFile = new File([compressedBlob], compressedData.name, { type: compressedData.type });
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(compressedFile);
+    input.files = dataTransfer.files;
+
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+
+    const toolbox = document.querySelector(`.formease-toolbox[data-input-id="${inputId}"]`);
+    if (toolbox) {
+      showDetailedSuccessMessage(toolbox, "✅ Video compression complete and file replaced.");
+    }
+
+    console.log(`[FormEase] ✅ Replaced input ${inputId} with compressed video.`);
   }
 });
 
