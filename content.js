@@ -510,7 +510,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     };
   } else {
     if (formeasefeedback) {
-      formeasefeedback.innerHTML = "<div>No file selected.</div>";
+      formeasefeedback.innerHTML = "<div>PDF File Selected.</div>";
       formeasefeedback.style.display = "block";
     }
   }
