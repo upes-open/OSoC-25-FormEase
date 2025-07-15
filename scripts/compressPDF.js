@@ -122,11 +122,13 @@ window.addEventListener("message", async (event) => {
       const compressedBlob = await compressPDF(file);
       blob = compressedBlob;
 
+      const size = (compressedBlob.size / 1024).toFixed(2);
+
       console.log("[FormEase-Compress-PDF] PDF Compressed Successfully.");
 
       console.log("[FormEase-Compress-PDF] New PDF : ", compressedBlob);
 
-      pdfFeedback.innerHTML = "<div>✅ Compressed. Please review!";
+      pdfFeedback.innerHTML = `<div>✅ Compressed. Please review!<div style="margin-top:1rem;">Size: ${size} kB<div>`;
 
       setTimeout(() => {
         pdfFeedback.innerHTML =
