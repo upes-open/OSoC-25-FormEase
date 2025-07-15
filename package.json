@@ -1,10 +1,13 @@
 {
   "dependencies": {
+    "@ffmpeg/core": "^0.12.10",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2"
   },
   "devDependencies": {
     "esbuild": "^0.25.6",
+    "vite": "^6.3.5",
+    "vite-plugin-static-copy": "^3.1.1",
     "webpack": "^5.100.1",
     "webpack-cli": "^6.0.1"
   }

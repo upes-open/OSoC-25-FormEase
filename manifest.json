@@ -29,11 +29,16 @@
         "scripts/compress.js",
         "scripts/convert.js",
         "scripts/ffmpeg.js",
+        "scripts/814.ffmpeg.js",
+        "scripts/ffmpeg-core.wasm",
         "scripts/compressVideo.js",
         "scripts/compressPDF.js",
         "scripts/reset.js"
       ],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  }
 }
