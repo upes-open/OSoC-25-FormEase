@@ -126,15 +126,23 @@ window.addEventListener("message", async (event) => {
     const { inputId, file: compressedData } = event.data;
     if (!inputId || !compressedData) return;
 
-    console.log(`[FormEase] 📥 Received compressed video for input: ${inputId}`);
+    console.log(
+      `[FormEase] 📥 Received compressed video for input: ${inputId}`
+    );
 
-    const input = document.querySelector(`input[data-form-ease-id="${inputId}"]`);
+    const input = document.querySelector(
+      `input[data-form-ease-id="${inputId}"]`
+    );
     if (!input) {
       console.error(`[FormEase] ❌ No input found for ${inputId}`);
       return;
     }
-    const compressedBlob = new Blob([compressedData.data], { type: compressedData.type });
-    const compressedFile = new File([compressedBlob], compressedData.name, { type: compressedData.type });
+    const compressedBlob = new Blob([compressedData.data], {
+      type: compressedData.type,
+    });
+    const compressedFile = new File([compressedBlob], compressedData.name, {
+      type: compressedData.type,
+    });
 
     const dataTransfer = new DataTransfer();
     dataTransfer.items.add(compressedFile);
@@ -142,12 +150,19 @@ window.addEventListener("message", async (event) => {
 
     input.dispatchEvent(new Event("change", { bubbles: true }));
 
-    const toolbox = document.querySelector(`.formease-toolbox[data-input-id="${inputId}"]`);
+    const toolbox = document.querySelector(
+      `.formease-toolbox[data-input-id="${inputId}"]`
+    );
     if (toolbox) {
-      showDetailedSuccessMessage(toolbox, "✅ Video compression complete and file replaced.");
+      showDetailedSuccessMessage(
+        toolbox,
+        "✅ Video compression complete and file replaced."
+      );
     }
 
-    console.log(`[FormEase] ✅ Replaced input ${inputId} with compressed video.`);
+    console.log(
+      `[FormEase] ✅ Replaced input ${inputId} with compressed video.`
+    );
   }
 });
 
@@ -524,6 +539,11 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       formeasefeedback.innerHTML = "<div>PDF File Selected.</div>";
       formeasefeedback.style.display = "block";
     }
+  } else if (file && file.type.startsWith("video/")) {
+    if (formeasefeedback) {
+      formeasefeedback.innerHTML = "<div>Video File Selected.</div>";
+      formeasefeedback.style.display = "block";
+    }
   } else {
     if (formeasefeedback) {
       formeasefeedback.innerHTML = "<div>No File Selected.</div>";
@@ -558,6 +578,33 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
 
       if (currentFile) {
         window.postMessage({ type: "compress-PDF", inputId }, "*");
+      }
+    });
+
+    if (resetBtn && !resetBtn.dataset.listenerAdded) {
+      resetBtn.addEventListener("click", () => {
+        if (OriginalFile) {
+          window.postMessage({ type: "reset", inputId, OriginalFile }, "*");
+          OriginalFile = null;
+        }
+        resetBtn.dataset.listenerAdded = "true";
+      });
+    }
+  } else if (file && file.type.startsWith("video/")) {
+    console.log(
+      "[FormEase] Video File provided to setupToolboxEventListeners."
+    );
+
+    dropdown.classList.add("hidden");
+    resizeBtn.classList.add("hidden");
+    convertBtn.classList.add("hidden");
+    compressBtn.classList.remove("hidden");
+
+    compressBtn.addEventListener("click", () => {
+      OriginalFile = currentFile;
+
+      if (currentFile) {
+        window.postMessage({ type: "compress-Video", inputId }, "*");
       }
     });
 
@@ -608,11 +655,6 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     };
     reader.readAsDataURL(file);
     console.log("[FormEase] FileReader readAsDataURL called.");
-  } else {
-    if (imagePreview && imagePreviewArea) {
-      imagePreview.src = "#";
-      imagePreviewArea.style.display = "none";
-    }
   }
 
   if (dropdown && !dropdown.dataset.listenerAdded) {
