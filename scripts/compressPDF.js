@@ -35,6 +35,10 @@ window.addEventListener("message", async (event) => {
     const confirmBtn = document.getElementById("confirm-btn");
 
     document.querySelector(".formease-feedback").innerHTML = "";
+    document.querySelector(".formease-feedback-compress").innerHTML = "";
+    document.querySelector(".formease-feedback-convert").innerHTML = "";
+    document.querySelector(".formease-feedback-reset").innerHTML = "";
+    document.querySelector(".formease-feedback-resize").innerHTML = "";
     const pdfFeedback = document.querySelector(".formease-feedback-pdf");
 
     const compressingFeedback = () => {
@@ -132,7 +136,7 @@ window.addEventListener("message", async (event) => {
 
       setTimeout(() => {
         pdfFeedback.innerHTML =
-          "<div>ℹ️ Click on the Save Changes button below to inject the file in input.</div>";
+          "<div>ℹ️ Click on the <strong><em>Save Changes</em></strong> button below to inject the file in input.</div>";
       }, 3000);
     } else {
       errorFeedback();
