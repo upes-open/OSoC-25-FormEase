@@ -417,78 +417,109 @@
 
     <script>
       // File info and preview setup with validation
-      function setupFileHandler(
-        inputId,
-        infoId,
-        previewId,
-        errorId,
-        constraints = {}
-      ) {
+      function setupFileHandler(inputId, infoId, previewId, errorId, constraints = {}) {
         const input = document.getElementById(inputId);
         const info = document.getElementById(infoId);
         const preview = document.getElementById(previewId);
         const error = document.getElementById(errorId);
+
+        // Identify media tags inside preview container
         const previewImg = preview?.querySelector("img");
+        const previewVideo = preview?.querySelector("video");
+        const previewPDF = preview?.querySelector(".pdf-preview");
 
         input.addEventListener("change", function (e) {
-          info.classList.remove("hidden");
           const file = e.target.files[0];
           error.style.display = "none";
+          preview.style.display = "none";
           info.innerText = "No file selected.";
+          info.classList.remove("hidden");
 
-          if (file) {
-            const sizeInKB = (file.size / 1024).toFixed(2);
-            info.innerText = "";
-            info.classList.add("hidden");
+          if (!file) return;
 
-            let isValid = true;
-            // Match MIME type: use exact match or wildcard for images
-            if (constraints.accept) {
-              const acceptType = constraints.accept;
-              if (acceptType === "image/*" && !file.type.startsWith("image/")) {
+          let isValid = true;
+          const fileType = file.type;
+          const fileSizeKB = (file.size / 1024).toFixed(2);
+
+          // === Accept Type Validation ===
+          if (constraints.accept) {
+            const acceptType = constraints.accept;
+
+            // Check for image/*
+            if (acceptType === "image/*" && !fileType.startsWith("image/")) {
+              error.innerHTML = constraints.acceptError || "Error: File must be an image.";
+              error.style.display = "block";
+              isValid = false;
+
+            } else if (acceptType === "video/*" && !fileType.startsWith("video/")) {
+              error.innerHTML = constraints.acceptError || "Error: File must be a video.";
+              error.style.display = "block";
+              isValid = false;
+
+            } else if (acceptType === "application/pdf" && fileType !== "application/pdf") {
+              error.innerHTML = constraints.acceptError || "Error: File must be a PDF.";
+              error.style.display = "block";
+              isValid = false;
+
+            } else if (
+              acceptType !== "image/*" &&
+              acceptType !== "video/*" &&
+              acceptType !== "application/pdf" &&
+              fileType !== acceptType
+            ) {
+              error.innerHTML = `Error: File must be of type ${acceptType}.`;
+              error.style.display = "block";
+              isValid = false;
+            }
+          }
+
+          // === File Size Constraints ===
+          if (constraints.maxSize && file.size > constraints.maxSize * 1024) {
+            error.innerHTML = `Error: File size must be under ${constraints.maxSize}KB.`;
+            error.style.display = "block";
+            isValid = false;
+          }
+          if (constraints.minSize && file.size === 0) {
+            error.innerHTML = "Error: File size cannot be zero.";
+            error.style.display = "block";
+            isValid = false;
+          }
+
+          // === Resolution Constraint (images only) ===
+          if (constraints.maxResolution && fileType.startsWith("image/")) {
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            img.onload = () => {
+              if (img.width > constraints.maxResolution || img.height > constraints.maxResolution) {
+                error.innerHTML = `Error: Resolution must be under ${constraints.maxResolution}x${constraints.maxResolution}px.`;
                 error.style.display = "block";
-                error.innerHTML =
-                  constraints.acceptError || `Error: File must be an image.`;
-                isValid = false;
-              } else if (acceptType !== "image/*" && file.type !== acceptType) {
-                error.style.display = "block";
-                error.innerHTML =
-                  constraints.acceptError ||
-                  `Error: File must be ${acceptType.split("/")[1]}.`;
                 isValid = false;
               }
-            }
-            if (constraints.maxSize && file.size > constraints.maxSize * 1024) {
-              error.style.display = "block";
-              error.innerHTML = `Error: File size must be under ${constraints.maxSize}KB.`;
-              isValid = false;
-            }
-            if (constraints.maxResolution) {
-              const img = new Image();
-              img.src = URL.createObjectURL(file);
-              img.onload = () => {
-                if (
-                  img.width > constraints.maxResolution ||
-                  img.height > constraints.maxResolution
-                ) {
-                  error.style.display = "block";
-                  error.innerHTML = `Error: Resolution must be under ${constraints.maxResolution}x${constraints.maxResolution}px.`;
-                  isValid = false;
-                }
-                URL.revokeObjectURL(img.src);
-              };
-            }
-            if (constraints.minSize && file.size === 0) {
-              error.style.display = "block";
-              error.innerHTML = "Error: File size cannot be zero.";
-              isValid = false;
-            }
+              URL.revokeObjectURL(img.src);
+            };
+          }
 
-            if (isValid && previewImg) {
+          // === Preview Logic ===
+          if (isValid) {
+            info.innerText = `Selected: ${file.name} (${fileSizeKB} KB)`;
+            info.classList.remove("hidden");
+
+            if (previewImg) previewImg.style.display = "none";
+            if (previewVideo) previewVideo.style.display = "none";
+            if (previewPDF) previewPDF.style.display = "none";
+
+            if (fileType.startsWith("image/") && previewImg) {
               previewImg.src = URL.createObjectURL(file);
+              previewImg.style.display = "block";
               preview.style.display = "block";
-            } else if (!isValid) {
-              preview.style.display = "none";
+            } else if (fileType.startsWith("video/") && previewVideo) {
+              previewVideo.src = URL.createObjectURL(file);
+              previewVideo.style.display = "block";
+              preview.style.display = "block";
+            } else if (fileType === "application/pdf" && previewPDF) {
+              previewPDF.innerHTML = `<p>📄 ${file.name}</p>`;
+              previewPDF.style.display = "block";
+              preview.style.display = "block";
             }
           }
         });
@@ -671,3 +702,4 @@
     </script>
   </body>
 </html>
+//hidden
