@@ -297,10 +297,27 @@
               required
             />
             <div class="preview" id="videoPreview">
-              <video id="videoPreviewArea" src="#" alt="Video Preview" />
+              <video id="videoPreviewArea" src="#" alt="Video Preview"></video>
             </div>
             <div class="file-info" id="videoInfo">No file selected.</div>
+
+            <!-- ✅ Feedback container for FormEase -->
+            <div
+              class="formease-feedback-video"
+              style="margin-top: 10px; color: #2563eb; font-size: 14px;"
+            ></div>
+
+            <!-- ✅ Optional confirm button for video compression -->
+            <button
+              id="confirm-btn"
+              type="button"
+              class="submit-btn hidden"
+              style="margin-top: 10px;"
+            >
+              Save Changes
+            </button>
           </div>
+
           <div class="form-group">
             <label for="videoDescription">Video Description:</label>
             <input
@@ -311,9 +328,11 @@
               required
             />
           </div>
+
           <button type="submit" class="submit-btn">Submit Video</button>
         </form>
       </div>
+
 
       <!-- PDF Test: Document Submission -->
       <div class="form-section">
@@ -616,6 +635,39 @@
         `;
         }
       });
+      document.getElementById("videoForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fileInput = document.getElementById("video");
+        if (fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+
+          const inputId = "video";
+          const infoId = inputId + "Info";
+          const info = document.getElementById(infoId);
+
+          if (info) {
+            const sizeInKB = (file.size / 1024).toFixed(2);
+            info.innerHTML = `
+              <strong>Original File:</strong> ${file.name}<br>
+              <strong>Size:</strong> ${sizeInKB} KB<br>
+              <strong>Type:</strong> ${file.type}<br>
+              <em style="color: #1d4ed8;">🔄 Starting compression...</em>
+            `;
+          }
+
+          window.dispatchEvent(
+            new CustomEvent("formease:compressVideo", {
+              detail: {
+                file,
+                inputId,
+              },
+            })
+          );
+        }
+      });
+
+      
+
     </script>
   </body>
 </html>

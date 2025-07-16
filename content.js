@@ -38,16 +38,14 @@ function injectScriptInOrder(filePath) {
 
 // Inject processing scripts (remove pica.min.js since toolbox.html uses CDN)
 // Load the FFmpeg CDN first
-injectScript("scripts/ffmpeg.js");
-
-// Load your wrapper script (already in your extension)
-injectScript("scripts/compressVideo.js");
 
 (async () => {
   try {
     await injectScriptInOrder("scripts/pdf-lib.min.js");
     await injectScriptInOrder("scripts/pica.min.js");
     await injectScriptInOrder("scripts/resize.js");
+    await injectScriptInOrder("scripts/ffmpeg.js");
+    await injectScriptInOrder("scripts/compressVideo.js");
     await injectScriptInOrder("scripts/compress.js");
     await injectScriptInOrder("scripts/convert.js");
     await injectScriptInOrder("scripts/compressPDF.js");
@@ -165,6 +163,38 @@ window.addEventListener("message", async (event) => {
     );
   }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.body.addEventListener("click", async (e) => {
+    if (e.target && e.target.id === "compress-btn") {
+      const btn = e.target;
+      const inputId = btn.closest(".formease-toolbox")?.dataset?.inputId;
+
+      if (!inputId) {
+        console.warn("[FormEase] ❌ Could not find inputId for compression.");
+        return;
+      }
+
+      const input = document.querySelector(`input[type="file"][data-form-ease-id="${inputId}"]`);
+      if (!input || !input.files.length) {
+        alert("Please upload a video file before compressing.");
+        return;
+      }
+
+      const file = input.files[0];
+
+      // ✅ Send message to compressVideo.js
+      window.postMessage({
+        type: "compress",
+        file,
+        inputId,
+      }, "*");
+
+      console.log(`[FormEase] 📦 Sent compress request for inputId: ${inputId}`);
+    }
+  });
+});
+
 
 // Drop Box Event Listeners
 for (let dropZone of dropZones) {
