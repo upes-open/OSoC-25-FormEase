@@ -140,28 +140,69 @@
           "
         />
       </div>
+      <button id="confirm-btn" type="button" class="toolbox-btn hidden">Save Changes</button>
     </div>
 
     <!-- Confirm Button to add resized image to input -->
-    <button id="confirm-btn" class="toolbox-btn hidden">Save Changes</button>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const confirmBtn = document.getElementById("confirm-btn");
-        const resizeSlider = document.getElementById("resize-range");
+        const taskDropdown = document.getElementById("task");
+        const compressSection = document.getElementById("compress");
+        const resizeSection = document.getElementById("resize");
+        const convertSection = document.getElementById("convert");
+        const resizeBtn = document.getElementById("resize-btn");
+        const compressBtn = document.getElementById("compress-btn");
+        const convertBtn = document.getElementById("convert-btn");
+
         const imgWidth = document.getElementById("img-width");
         const imgHeight = document.getElementById("img-height");
+        const resizeSlider = document.getElementById("resize-range");
+
+        // Assume FormEase injects inputId somewhere globally (this simulates that)
+        let currentInputId = null;
+
+        // Listen for current input ID from FormEase or test environment
+        window.addEventListener("message", (event) => {
+          if (event.data?.formeaseInputId) {
+            currentInputId = event.data.formeaseInputId;
+          }
+        });
+
+        taskDropdown.addEventListener("change", () => {
+          const task = taskDropdown.value;
+
+          // Hide all sections and buttons initially
+          [resizeSection, compressSection, convertSection].forEach(s => s.classList.add("hidden"));
+          [resizeBtn, compressBtn, convertBtn].forEach(b => b.classList.add("hidden"));
+          confirmBtn.classList.add("hidden");
+
+          if (task === "resize") {
+            resizeSection.classList.remove("hidden");
+            resizeBtn.classList.remove("hidden");
+          } else if (task === "compress") {
+            compressSection.classList.remove("hidden");
+            compressBtn.classList.remove("hidden");
+
+            // Show Save Changes if the file is video or PDF
+            if (
+              currentInputId === "video" ||
+              currentInputId === "documentFile"
+            ) {
+              confirmBtn.classList.remove("hidden");
+            }
+          } else if (task === "convert") {
+            convertSection.classList.remove("hidden");
+            convertBtn.classList.remove("hidden");
+          }
+        });
 
         confirmBtn.addEventListener("click", () => {
-          // ✅ Reset range to 100
+          // Reset all resizing controls
           resizeSlider.value = 100;
-
-          // ✅ Optionally clear manual dimension inputs
           if (imgWidth) imgWidth.value = "";
           if (imgHeight) imgHeight.value = "";
-
-          console.log(
-            "[Toolbox] Reset slider and manual inputs on Save Changes"
-          );
+          console.log("[Toolbox] Reset slider and manual inputs on Save Changes");
         });
       });
     </script>
