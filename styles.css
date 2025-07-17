@@ -232,7 +232,31 @@
     transform: rotate(360deg);
   }
 }
+/* --- NEW CODE START --- */
 
+/* Loader/Spinner for feedback messages (PDF and Video) */
+.loader-spinner {
+  border: 3px solid #f3f3f3; /* Light grey base */
+  border-top: 3px solid #3498db; /* Default blue for PDF loading/injection */
+  border-radius: 50%;
+  width: 1em; /* Make it relative to font size */
+  height: 1em; /* Make it relative to font size */
+  animation: spin 1s linear infinite;
+  display: inline-block; /* To appear next to text */
+  vertical-align: middle; /* Align with text */
+  margin-left: 0.5em; /* Space between text and spinner */
+}
+/* Specific color for loader when used with video feedback (green theme) */
+.formease-feedback-video .loader-spinner {
+    border-top-color: #16a34a; /* Green for video theme */
+}
+
+/* Specific color for loader when used with pdf feedback (blue theme) */
+.formease-feedback-pdf .loader-spinner {
+    border-top-color: #1d4ed8; /* Blue for PDF theme */
+}
+
+/* --- NEW CODE END --- */
 /* 
 // Highlighting elements */
 .highlight {
