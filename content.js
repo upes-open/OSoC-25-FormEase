@@ -102,7 +102,7 @@ document.addEventListener("drop", (e) => {
 window.addEventListener("message", async (event) => {
   if (event.source !== window) return;
 
-  if (event.data.type === "compressPDF") {
+  if (event.data.type === "compress-PDF") {
     const { inputId } = event.data;
     const file = getCurrentFileForInput(inputId);
 
@@ -120,7 +120,7 @@ window.addEventListener("message", async (event) => {
 window.addEventListener("message", async (event) => {
   if (event.source !== window) return;
 
-  if (event.data.type === "compress-result") {
+  if (event.data.type === "compress-video-result") {
     const { inputId, file: compressedData } = event.data;
     if (!inputId || !compressedData) return;
 
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // ✅ Send message to compressVideo.js
       window.postMessage({
-        type: "compress",
+        type: "compress-Video",
         file,
         inputId,
       }, "*");
