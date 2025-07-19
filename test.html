@@ -131,6 +131,8 @@
         background-color: #1d4ed8;
       }
     </style>
+    <script src="/assets/ffmpeg/package/dist/umd/ffmpeg.js"></script>
+    <script src="/assets/util/package/dist/umd/index.js"></script>
   </head>
 
   <body>
@@ -296,6 +298,7 @@
               accept="video/*"
               required
             />
+            
             <div class="preview" id="videoPreview">
               <video id="videoPreviewArea" src="#" alt="Video Preview"></video>
             </div>
@@ -636,34 +639,54 @@
         `;
         }
       });
-      document.getElementById("videoForm").addEventListener("submit", (e) => {
+      document.getElementById("videoForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const fileInput = document.getElementById("video");
         if (fileInput.files && fileInput.files[0]) {
           const file = fileInput.files[0];
-
           const inputId = "video";
           const infoId = inputId + "Info";
           const info = document.getElementById(infoId);
 
           if (info) {
-            const sizeInKB = (file.size / 1024).toFixed(2);
-            info.innerHTML = `
-              <strong>Original File:</strong> ${file.name}<br>
-              <strong>Size:</strong> ${sizeInKB} KB<br>
-              <strong>Type:</strong> ${file.type}<br>
-              <em style="color: #1d4ed8;">🔄 Starting compression...</em>
-            `;
+        const sizeInKB = (file.size / 1024).toFixed(2);
+        info.innerHTML = `
+          <strong>Original File:</strong> ${file.name}<br>
+          <strong>Size:</strong> ${sizeInKB} KB<br>
+          <strong>Type:</strong> ${file.type}<br>
+          <em style="color: #1d4ed8;">🔄 Compressing video...</em>
+        `;
           }
 
-          window.dispatchEvent(
-            new CustomEvent("formease:compressVideo", {
-              detail: {
-                file,
-                inputId,
-              },
-            })
-          );
+          try {
+        const processedFile = await compressVideo(file); 
+        if (info) {
+          const processedSizeInKB = (processedFile.size / 1024).toFixed(2);
+          const sizeDiff = (
+            ((file.size - processedFile.size) / file.size) * 100
+          ).toFixed(1);
+          info.innerHTML = `
+            <strong>Compressed File:</strong> ${processedFile.name}<br>
+            <strong>Size:</strong> ${processedSizeInKB} KB (was ${sizeInKB} KB, ${sizeDiff}% reduction)<br>
+            <strong>Type:</strong> ${processedFile.type}<br>
+            <em style="color: green;">✅ Compression completed!</em>
+          `;
+        }
+        document.dispatchEvent(
+          new CustomEvent("formease:fileProcessed", {
+            detail: {
+          inputId,
+          processedFile,
+          originalFile: file,
+          operation: "Video Compression",
+            },
+          })
+        );
+          } catch (err) {
+        if (info) {
+          info.innerHTML = `<span style="color: red;">❌ Compression failed: ${err.message}</span>`;
+        }
+          }
         }
       });
 

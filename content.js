@@ -44,7 +44,6 @@ function injectScriptInOrder(filePath) {
     await injectScriptInOrder("scripts/pdf-lib.min.js");
     await injectScriptInOrder("scripts/pica.min.js");
     await injectScriptInOrder("scripts/resize.js");
-    await injectScriptInOrder("scripts/ffmpeg.js");
     await injectScriptInOrder("scripts/compressVideo.js");
     await injectScriptInOrder("scripts/compress.js");
     await injectScriptInOrder("scripts/convert.js");
@@ -102,7 +101,7 @@ document.addEventListener("drop", (e) => {
 window.addEventListener("message", async (event) => {
   if (event.source !== window) return;
 
-  if (event.data.type === "compressPDF") {
+  if (event.data.type === "compress-PDF") {
     const { inputId } = event.data;
     const file = getCurrentFileForInput(inputId);
 
@@ -120,7 +119,7 @@ window.addEventListener("message", async (event) => {
 window.addEventListener("message", async (event) => {
   if (event.source !== window) return;
 
-  if (event.data.type === "compress-result") {
+  if (event.data.type === "compress-video-result") {
     const { inputId, file: compressedData } = event.data;
     if (!inputId || !compressedData) return;
 
@@ -185,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // ✅ Send message to compressVideo.js
       window.postMessage({
-        type: "compress",
+        type: "compress-Video",
         file,
         inputId,
       }, "*");
