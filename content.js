@@ -44,7 +44,6 @@ function injectScriptInOrder(filePath) {
     await injectScriptInOrder("scripts/pdf-lib.min.js");
     await injectScriptInOrder("scripts/pica.min.js");
     await injectScriptInOrder("scripts/resize.js");
-    await injectScriptInOrder("scripts/ffmpeg.js");
     await injectScriptInOrder("scripts/compressVideo.js");
     await injectScriptInOrder("scripts/compress.js");
     await injectScriptInOrder("scripts/convert.js");

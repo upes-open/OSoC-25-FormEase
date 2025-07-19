@@ -2,7 +2,8 @@
   "dependencies": {
     "@ffmpeg/core": "^0.12.10",
     "@ffmpeg/ffmpeg": "^0.12.15",
-    "@ffmpeg/util": "^0.12.2"
+    "@ffmpeg/util": "^0.12.2",
+    "express": "^5.1.0"
   },
   "devDependencies": {
     "esbuild": "^0.25.6",

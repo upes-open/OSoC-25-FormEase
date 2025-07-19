@@ -28,9 +28,7 @@
         "scripts/resize.js",
         "scripts/compress.js",
         "scripts/convert.js",
-        "scripts/ffmpeg.js",
-        "scripts/814.ffmpeg.js",
-        "scripts/ffmpeg-core.wasm",
+        "scripts/assets",
         "scripts/compressVideo.js",
         "scripts/compressPDF.js",
         "scripts/reset.js"
