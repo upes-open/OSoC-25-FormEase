@@ -10,6 +10,11 @@
 
 console.log("[FormEase] content.js loaded✅");
 
+// Add immediate debug info
+console.log("[FormEase] Extension loaded at:", new Date().toISOString());
+console.log("[FormEase] Current URL:", window.location.href);
+console.log("[FormEase] Document ready state:", document.readyState);
+
 function injectScript(filePath) {
   const script = document.createElement("script");
   script.src = filePath.startsWith("http")
@@ -634,6 +639,19 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       OriginalFile = currentFile;
 
       if (currentFile) {
+        // Show immediate processing feedback
+        const videoFeedback = toolbox.querySelector(".formease-feedback-video");
+        if (videoFeedback) {
+          videoFeedback.style.display = "block";
+          videoFeedback.style.color = "#1d4ed8";
+          videoFeedback.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="spinner" style="position: relative; top: 0; left: 0; margin: 0; width: 16px; height: 16px; border-width: 2px;"></div>
+              🎥 Starting video compression...
+            </div>
+          `;
+        }
+        
         window.postMessage({ type: "compress-Video", inputId }, "*");
       }
     });
@@ -651,23 +669,41 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     console.log(
       "[FormEase] Image File provided to setupToolboxEventListeners, attempting to display preview."
     );
+    
+    // Ensure imagePreview and imagePreviewArea exist before proceeding
+    if (!imagePreview) {
+      console.error("[FormEase] imagePreview element not found in toolbox");
+      return;
+    }
+    
+    if (!imagePreviewArea) {
+      console.error("[FormEase] imagePreviewArea element not found in toolbox");
+      return;
+    }
+    
     const reader = new FileReader();
     reader.onload = function (e) {
       const loader = toolbox.querySelector(".spinner");
 
-      imagePreview.onerror = () => {
-        loader.classList.add("hidden");
-        console.error("[FormEase] Error loading image preview.");
-        if (formeasefeedback) {
-          formeasefeedback.innerHTML = `<div>Error displaying image preview.</div>`;
-          formeasefeedback.style.display = "block";
-        }
-      };
+      // Add null check for imagePreview
+      if (imagePreview) {
+        imagePreview.onerror = () => {
+          loader.classList.add("hidden");
+          console.error("[FormEase] Error loading image preview.");
+          if (formeasefeedback) {
+            formeasefeedback.innerHTML = `<div>Error displaying image preview.</div>`;
+            formeasefeedback.style.display = "block";
+          }
+        };
 
-      // Loader untill image loads
-      imagePreview.onload = () => {
-        loader.classList.add("hidden");
-      };
+        // Loader until image loads
+        imagePreview.onload = () => {
+          loader.classList.add("hidden");
+        };
+      } else {
+        console.error("[FormEase] imagePreview element not found in toolbox");
+        if (loader) loader.classList.add("hidden");
+      }
 
       console.log(
         "[FormEase] FileReader onload fired. imagePreview:",
@@ -822,6 +858,34 @@ function getCurrentFileForInput(inputId) {
   const input = document.querySelector(`input[data-form-ease-id="${inputId}"]`);
   if (!input) return null;
   return input.files?.[0] || originalFiles.get(inputId) || null;
+}
+
+// Function to dynamically load script files
+async function loadScript(scriptPath) {
+  return new Promise((resolve, reject) => {
+    // Check if script is already loaded
+    const existingScript = document.querySelector(`script[src*="${scriptPath}"]`);
+    if (existingScript) {
+      console.log(`[FormEase] Script already loaded: ${scriptPath}`);
+      resolve();
+      return;
+    }
+
+    console.log(`[FormEase] Loading script: ${scriptPath}`);
+    
+    const script = document.createElement('script');
+    script.src = chrome.runtime.getURL(scriptPath);
+    script.onload = () => {
+      console.log(`[FormEase] ✅ Script loaded successfully: ${scriptPath}`);
+      resolve();
+    };
+    script.onerror = (error) => {
+      console.error(`[FormEase] ❌ Failed to load script: ${scriptPath}`, error);
+      reject(new Error(`Failed to load script: ${scriptPath}`));
+    };
+    
+    document.head.appendChild(script);
+  });
 }
 
 function processFile(operation, file, options, inputId) {
@@ -1088,6 +1152,105 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   watchForDynamicInputs(); // Start watching for new inputs after initial scan
+});
+
+// Add message handler for toolbox button actions
+window.addEventListener("message", async (event) => {
+  if (event.source !== window) return;
+
+  const { action, inputId, file, width, height, scale } = event.data;
+  
+  if (!action) return;
+
+  console.log(`[FormEase] Received toolbox action: ${action} for input: ${inputId}`);
+
+  try {
+    switch (action) {
+      case 'compress-pdf':
+        if (file && file.type === "application/pdf") {
+          console.log("[FormEase] Starting PDF compression...");
+          await loadScript('scripts/compressPDF.js');
+          await compressPDF(file, inputId);
+          
+          // Send message to toolbox to show confirm button
+          window.postMessage({
+            type: 'compression-complete',
+            inputId: inputId,
+            action: 'compress-pdf'
+          }, '*');
+        }
+        break;
+
+      case 'compress-video':
+        if (file && file.type.includes('video')) {
+          console.log("[FormEase] Starting video compression...");
+          await loadScript('scripts/compressVideo.js');
+          await compressVideo(file, inputId);
+          
+          // Send message to toolbox to show confirm button
+          window.postMessage({
+            type: 'compression-complete',
+            inputId: inputId,
+            action: 'compress-video'
+          }, '*');
+        }
+        break;
+
+      case 'compress-image':
+        if (file && file.type.includes('image')) {
+          console.log("[FormEase] Starting image compression...");
+          await loadScript('scripts/compress.js');
+          await compressImage(file, inputId);
+          
+          // Send message to toolbox to show confirm button
+          window.postMessage({
+            type: 'compression-complete',
+            inputId: inputId,
+            action: 'compress-image'
+          }, '*');
+        }
+        break;
+
+      case 'resize-image':
+        if (file && file.type.includes('image')) {
+          console.log("[FormEase] Starting image resize...");
+          await loadScript('scripts/resize.js');
+          await resizeImage(file, inputId, { width, height, scale });
+          
+          // Send message to toolbox to show confirm button
+          window.postMessage({
+            type: 'processing-complete',
+            inputId: inputId,
+            action: 'resize-image'
+          }, '*');
+        }
+        break;
+
+      case 'convert-file':
+        console.log("[FormEase] Starting file conversion...");
+        await loadScript('scripts/convert.js');
+        await convertFile(file, inputId);
+        
+        // Send message to toolbox to show confirm button
+        window.postMessage({
+          type: 'processing-complete',
+          inputId: inputId,
+          action: 'convert-file'
+        }, '*');
+        break;
+
+      default:
+        console.log(`[FormEase] Unknown action: ${action}`);
+    }
+  } catch (error) {
+    console.error(`[FormEase] Error executing action ${action}:`, error);
+    
+    // Show error feedback to user
+    const toolbox = document.querySelector(`.formease-toolbox[data-input-id="${inputId}"]`);
+    if (toolbox) {
+      showFeedback(toolbox, `❌ Error: ${error.message}`, "error");
+    }
+  }
 });
 
 function cleanup() {

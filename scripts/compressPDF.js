@@ -69,7 +69,8 @@ window.addEventListener("message", async (event) => {
       pages.forEach((page) => newDoc.addPage(page));
 
       const compressedBytes = await newDoc.save();
-      confirmBtn.classList.remove("hidden");
+      // Button visibility is now handled by message passing to toolbox
+      // confirmBtn.classList.remove("hidden");
       return new Blob([compressedBytes], { type: "application/pdf" });
     };
 
@@ -78,30 +79,49 @@ window.addEventListener("message", async (event) => {
         "[FormEase-Compress-PDF] Confirm Button click event fired for compressing PDF."
       );
 
-      const newFile = new File([blob], `Compressed: ${file.name}`, {
-        type: "application/pdf",
-      });
+      // Show loading feedback immediately
+      pdfFeedback.style.display = "block";
+      pdfFeedback.style.color = "#1d4ed8";
+      pdfFeedback.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="spinner" style="position: relative; top: 0; left: 0; margin: 0; width: 16px; height: 16px; border-width: 2px;"></div>
+          📄 File is being injected... Please wait.
+        </div>
+      `;
 
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(newFile);
-
-      fileInput.files = dataTransfer.files;
-
-      confirmBtn.classList.add("hidden");
-
+      // Small delay to show the loading message before processing
       setTimeout(() => {
-        toolbox.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
+        const newFile = new File([blob], `Compressed: ${file.name}`, {
+          type: "application/pdf",
         });
-        pdfFeedback.style.display = "block";
-        pdfFeedback.innerHTML = "<div>✅ File Injected Successfully!";
-        pdfFeedback.style.boxShadow = "rgba(46, 242, 11, 1) 0px 5px 15px;";
-      }, 100);
 
-      setTimeout(() => {
-        toolbox.remove();
-      }, 3000);
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(newFile);
+
+        fileInput.files = dataTransfer.files;
+
+        // Button visibility is now handled by message passing to toolbox
+        // confirmBtn.classList.add("hidden");
+
+        setTimeout(() => {
+          toolbox.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          pdfFeedback.style.display = "block";
+          pdfFeedback.innerHTML = "<div>✅ File injected successfully!</div>";
+          pdfFeedback.style.color = "#007bff";
+          pdfFeedback.style.backgroundColor = "#f0f9ff";
+          pdfFeedback.style.border = "1px solid #007bff";
+          pdfFeedback.style.borderRadius = "8px";
+          pdfFeedback.style.padding = "12px";
+          pdfFeedback.style.boxShadow = "rgba(0, 123, 255, 0.25) 0px 5px 15px;";
+        }, 100);
+
+        setTimeout(() => {
+          toolbox.remove();
+        }, 3000);
+      }, 200); // Small delay to show loading state
     });
 
     if (typeof PDFLib !== "undefined" && PDFLib.PDFDocument) {
@@ -132,11 +152,23 @@ window.addEventListener("message", async (event) => {
 
       console.log("[FormEase-Compress-PDF] New PDF : ", compressedBlob);
 
-      pdfFeedback.innerHTML = `<div>✅ Compressed. Please review!<div style="margin-top:1rem;">Size: ${size} kB<div>`;
+      pdfFeedback.innerHTML = `<div>✅ Compressed. Please review!<div style="margin-top:1rem;">Size: ${size} kB</div></div>`;
+      pdfFeedback.style.color = "#007bff";
+      pdfFeedback.style.backgroundColor = "#f0f9ff";
+      pdfFeedback.style.border = "1px solid #007bff";
+      pdfFeedback.style.borderRadius = "8px";
+      pdfFeedback.style.padding = "12px";
 
       setTimeout(() => {
         pdfFeedback.innerHTML =
           "<div>ℹ️ Click on the <strong><em>Save Changes</em></strong> button below to inject the file in input.</div>";
+        pdfFeedback.style.color = "#007bff";
+        
+        // Button visibility is now handled by message passing to toolbox
+        // confirmBtn.classList.remove("hidden");
+        // confirmBtn.style.backgroundColor = "#007bff";
+        // confirmBtn.style.borderColor = "#007bff";
+        // confirmBtn.textContent = "Save Changes";
       }, 3000);
     } else {
       errorFeedback();

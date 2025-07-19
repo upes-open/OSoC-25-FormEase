@@ -1,5 +1,26 @@
 console.log("[FormEase] compressVideo.js loaded ✅");
 
+// Add message listener for compress-Video events
+window.addEventListener("message", async (event) => {
+  if (event.source === window && event.data.type === "compress-Video") {
+    const { inputId } = event.data;
+    
+    console.log(`[FormEase-Video] Processing compress-Video request for input ${inputId}`);
+    
+    const fileInput = document.querySelector(
+      `input[type="file"][data-form-ease-id=${inputId}]`
+    );
+    
+    if (!fileInput || !fileInput.files[0]) {
+      console.error("[FormEase-Video] No file found for compression");
+      return;
+    }
+    
+    const file = fileInput.files[0];
+    await compressVideo(file, inputId);
+  }
+});
+
 async function compressVideo(file, inputId) {
   const feedback = document.querySelector(".formease-feedback-video");
   const confirmBtn = document.getElementById("confirm-btn");
@@ -66,37 +87,82 @@ async function compressVideo(file, inputId) {
       { type: "video/mp4", lastModified: Date.now() }
     );
 
-    // Inject file
-    const targetInput = document.querySelector(`input[type="file"][id="${inputId}"]`);
-    const dt = new DataTransfer();
-    dt.items.add(compressedFile);
-    targetInput.files = dt.files;
-
-    // Show success
+    // Show completion message and reveal confirm button
     const originalSize = (file.size / 1024).toFixed(2);
     const newSize = (blob.size / 1024).toFixed(2);
     const saved = (((file.size - blob.size) / file.size) * 100).toFixed(1);
 
-    feedback.style.color = "#16a34a";
+    feedback.style.color = "#28a745";
     feedback.innerHTML = `
-      ✅ <strong>${compressedFile.name}</strong> compressed successfully!<br>
-      <small>Original: ${originalSize} KB → ${newSize} KB (${saved}% smaller)</small>
+      ✅ <strong>Compression Complete!</strong><br>
+      <small>Original: ${originalSize} KB → ${newSize} KB (${saved}% smaller)</small><br>
+      <em style="font-size: 12px;">Click "Save Changes" below to inject the file.</em>
     `;
 
-    // Dispatch event so `formease:fileProcessed` listener shows additional info
-    const event = new CustomEvent("formease:fileProcessed", {
-      detail: {
-        inputId,
-        originalFile: file,
-        processedFile: compressedFile,
-        operation: "Video Compression",
-      },
+    // Button visibility is now handled by message passing to toolbox
+    // confirmBtn.classList.remove("hidden");
+    // confirmBtn.style.backgroundColor = "#28a745";
+    // confirmBtn.style.borderColor = "#28a745";
+    
+    // Remove existing event listeners to avoid duplicates
+    const newConfirmBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+    
+    newConfirmBtn.addEventListener("click", () => {
+      console.log("[FormEase-Video] Confirm Button clicked - injecting video");
+      
+      // Show loading feedback
+      feedback.style.color = "#1d4ed8";
+      feedback.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="spinner" style="position: relative; top: 0; left: 0; margin: 0; width: 16px; height: 16px; border-width: 2px;"></div>
+          🎥 File is being injected... Please wait.
+        </div>
+      `;
+      newConfirmBtn.disabled = true;
+      
+      setTimeout(() => {
+        // Inject the file
+        const targetInput = document.querySelector(`input[type="file"][data-form-ease-id="${inputId}"]`);
+        const dt = new DataTransfer();
+        dt.items.add(compressedFile);
+        targetInput.files = dt.files;
+        targetInput.dispatchEvent(new Event("change", { bubbles: true }));
+
+        // Show success message
+        feedback.style.color = "#28a745";
+        feedback.innerHTML = `
+          ✅ <strong>File injected successfully!</strong><br>
+          <small>${compressedFile.name} is now ready for upload</small>
+        `;
+
+        // Button visibility is now handled by message passing to toolbox
+        // newConfirmBtn.classList.add("hidden");
+        
+        // Dispatch event for additional info display
+        const event = new CustomEvent("formease:fileProcessed", {
+          detail: {
+            inputId,
+            originalFile: file,
+            processedFile: compressedFile,
+            operation: "Video Compression",
+          },
+        });
+        document.dispatchEvent(event);
+
+        // Auto-hide after success
+        setTimeout(() => {
+          const toolbox = document.querySelector(`.formease-toolbox[data-input-id="${inputId}"]`);
+          if (toolbox) toolbox.remove();
+        }, 3000);
+      }, 500); // Small delay to show loading state
     });
-    document.dispatchEvent(event);
 
   } catch (err) {
     feedback.style.color = "#dc2626";
     feedback.innerHTML = `❌ Compression failed: ${err.message}`;
     console.error("[FormEase] Compression failed ❌", err);
+    // Button visibility is now handled by message passing to toolbox
+    // confirmBtn.classList.add("hidden");
   }
 }

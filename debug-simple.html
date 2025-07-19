@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple FormEase Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        input[type="file"] { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Simple FormEase Extension Test</h1>
+    
+    <div class="test-section">
+        <h2>Basic File Input Test</h2>
+        <p>This should get a FormEase toolbox when you select a file:</p>
+        <input type="file" id="test1" accept="image/*">
+    </div>
+    
+    <div class="test-section">
+        <h2>Second File Input Test</h2>
+        <p>This should also get a FormEase toolbox:</p>
+        <input type="file" id="test2" accept="image/*,video/*,.pdf">
+    </div>
+    
+    <div id="debug-info">
+        <h3>Debug Information</h3>
+        <div id="extension-status">Checking extension status...</div>
+        <div id="file-inputs-found">Checking for file inputs...</div>
+    </div>
+
+    <script>
+        // Debug script to check if extension is working
+        console.log("🔍 [DEBUG] Page loaded, checking for FormEase...");
+        
+        // Check if extension content script loaded
+        setTimeout(() => {
+            const extStatus = document.getElementById('extension-status');
+            const fileInputsStatus = document.getElementById('file-inputs-found');
+            
+            // Count file inputs
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputsStatus.textContent = `Found ${fileInputs.length} file inputs`;
+            
+            // Check for FormEase indicators
+            const hasFormEaseConsole = window.console.log.toString().includes('FormEase') || 
+                                     document.body.innerHTML.includes('formease') ||
+                                     document.querySelector('[data-formease-id]') !== null;
+            
+            if (hasFormEaseConsole || document.querySelector('.formease-toolbox')) {
+                extStatus.textContent = "✅ FormEase extension detected!";
+                extStatus.style.color = "green";
+            } else {
+                extStatus.textContent = "❌ FormEase extension not detected. Check if it's loaded and enabled.";
+                extStatus.style.color = "red";
+            }
+            
+            // Log file inputs for debugging
+            fileInputs.forEach((input, index) => {
+                console.log(`🔍 [DEBUG] File input ${index + 1}:`, input);
+                console.log(`🔍 [DEBUG] Input ID: ${input.id || 'no ID'}`);
+                console.log(`🔍 [DEBUG] Input dataset:`, input.dataset);
+            });
+        }, 2000);
+
+        // Test file input change
+        document.getElementById('test1').addEventListener('change', function(e) {
+            console.log('🔍 [DEBUG] Test1 file selected:', e.target.files[0]);
+        });
+        
+        document.getElementById('test2').addEventListener('change', function(e) {
+            console.log('🔍 [DEBUG] Test2 file selected:', e.target.files[0]);
+        });
+    </script>
+</body>
+</html>

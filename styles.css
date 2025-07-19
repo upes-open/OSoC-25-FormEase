@@ -224,16 +224,48 @@
   animation: spin 1s linear infinite;
 }
 
+/* Inline spinner for feedback messages */
+.spinner.inline {
+  position: relative;
+  top: 0;
+  left: 0;
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
+
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
+  0% { 
+    transform: rotate(0deg); 
   }
-  100% {
-    transform: rotate(360deg);
+  100% { 
+    transform: rotate(360deg); 
   }
 }
 
-/* 
+/* Enhanced feedback styling for loading states */
+.formease-feedback-pdf, 
+.formease-feedback-video {
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  transition: all 0.3s ease;
+}
+
+.formease-feedback-pdf {
+  background-color: #f0f9ff;
+  border: 1px solid #007bff;
+}
+
+.formease-feedback-video {
+  background-color: #f0fdf4;
+  border: 1px solid #28a745;
+}/* 
 // Highlighting elements */
 .highlight {
   outline: 2px solid #60a5fa;

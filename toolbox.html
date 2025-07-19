@@ -167,6 +167,21 @@
           if (event.data?.formeaseInputId) {
             currentInputId = event.data.formeaseInputId;
           }
+          
+          // Listen for compression/processing complete messages
+          if (event.data?.type === 'compression-complete' || event.data?.type === 'processing-complete') {
+            console.log("[Toolbox] Processing complete, showing confirm button");
+            
+            // Show the confirm button
+            confirmBtn.classList.remove("hidden");
+            
+            // Update button text based on action
+            if (event.data.action?.includes('compress')) {
+              confirmBtn.textContent = "Save Changes";
+            } else {
+              confirmBtn.textContent = "Apply Changes";
+            }
+          }
         });
 
         taskDropdown.addEventListener("change", () => {
@@ -184,12 +199,13 @@
             compressSection.classList.remove("hidden");
             compressBtn.classList.remove("hidden");
 
-            // Show Save Changes if the file is video or PDF
-            if (
-              currentInputId === "video" ||
-              currentInputId === "documentFile"
-            ) {
-              confirmBtn.classList.remove("hidden");
+            // Show Save Changes if the file is video or PDF, but keep it hidden initially for video
+            if (currentInputId === "documentFile") {
+              // For PDFs, show confirm button after compression completes
+              confirmBtn.classList.add("hidden");
+            } else if (currentInputId === "video") {
+              // For videos, confirm button will be shown by compressVideo.js after processing
+              confirmBtn.classList.add("hidden");
             }
           } else if (task === "convert") {
             convertSection.classList.remove("hidden");
@@ -204,6 +220,130 @@
           if (imgHeight) imgHeight.value = "";
           console.log("[Toolbox] Reset slider and manual inputs on Save Changes");
         });
+
+        // Add event listeners for main action buttons
+        compressBtn.addEventListener("click", () => {
+          console.log("[Toolbox] Compress button clicked");
+          
+          // Get the file input and file from the parent document
+          const fileInput = parent.document.querySelector(`input[data-formease-id]`);
+          if (fileInput && fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            const inputId = fileInput.dataset.formeaseId;
+            
+            // Determine file type and call appropriate compression function
+            if (file.type.includes('pdf')) {
+              // Call PDF compression
+              console.log("[Toolbox] Calling PDF compression");
+              parent.window.postMessage({
+                action: 'compress-pdf',
+                inputId: inputId,
+                file: file
+              }, '*');
+            } else if (file.type.includes('video')) {
+              // Call video compression
+              console.log("[Toolbox] Calling video compression");
+              parent.window.postMessage({
+                action: 'compress-video',
+                inputId: inputId,
+                file: file
+              }, '*');
+            } else if (file.type.includes('image')) {
+              // Call image compression
+              console.log("[Toolbox] Calling image compression");
+              parent.window.postMessage({
+                action: 'compress-image',
+                inputId: inputId,
+                file: file
+              }, '*');
+            }
+          } else {
+            console.error("[Toolbox] No file found for compression");
+          }
+        });
+
+        resizeBtn.addEventListener("click", () => {
+          console.log("[Toolbox] Resize button clicked");
+          
+          // Get the file input and file from the parent document
+          const fileInput = parent.document.querySelector(`input[data-formease-id]`);
+          if (fileInput && fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            const inputId = fileInput.dataset.formeaseId;
+            
+            // Get resize parameters
+            const width = parseInt(imgWidth?.value) || null;
+            const height = parseInt(imgHeight?.value) || null;
+            const scale = parseFloat(resizeSlider?.value) / 100 || 1;
+            
+            console.log("[Toolbox] Calling resize with parameters:", { width, height, scale });
+            parent.window.postMessage({
+              action: 'resize-image',
+              inputId: inputId,
+              file: file,
+              width: width,
+              height: height,
+              scale: scale
+            }, '*');
+          } else {
+            console.error("[Toolbox] No file found for resizing");
+          }
+        });
+
+        convertBtn.addEventListener("click", () => {
+          console.log("[Toolbox] Convert button clicked");
+          
+          // Get the file input and file from the parent document
+          const fileInput = parent.document.querySelector(`input[data-formease-id]`);
+          if (fileInput && fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            const inputId = fileInput.dataset.formeaseId;
+            
+            console.log("[Toolbox] Calling convert function");
+            parent.window.postMessage({
+              action: 'convert-file',
+              inputId: inputId,
+              file: file
+            }, '*');
+          } else {
+            console.error("[Toolbox] No file found for conversion");
+          }
+        });
+
+        // Reset button functionality
+        const resetBtn = document.getElementById("resetButton");
+        if (resetBtn) {
+          resetBtn.addEventListener("click", () => {
+            console.log("[Toolbox] Reset button clicked");
+            
+            const fileInput = parent.document.querySelector(`input[data-formease-id]`);
+            if (fileInput) {
+              const inputId = fileInput.dataset.formeaseId;
+              
+              // Reset the file input
+              fileInput.value = "";
+              
+              // Clear any preview images
+              const imagePreview = document.getElementById("image-preview");
+              if (imagePreview) {
+                imagePreview.src = "#";
+                imagePreview.closest("#image-preview-area")?.style.setProperty("display", "none");
+              }
+              
+              // Reset all controls
+              resizeSlider.value = 100;
+              if (imgWidth) imgWidth.value = "";
+              if (imgHeight) imgHeight.value = "";
+              taskDropdown.value = "nill";
+              
+              // Hide all sections
+              [resizeSection, compressSection, convertSection].forEach(s => s.classList.add("hidden"));
+              [resizeBtn, compressBtn, convertBtn, confirmBtn].forEach(b => b.classList.add("hidden"));
+              
+              console.log("[Toolbox] Reset complete for input:", inputId);
+            }
+          });
+        }
       });
     </script>
   </body>

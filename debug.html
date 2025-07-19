@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormEase Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .debug-section {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .error { border-left-color: #dc3545; background: #fff5f5; }
+        .success { border-left-color: #28a745; background: #f8fff9; }
+        .warning { border-left-color: #ffc107; background: #fffef5; }
+        input[type="file"] {
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px dashed #ddd;
+            width: 100%;
+            cursor: pointer;
+        }
+        #console-output {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 FormEase Extension Debug</h1>
+
+    <div class="debug-section warning">
+        <h3>⚠️ Extension Status Check</h3>
+        <p>This page will help identify why FormEase isn't working.</p>
+    </div>
+
+    <div class="debug-section">
+        <h3>📝 Test Form</h3>
+        <form>
+            <label for="test-file">Upload any file to test FormEase:</label>
+            <input type="file" id="test-file" accept="*/*">
+            <div id="file-info" style="margin-top: 10px; font-size: 14px; color: #666;">
+                No file selected
+            </div>
+        </form>
+    </div>
+
+    <div class="debug-section">
+        <h3>🔍 Debug Console</h3>
+        <div id="console-output">Waiting for FormEase extension...</div>
+    </div>
+
+    <div class="debug-section">
+        <h3>✅ Checklist</h3>
+        <ul>
+            <li id="check-extension">🔄 Extension loaded: <span class="status">Checking...</span></li>
+            <li id="check-content">🔄 Content script: <span class="status">Checking...</span></li>
+            <li id="check-edit-button">🔄 Edit button: <span class="status">Waiting for file...</span></li>
+            <li id="check-toolbox">🔄 Toolbox creation: <span class="status">Waiting for edit click...</span></li>
+        </ul>
+    </div>
+
+    <script>
+        const output = document.getElementById('console-output');
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+
+        // Capture all console output
+        function logToDiv(type, ...args) {
+            const timestamp = new Date().toLocaleTimeString();
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            
+            output.textContent += `[${timestamp}] ${type.toUpperCase()}: ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        console.log = (...args) => {
+            originalLog.apply(console, args);
+            logToDiv('log', ...args);
+        };
+
+        console.error = (...args) => {
+            originalError.apply(console, args);
+            logToDiv('error', ...args);
+        };
+
+        console.warn = (...args) => {
+            originalWarn.apply(console, args);
+            logToDiv('warn', ...args);
+        };
+
+        // Check for FormEase extension
+        setTimeout(() => {
+            const checks = {
+                extension: document.querySelector('.formease-edit-btn') !== null,
+                content: window.getComputedStyle ? true : false,
+                chrome: typeof chrome !== 'undefined'
+            };
+
+            console.log('🔧 FormEase Debug Results:', checks);
+            
+            document.getElementById('check-extension').querySelector('.status').textContent = 
+                checks.chrome ? '✅ Chrome APIs available' : '❌ Chrome APIs not found';
+            
+            document.getElementById('check-content').querySelector('.status').textContent = 
+                checks.content ? '✅ Page scripts working' : '❌ Script execution blocked';
+        }, 2000);
+
+        // File input handler
+        document.getElementById('test-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const info = document.getElementById('file-info');
+            
+            if (file) {
+                info.innerHTML = `
+                    <strong>File:</strong> ${file.name}<br>
+                    <strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB<br>
+                    <strong>Type:</strong> ${file.type}
+                `;
+                
+                // Check for edit button
+                setTimeout(() => {
+                    const editBtn = this.parentNode.querySelector('.formease-edit-btn');
+                    document.getElementById('check-edit-button').querySelector('.status').textContent = 
+                        editBtn ? '✅ Edit button found!' : '❌ Edit button not created';
+                    
+                    if (editBtn) {
+                        editBtn.addEventListener('click', () => {
+                            setTimeout(() => {
+                                const toolbox = document.querySelector('.formease-toolbox');
+                                document.getElementById('check-toolbox').querySelector('.status').textContent = 
+                                    toolbox ? '✅ Toolbox created!' : '❌ Toolbox not found';
+                            }, 500);
+                        });
+                    }
+                }, 1000);
+            } else {
+                info.textContent = 'No file selected';
+            }
+        });
+
+        console.log('🚀 Debug page loaded - waiting for FormEase extension...');
+    </script>
+</body>
+</html>

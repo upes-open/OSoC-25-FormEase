@@ -1,4 +1,15 @@
 {
+  "name": "formease-chrome-extension",
+  "version": "1.0.0",
+  "description": "Resize, compress, and convert files before uploading, directly in-browser.",
+  "scripts": {
+    "test": "echo \"Open chrome://extensions/ and reload the extension to test changes\"",
+    "build": "echo \"Chrome extension ready for production - no build step needed\"",
+    "dev": "echo \"Chrome extension development: 1) Load unpacked in chrome://extensions/ 2) Make changes 3) Reload extension\"",
+    "start": "start chrome://extensions/",
+    "open-test": "start test.html",
+    "debug": "start debug.html"
+  },
   "dependencies": {
     "@ffmpeg/core": "^0.12.10",
     "@ffmpeg/ffmpeg": "^0.12.15",
