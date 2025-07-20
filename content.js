@@ -115,7 +115,29 @@ window.addEventListener("message", async (event) => {
     }
   }
 });
+//toolbox.html
+document.addEventListener("change", (e) => {
+  if (e.target.type === "file") {
+    const file = e.target.files[0];
+    if (!file) return;
 
+    const fileType = file.type;
+
+    if (fileType.startsWith("video/")) {
+      // Show the video preview
+      const videoElement = document.querySelector(".formease-preview-video");
+      if (videoElement) {
+        const blobURL = URL.createObjectURL(file);
+        videoElement.src = blobURL;
+        videoElement.style.display = "block";
+        videoElement.load();
+        console.log("[FormEase] 🎥 Video preview loaded");
+      } else {
+        console.warn("[FormEase] ⚠️ No video preview element found.");
+      }
+    }
+  }
+});
 
 window.addEventListener("message", async (event) => {
   if (event.source !== window) return;
@@ -794,31 +816,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     });
   }
 }
-// Video preview injection after file upload
-document.addEventListener("change", (event) => {
-  const input = event.target;
-  if (input?.type === "file" && input?.files?.[0]) {
-    const file = input.files[0];
 
-    // If video file, send preview URL to toolbox
-    if (file.type.startsWith("video/")) {
-      
-      const videoUrl = URL.createObjectURL(file);
-
-      // Send the video preview URL to toolbox (assumes it's in the same page)
-      window.postMessage(
-        {
-          formeaseVideoPreviewUrl: videoUrl,
-          formeaseInputId: "video",
-        },
-        "*"
-      );
-
-      console.log("[FormEase] 🎥 Sent video preview URL to toolbox");
-    }
-    URL.revokeObjectURL(videoUrl.src);
-  }
-});
 const submitBtns = document.querySelectorAll(".submit-btn");
 for (let submitBtn of submitBtns) {
   submitBtn.addEventListener("click", () => {

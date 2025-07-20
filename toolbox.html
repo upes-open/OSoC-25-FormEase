@@ -202,16 +202,7 @@
             currentInputId = event.data.formeaseInputId;
           }
         });
-        window.addEventListener("message", (event) => {
-          if (event.data?.formeaseVideoPreviewUrl && event.data?.formeaseInputId === "video") {
-            const videoEl = document.querySelector(".formease-feedback-video video");
-            if (videoEl) {
-              videoEl.src = event.data.formeaseVideoPreviewUrl;
-              videoEl.load();
-              console.log("[Toolbox] Video preview updated ✅");
-            }
-          }
-        });
+        
 
         taskDropdown.addEventListener("change", () => {
           const task = taskDropdown.value;
