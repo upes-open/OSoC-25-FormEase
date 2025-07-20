@@ -802,6 +802,7 @@ document.addEventListener("change", (event) => {
 
     // If video file, send preview URL to toolbox
     if (file.type.startsWith("video/")) {
+      
       const videoUrl = URL.createObjectURL(file);
 
       // Send the video preview URL to toolbox (assumes it's in the same page)
@@ -815,7 +816,7 @@ document.addEventListener("change", (event) => {
 
       console.log("[FormEase] 🎥 Sent video preview URL to toolbox");
     }
-    URL.revokeObjectURL(videoEl.src);
+    URL.revokeObjectURL(videoUrl.src);
   }
 });
 const submitBtns = document.querySelectorAll(".submit-btn");
