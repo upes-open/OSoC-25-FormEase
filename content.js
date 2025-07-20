@@ -116,25 +116,23 @@ window.addEventListener("message", async (event) => {
   }
 });
 //toolbox.html
-document.addEventListener("change", (e) => {
-  if (e.target.type === "file") {
-    const file = e.target.files[0];
-    if (!file) return;
+document.addEventListener("change", (event) => {
+  const input = event.target;
+  if (input?.type === "file" && input?.files?.[0]) {
+    const file = input.files[0];
 
-    const fileType = file.type;
+    if (file.type.startsWith("video/")) {
+      const videoUrl = URL.createObjectURL(file);
 
-    if (fileType.startsWith("video/")) {
-      // Show the video preview
-      const videoElement = document.querySelector(".formease-preview-video");
-      if (videoElement) {
-        const blobURL = URL.createObjectURL(file);
-        videoElement.src = blobURL;
-        videoElement.style.display = "block";
-        videoElement.load();
-        console.log("[FormEase] 🎥 Video preview loaded");
-      } else {
-        console.warn("[FormEase] ⚠️ No video preview element found.");
-      }
+      window.postMessage(
+        {
+          formeaseVideoPreviewUrl: videoUrl,
+          formeaseInputId: "video",
+        },
+        "*"
+      );
+
+      console.log("[FormEase] 🎥 Sent video preview URL to toolbox via content.js");
     }
   }
 });
@@ -686,7 +684,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         }
       };
 
-      // Loader untill image loads
+      // Loader untill image loads video
       imagePreview.onload = () => {
         loader.classList.add("hidden");
       };
