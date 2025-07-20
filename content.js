@@ -115,6 +115,29 @@ window.addEventListener("message", async (event) => {
     }
   }
 });
+//toolbox.html
+document.addEventListener("change", (e) => {
+  if (e.target.type === "file") {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const fileType = file.type;
+
+    if (fileType.startsWith("video/")) {
+      // Show the video preview
+      const videoElement = document.querySelector(".formease-preview-video");
+      if (videoElement) {
+        const blobURL = URL.createObjectURL(file);
+        videoElement.src = blobURL;
+        videoElement.style.display = "block";
+        videoElement.load();
+        console.log("[FormEase] 🎥 Video preview loaded");
+      } else {
+        console.warn("[FormEase] ⚠️ No video preview element found.");
+      }
+    }
+  }
+});
 
 window.addEventListener("message", async (event) => {
   if (event.source !== window) return;
