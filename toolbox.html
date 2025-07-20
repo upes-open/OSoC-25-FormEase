@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Toolbox</title>
-    <script src="/assets/ffmpeg/package/dist/umd/ffmpeg.js"></script>
-    <script src="/assets/util/package/dist/umd/index.js"></script>
+    <script src="scripts/assets/ffmpeg/package/dist/umd/ffmpeg.js"></script>
+    <script src="scripts/assets/util/package/dist/umd/index.js"></script>
   </head>
 
   <body>
@@ -117,7 +117,38 @@
         <div
           class="formease-feedback-video"
           style="margin-top: 5px; color: #28a745"
-        ></div>
+        ><hr style="margin: 10px 0;" />
+
+          <!-- 📺 Video Trim Controls -->
+          <video
+            id="videoPreviewArea"
+            controls
+            src="#"
+            width="100%"
+            style="max-height: 300px; border: 1px solid #ccc; margin-bottom: 10px;"
+          ></video>
+
+          <div style="margin-bottom: 10px;margin-right: 10px;">
+            <label  for="startTime">Start Time (HH:MM:SS):</label>
+            <input type="text" id="startTime" placeholder="e.g. 00:00:03" />
+          </div>
+
+          <div style="margin-bottom: 10px;margin-right: 10px;">
+            <label for="endTime">End Time (HH:MM:SS):</label>
+            <input type="text" id="endTime" placeholder="e.g. 00:00:10" />
+          </div>
+
+          <button
+            type="button"
+            id="playPauseBtn"
+            class="toolbox-btn"
+            style="margin-bottom: 10px;"
+          >
+            ▶️ Play / ⏸ Pause
+          </button>
+
+          <p id="video-process-status" style="font-size: 14px; color: #555;"></p>
+        </div>
         <div class="formease-feedback-resize"></div>
         <div class="formease-feedback-compress"></div>
         <div class="formease-feedback-convert"></div>

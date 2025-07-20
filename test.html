@@ -131,8 +131,8 @@
         background-color: #1d4ed8;
       }
     </style>
-    <script src="/assets/ffmpeg/package/dist/umd/ffmpeg.js"></script>
-    <script src="/assets/util/package/dist/umd/index.js"></script>
+    <script src="scripts/assets/ffmpeg/package/dist/umd/ffmpeg.js"></script>
+    <script src="scripts/assets/util/package/dist/umd/index.js"></script>
   </head>
 
   <body>
@@ -300,7 +300,22 @@
             />
             
             <div class="preview" id="videoPreview">
-              <video id="videoPreviewArea" src="#" alt="Video Preview"></video>
+              <video
+                id="videoPreviewArea"
+                controls
+                width="100%"
+                style="max-height: 300px; border: 1px solid #ccc; margin-bottom: 10px;"
+              ></video>
+
+              <div style="margin-bottom: 10px;">
+                <label for="startTime">Start Time (HH:MM:SS):</label>
+                <input type="text" id="startTime" placeholder="e.g. 00:00:03" />
+              </div>
+
+              <div style="margin-bottom: 10px;">
+                <label for="endTime">End Time (HH:MM:SS):</label>
+                <input type="text" id="endTime" placeholder="e.g. 00:00:10" />
+              </div>
             </div>
             <div class="file-info" id="videoInfo">No file selected.</div>
 
