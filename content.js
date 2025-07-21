@@ -585,25 +585,33 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       }
     };
   } else if (file && file.type === "application/pdf") {
-    if (formeasefeedback) {
-      formeasefeedback.innerHTML = "<div>PDF File Selected.</div>";
-      formeasefeedback.style.display = "block";
-    }
-    const pdfContainer = toolbox.querySelector(".formease-feedback-pdf");
-    const pdfIframe = pdfContainer?.querySelector("#pdfPreviewIframe");
-
-    if (pdfIframe) {
       const blobUrl = URL.createObjectURL(file);
-      pdfIframe.src = blobUrl;
-      pdfIframe.style.display = "block";
 
-      // Store the blob URL for later cleanup if needed
-      pdfIframe.dataset.blobUrl = blobUrl;
-    }
-  } else if (file && file.type.startsWith("video/")) {
+      if (formeasefeedback) {
+        formeasefeedback.innerHTML = `
+          <iframe
+            id="pdfPreviewIframe"
+            src="${blobUrl}"
+            style="width: 100%; height: 400px; border: 1px solid #ccc;"
+          ></iframe>
+        `;
+        formeasefeedback.style.display = "block";
+      }
+    } else if (file && file.type.startsWith("video/")) {
     if (formeasefeedback) {
       formeasefeedback.innerHTML = "<div>Video File Selected.</div>";
       formeasefeedback.style.display = "block";
+    }
+    const videoContainer = toolbox.querySelector(".formease-feedback-video");
+    const videoIframe = videoContainer?.querySelector("#videoPreviewIframe");
+
+    if (videoIframe) {
+      const blobUrl = URL.createObjectURL(file);
+      videoIframe.src = blobUrl;
+      videoIframe.style.display = "block";
+
+      // Store the blob URL for later cleanup if needed
+      videoIframe.dataset.blobUrl = blobUrl;
     }
   } else {
     if (formeasefeedback) {
