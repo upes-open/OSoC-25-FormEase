@@ -512,6 +512,80 @@
           }
         });
       }
+      function setupVideoFileHandler(
+        inputId,
+        infoId,
+        previewId,
+        errorId,
+        constraints = {}
+      ) {
+        const input = document.getElementById(inputId);
+        const info = document.getElementById(infoId);
+        const preview = document.getElementById(previewId); // e.g. a <div> with a <video> inside
+        const error = document.getElementById(errorId);
+        const previewVideo = preview?.querySelector("video");
+
+        let currentBlobUrl = null;
+
+        input.addEventListener("change", function (e) {
+          info.classList.remove("hidden");
+          const file = e.target.files[0];
+          error.style.display = "none";
+          info.innerText = "No file selected.";
+
+          if (file) {
+            const sizeInKB = (file.size / 1024).toFixed(2);
+            info.innerText = "";
+            info.classList.add("hidden");
+
+            let isValid = true;
+
+            // Accept check (e.g. "video/mp4")
+            if (constraints.accept && file.type !== constraints.accept) {
+              error.style.display = "block";
+              error.innerHTML =
+                constraints.acceptError ||
+                `Error: File must be ${constraints.accept.split("/")[1]}.`;
+              isValid = false;
+            }
+
+            // Size limit (KB)
+            if (constraints.maxSize && file.size > constraints.maxSize * 1024) {
+              error.style.display = "block";
+              error.innerHTML = `Error: File size must be under ${constraints.maxSize}KB.`;
+              isValid = false;
+            }
+
+            // Minimum size
+            if (constraints.minSize && file.size === 0) {
+              error.style.display = "block";
+              error.innerHTML = "Error: File size cannot be zero.";
+              isValid = false;
+            }
+
+            if (isValid && previewVideo) {
+              // Revoke old blob if present
+              if (currentBlobUrl) {
+                URL.revokeObjectURL(currentBlobUrl);
+              }
+
+              // Show video preview
+              const blobUrl = URL.createObjectURL(file);
+              currentBlobUrl = blobUrl;
+              previewVideo.src = blobUrl;
+              previewVideo.style.display = "block";
+              preview.style.display = "block";
+              previewVideo.load();
+            } else if (!isValid) {
+              preview.style.display = "none";
+              if (previewVideo) {
+                previewVideo.pause();
+                previewVideo.src = "";
+              }
+            }
+          }
+        });
+      }
 
       // Setup for each field
       setupFileHandler(
