@@ -460,7 +460,7 @@ function createToolboxForInput(input, inputId, toolbox, file = null) {
     injectStyles();
 
     fetch(chrome.runtime.getURL("toolbox.html"))
-      .then((response) => response.text())
+      .then((response) => response.text())//(file && file.type === "application/pdf") {
       .then((data) => {
         toolbox.innerHTML = data;
         input.parentNode.parentNode.parentNode.appendChild(toolbox);
@@ -588,6 +588,17 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     if (formeasefeedback) {
       formeasefeedback.innerHTML = "<div>PDF File Selected.</div>";
       formeasefeedback.style.display = "block";
+    }
+    const pdfContainer = toolbox.querySelector(".formease-feedback-pdf");
+    const pdfIframe = pdfContainer?.querySelector("#pdfPreviewIframe");
+
+    if (pdfIframe) {
+      const blobUrl = URL.createObjectURL(file);
+      pdfIframe.src = blobUrl;
+      pdfIframe.style.display = "block";
+
+      // Store the blob URL for later cleanup if needed
+      pdfIframe.dataset.blobUrl = blobUrl;
     }
   } else if (file && file.type.startsWith("video/")) {
     if (formeasefeedback) {
@@ -764,7 +775,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
 
           if (currentFile) {
             window.postMessage({ type: "compress", inputId }, "*");
-          }
+          }//revokeObjectURL
         });
 
         if (resetBtn && !resetBtn.dataset.listenerAdded) {
@@ -812,6 +823,40 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         convertBtn.classList.add("hidden");
       }
     });
+  }
+}
+function setupVideoPreviewOnly(toolbox, inputId, file) {
+  console.log("[FormEase] 🎬 setupVideoPreviewOnly for", inputId);
+
+  const formeasefeedback = toolbox.querySelector(".formease-feedback-video");
+  const videoEl = formeasefeedback?.querySelector("video");
+
+  if (!file || !file.type.startsWith("video/")) {
+    console.warn("[FormEase] ⚠️ Not a video file");
+    formeasefeedback.innerHTML = "<div>❌ Invalid video file</div>";
+    formeasefeedback.style.display = "block";
+    return;
+  }
+
+  if (videoEl) {
+    // Revoke old preview if any
+    if (videoEl.dataset.blobUrl) {
+      URL.revokeObjectURL(videoEl.dataset.blobUrl);
+    }
+
+    const blobUrl = URL.createObjectURL(file);
+    videoEl.src = blobUrl;
+    videoEl.dataset.blobUrl = blobUrl;
+    videoEl.style.display = "block";
+    videoEl.load();
+
+    const sizeKB = (file.size / 1024).toFixed(1);
+    formeasefeedback.innerHTML = `<div>🎥 Previewing: ${file.name} (${sizeKB} KB)</div>`;
+    formeasefeedback.style.display = "block";
+
+    console.log("[FormEase] ✅ Video preview updated");
+  } else {
+    console.error("[FormEase] ❌ Video tag not found in toolbox");
   }
 }
 
