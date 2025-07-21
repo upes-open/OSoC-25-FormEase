@@ -598,22 +598,58 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         formeasefeedback.style.display = "block";
       }
     } else if (file && file.type.startsWith("video/")) {
-    if (formeasefeedback) {
-      formeasefeedback.innerHTML = "<div>Video File Selected.</div>";
-      formeasefeedback.style.display = "block";
-    }
-    const videoContainer = toolbox.querySelector(".formease-feedback-video");
-    const videoIframe = videoContainer?.querySelector("#videoPreviewIframe");
+        const blobUrl = URL.createObjectURL(file);
 
-    if (videoIframe) {
-      const blobUrl = URL.createObjectURL(file);
-      videoIframe.src = blobUrl;
-      videoIframe.style.display = "block";
+        if (formeasefeedback) {
+          formeasefeedback.innerHTML = `
+            <video
+              id="dynamicVideoPreview"
+              controls
+              src="${blobUrl}"
+              style="width: 100%; max-height: 300px; border: 1px solid #ccc; margin-bottom: 10px;"
+            ></video>
 
-      // Store the blob URL for later cleanup if needed
-      videoIframe.dataset.blobUrl = blobUrl;
-    }
-  } else {
+            <div style="margin-bottom: 10px; margin-right: 10px;">
+              <label for="startTime">Start Time (HH:MM:SS):</label>
+              <input type="text" id="startTime" placeholder="e.g. 00:00:03" />
+            </div>
+
+            <div style="margin-bottom: 10px; margin-right: 10px;">
+              <label for="endTime">End Time (HH:MM:SS):</label>
+              <input type="text" id="endTime" placeholder="e.g. 00:00:10" />
+            </div>
+
+            <button
+              type="button"
+              id="playPauseBtn"
+              class="toolbox-btn"
+              style="margin-bottom: 10px;"
+            >
+              ▶️ Play / ⏸ Pause
+            </button>
+
+            <p id="video-process-status" style="font-size: 14px; color: #555;"></p>
+          `;
+
+          formeasefeedback.style.display = "block";
+
+          // Setup play/pause handler
+          setTimeout(() => {
+            const videoEl = document.getElementById("dynamicVideoPreview");
+            const playPauseBtn = document.getElementById("playPauseBtn");
+
+            if (videoEl && playPauseBtn) {
+              playPauseBtn.addEventListener("click", () => {
+                if (videoEl.paused) {
+                  videoEl.play();
+                } else {
+                  videoEl.pause();
+                }
+              });
+            }
+          }, 0);
+        }
+      }else {
     if (formeasefeedback) {
       formeasefeedback.innerHTML = "<div>No File Selected.</div>";
       formeasefeedback.style.display = "block";
