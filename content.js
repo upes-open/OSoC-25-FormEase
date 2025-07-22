@@ -611,13 +611,6 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
         trimControls.style.flexDirection = "column";
         trimControls.style.gap = "10px";
 
-        const playPauseBtn = document.createElement("button");
-        playPauseBtn.id = "playPauseBtn";
-        playPauseBtn.type = "button";
-        playPauseBtn.className = "toolbox-btn";
-        playPauseBtn.textContent = "▶️ Play / ⏸ Pause";
-        playPauseBtn.style.marginBottom = "10px";
-
         // Create video preview
         const videoEl = document.createElement("video");
         videoEl.id = "dynamicVideoPreview";
@@ -642,26 +635,54 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
           <input type="text" id="endTime" placeholder="e.g. 00:00:10" />
         `;
 
+        // Play/Pause Button
+        const playPauseBtn = document.createElement("button");
+        playPauseBtn.id = "playPauseBtn";
+        playPauseBtn.type = "button";
+        playPauseBtn.className = "toolbox-btn";
+        playPauseBtn.textContent = "▶️ Play / ⏸ Pause";
+        playPauseBtn.style.marginBottom = "10px";
+
+        // Trim Button
+        const trimBtn = document.createElement("button");
+        trimBtn.id = "trimVideoBtn";
+        trimBtn.type = "button";
+        trimBtn.className = "toolbox-btn";
+        trimBtn.textContent = "✂️ Trim Video";
+        trimBtn.style.marginBottom = "10px";
+
+        // Append all controls
         trimControls.appendChild(startTimeDiv);
         trimControls.appendChild(endTimeDiv);
         trimControls.appendChild(playPauseBtn);
+        trimControls.appendChild(trimBtn);
 
-        // Append to DOM (just after file input or toolbox area)
+        // Append to DOM
         const container = document.querySelector("#formease-video-container") || document.body;
-        container.innerHTML = ""; // clear previous if needed
+        container.innerHTML = "";
         container.appendChild(previewContainer);
         container.appendChild(trimControls);
 
-        // Add play/pause functionality
+        // Play/pause logic
         playPauseBtn.addEventListener("click", () => {
-          if (videoEl.paused) {
-            videoEl.play();
+          videoEl.paused ? videoEl.play() : videoEl.pause();
+        });
+
+        // Stub: Trim logic (replace with actual FFmpeg logic)
+        trimBtn.addEventListener("click", () => {
+          const start = document.getElementById("startTime").value;
+          const end = document.getElementById("endTime").value;
+          const status = document.getElementById("video-process-status");
+
+          if (start && end) {
+            status.textContent = `⏳ Trimming video from ${start} to ${end}...`;
+            // Call actual trim logic here
           } else {
-            videoEl.pause();
+            status.textContent = "❌ Please enter both start and end time.";
           }
         });
 
-        // Keep feedback area separate and clean
+        // Set up feedback area
         if (formeasefeedback) {
           formeasefeedback.innerHTML = `<p id="video-process-status" style="font-size: 14px; color: #555;"></p>`;
           formeasefeedback.style.display = "block";
