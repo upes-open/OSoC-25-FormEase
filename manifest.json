@@ -12,7 +12,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": ["content.js","scripts/ffmpeg/umd/ffmpeg.js","scripts/ffmpeg/util.js"],
       "css": ["styles.css"],
       "all_frames": true
     }
@@ -27,8 +27,15 @@
         "scripts/pica.min.js",
         "scripts/resize.js",
         "scripts/compress.js",
-        "scripts/assets/ffmpeg/package/dist/esm/index.js",
-        "scripts/assets/util/package/dist/esm/index.js",
+        "scripts/assets/ffmpeg/package/dist/umd/ffmpeg.js",
+        "scripts/ffmpeg/*",
+        "scripts/assets/ffmpeg/package/dist/umd/814.ffmpeg.js",
+        "scripts/assets/util/package/dist/umd/index.js",
+        "scripts/assets/core/package/dist/umd/ffmpeg-core.js",
+        "scripts/assets/*",
+
+        "scripts/assets",
+
         "scripts/convert.js",
         "scripts/assets",
         "scripts/compressVideo.js",
@@ -39,7 +46,9 @@
       "matches": ["<all_urls>"]
     }
   ],
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self';"
-  }
+   "content_security_policy": {
+        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';",
+        "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; child-src 'self';"
+    }
+
 }
