@@ -64,8 +64,8 @@ function injectScriptAsModule(filePath) {
     await injectScriptInOrder("scripts/resize.js");
     await injectScriptInOrder("scripts/compress.js");
     // await injectScriptInOrder("scripts/ffmpeg.js");
-    // await injectScriptInOrder("scripts/assets/ffmpeg/package/dist/umd/ffmpeg.js");
-    // await injectScriptInOrder("scripts/assets/util/package/dist/umd/index.js");
+    await injectScriptInOrder("scripts/assets/ffmpeg/package/dist/umd/ffmpeg.js");
+    await injectScriptInOrder("scripts/assets/util/package/dist/umd/index.js");
     // await injectScriptInOrder("scripts/assets/core/package/dist/umd/ffmpeg-core.js");
     // await injectScriptInOrder("scripts/814.ffmpeg.js");
     // await injectScriptAsModule("scripts/assets/core/package/dist/umd/ffmpeg-core.js");
@@ -74,7 +74,7 @@ function injectScriptAsModule(filePath) {
     await injectScriptInOrder("scripts/convert.js");
     await injectScriptInOrder("scripts/compressPDF.js");
     await injectScriptInOrder("scripts/reset.js");
-    // await injectScriptInOrder("scripts/compressVideo.js");
+    await injectScriptInOrder("scripts/compressVideo.js");
     console.log(`✅ All Scripts Loaded and Ready to Use.`);
   } catch (err) {
     console.error("❌ Script loading failed:", err);
