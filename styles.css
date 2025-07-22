@@ -2,7 +2,8 @@
 /* For now: simple placeholder */
 /* Base styles */
 .formease-toolbox {
-  background-color: #f0fdf4; /* light green */
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  backdrop-filter: blur(20px);
   border-radius: 1rem;
   padding: 0.5rem;
   margin-top: 0.5rem;
@@ -11,13 +12,34 @@
   flex-direction: column;
   align-items: center;
 }
+.formease-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
+.formease-close-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  transform: scale(1.05);
+}
 /* Toolbox Heading */ 
 .formease-toolbox h4 {
-  font-weight: 900;
-  font-size: 1rem;
-  color: #065f46; /* dark green */
-  margin-bottom: 1rem;
+  font-weight: 800;
+  font-size: 1.25rem;
+  background: linear-gradient(135deg, #065f46, #059669);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  letter-spacing: -0.025em;
 }
 
 /* Toolbox Dropdown */
@@ -31,7 +53,8 @@
 .formease-toolbox #task {
   padding: 0.5rem;
   margin-inline-start: 10px;
-  border-radius: 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
 }
 
 /* Toolbox Range */
@@ -50,23 +73,112 @@
 }
 
 /* Manual Resize Scale */
+/* Manual Resize Scale */
 .formease-toolbox .manual-dimension {
   display: flex;
-  gap: 1rem;
-  justify-content: center;
+  gap: 12px;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.formease-toolbox .manual-dimension span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.formease-toolbox .manual-dimension label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.formease-toolbox .manual-dimension input[type="number"] {
+  width: 80px;
+  padding: 8px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.formease-toolbox .manual-dimension input[type="number"]:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 .formease-toolbox #resize-range {
-  width: 50%;
-  margin-top: 0.75rem;
+  width: 100%;
+  margin-top: 12px;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #e5e7eb 0%, #10b981 0%, #10b981 100%, #e5e7eb 100%);
+  outline: none;
+  cursor: pointer;
 }
-
+.formease-toolbox #resize-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #10b981, #059669);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.formease-toolbox #resize-range::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
 /* Resize slider label */
 .formease-toolbox #resize-scale {
   margin-left: 0.5rem;
   font-weight: bold;
   color: #166534;
+}
+.formease-toolbox #compress-inner {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.formease-toolbox #compress-input {
+  width: 80px;
+  padding: 8px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.formease-toolbox #compress-input:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+.formease-toolbox #convert-dropdown {
+  padding: 8px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 0.875rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.formease-toolbox #convert-dropdown:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 /* Buttons inside toolbox */
@@ -82,14 +194,69 @@
   transition: all 0.25s ease-in-out;
   margin-top: 1rem;
 }
-
-/* Apply */
-.formease-toolbox .toolbox-btn:hover {
-  background-color: #22c55e; /* Darker green */
-  cursor: pointer;
-  transform: translateY(-1px); /* subtle lift */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+.formease-toolbox label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
 }
+.formease-toolbox #resize-scale {
+  margin-top: 8px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #059669;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+/* Apply */
+.formease-toolbox .toolbox-btn {
+  background: linear-gradient(145deg, #10b981, #059669);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  box-shadow: 
+    0 4px 12px rgba(16, 185, 129, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 16px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.formease-toolbox .toolbox-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.formease-toolbox .toolbox-btn:hover {
+  background: linear-gradient(145deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 20px rgba(16, 185, 129, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.formease-toolbox .toolbox-btn:hover::before {
+  left: 100%;
+}
+
+.formease-toolbox .toolbox-btn:active {
+  transform: translateY(-1px);
+}
+
 
 .formease-toolbox #resetButton {
   background-color: rgba(128, 128, 128, 0.641);

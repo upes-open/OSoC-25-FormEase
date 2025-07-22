@@ -27,10 +27,13 @@
         "scripts/pica.min.js",
         "scripts/resize.js",
         "scripts/compress.js",
+        "scripts/assets/ffmpeg/package/dist/esm/index.js",
+        "scripts/assets/util/package/dist/esm/index.js",
         "scripts/convert.js",
         "scripts/assets",
         "scripts/compressVideo.js",
         "scripts/compressPDF.js",
+        "scripts/trimVideo.js",
         "scripts/reset.js"
       ],
       "matches": ["<all_urls>"]
