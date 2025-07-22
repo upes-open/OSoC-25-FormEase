@@ -132,7 +132,9 @@ document.addEventListener("change", (event) => {
         "*"
       );
 
-      console.log("[FormEase] 🎥 Sent video preview URL to toolbox via content.js");
+      console.log(
+        "[FormEase] 🎥 Sent video preview URL to toolbox via content.js"
+      );
     }
   }
 });
@@ -195,7 +197,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const input = document.querySelector(`input[type="file"][data-form-ease-id="${inputId}"]`);
+      const input = document.querySelector(
+        `input[type="file"][data-form-ease-id="${inputId}"]`
+      );
       if (!input || !input.files.length) {
         alert("Please upload a video file before compressing.");
         return;
@@ -204,17 +208,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const file = input.files[0];
 
       // ✅ Send message to compressVideo.js
-      window.postMessage({
-        type: "compress-Video",
-        file,
-        inputId,
-      }, "*");
+      window.postMessage(
+        {
+          type: "compress-Video",
+          file,
+          inputId,
+        },
+        "*"
+      );
 
-      console.log(`[FormEase] 📦 Sent compress request for inputId: ${inputId}`);
+      console.log(
+        `[FormEase] 📦 Sent compress request for inputId: ${inputId}`
+      );
     }
   });
 });
-
 
 // Drop Box Event Listeners
 for (let dropZone of dropZones) {
@@ -460,7 +468,7 @@ function createToolboxForInput(input, inputId, toolbox, file = null) {
     injectStyles();
 
     fetch(chrome.runtime.getURL("toolbox.html"))
-      .then((response) => response.text())//(file && file.type === "application/pdf") {
+      .then((response) => response.text()) //(file && file.type === "application/pdf") {
       .then((data) => {
         toolbox.innerHTML = data;
         input.parentNode.parentNode.parentNode.appendChild(toolbox);
@@ -585,71 +593,118 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
       }
     };
   } else if (file && file.type === "application/pdf") {
-      const blobUrl = URL.createObjectURL(file);
+    const blobUrl = URL.createObjectURL(file);
 
-      if (formeasefeedback) {
-        formeasefeedback.innerHTML = `
+    if (formeasefeedback) {
+      formeasefeedback.innerHTML = `
           <iframe
             id="pdfPreviewIframe"
             src="${blobUrl}"
             style="width: 100%; height: 400px; border: 1px solid #ccc;"
           ></iframe>
         `;
-        formeasefeedback.style.display = "block";
+      formeasefeedback.style.display = "block";
+    }
+  } else if (file && file.type.startsWith("video/")) {
+    const blobUrl = URL.createObjectURL(file);
+
+    // Prepare new containers
+    const previewContainer = document.createElement("div");
+    previewContainer.className = "formease-video-preview-container";
+    previewContainer.style.marginBottom = "10px";
+
+    const trimControls = document.createElement("div");
+    trimControls.className = "formease-video-trim-controls";
+    trimControls.style.display = "flex";
+    trimControls.style.flexDirection = "column";
+    trimControls.style.gap = "10px";
+
+    // Create video preview
+    const videoEl = document.createElement("video");
+    videoEl.id = "dynamicVideoPreview";
+    videoEl.controls = true;
+    videoEl.src = blobUrl;
+    videoEl.style.width = "100%";
+    videoEl.style.maxHeight = "300px";
+    videoEl.style.border = "1px solid #ccc";
+    videoEl.style.marginBottom = "10px";
+    previewContainer.appendChild(videoEl);
+
+    // Time input fields
+    const startTimeDiv = document.createElement("div");
+    startTimeDiv.innerHTML = `
+    <label for="start-time">Start Time (HH:MM:SS):</label>
+    <input type="text" id="start-time" placeholder="e.g. 00:00:03" />
+  `;
+
+    const endTimeDiv = document.createElement("div");
+    endTimeDiv.innerHTML = `
+    <label for="end-time">End Time (HH:MM:SS):</label>
+    <input type="text" id="end-time" placeholder="e.g. 00:00:10" />
+  `;
+
+    // Play/Pause Button
+    const playPauseBtn = document.createElement("button");
+    playPauseBtn.id = "playPauseBtn";
+    playPauseBtn.type = "button";
+    playPauseBtn.className = "toolbox-btn";
+    playPauseBtn.textContent = "▶️ Play / ⏸ Pause";
+    playPauseBtn.style.marginBottom = "10px";
+
+    // Trim Button
+    const trimBtn = document.createElement("button");
+    trimBtn.id = "trimVideoBtn";
+    trimBtn.type = "button";
+    trimBtn.className = "toolbox-btn";
+    trimBtn.textContent = "✂️ Trim Video";
+    trimBtn.style.marginBottom = "10px";
+
+    // Append all controls
+    trimControls.appendChild(startTimeDiv);
+    trimControls.appendChild(endTimeDiv);
+    trimControls.appendChild(playPauseBtn);
+    trimControls.appendChild(trimBtn);
+
+    // Append to DOM
+    const container =
+      document.querySelector("#formease-video-container") || document.body;
+    container.innerHTML = "";
+    container.appendChild(previewContainer);
+    container.appendChild(trimControls);
+
+    // Play/pause logic
+    playPauseBtn.addEventListener("click", () => {
+      videoEl.paused ? videoEl.play() : videoEl.pause();
+    });
+
+    // Inject trimVideo.js script if not already injected
+    if (!document.getElementById("formease-trim-script")) {
+      const script = document.createElement("script");
+      script.id = "formease-trim-script";
+      script.type = "module";
+      script.src = chrome.runtime.getURL("scripts/trimVideo.js");
+      document.body.appendChild(script);
+    }
+
+    // Trim trigger via postMessage
+    trimBtn.addEventListener("click", () => {
+      const uploader = document.getElementById("uploader");
+      if (!uploader || !uploader.files.length) {
+        document.querySelector(".formease-feedback-video").innerHTML =
+          "<div>❌ No video file selected.</div>";
+        return;
       }
-    } else if (file && file.type.startsWith("video/")) {
-        const blobUrl = URL.createObjectURL(file);
 
-        if (formeasefeedback) {
-          formeasefeedback.innerHTML = `
-            <video
-              id="dynamicVideoPreview"
-              controls
-              src="${blobUrl}"
-              style="width: 100%; max-height: 300px; border: 1px solid #ccc; margin-bottom: 10px;"
-            ></video>
+      // Send message to trigger trim logic
+      window.postMessage({ type: "trim-video" }, "*");
+    });
 
-            <div style="margin-bottom: 10px; margin-right: 10px;">
-              <label for="startTime">Start Time (HH:MM:SS):</label>
-              <input type="text" id="startTime" placeholder="e.g. 00:00:03" />
-            </div>
-
-            <div style="margin-bottom: 10px; margin-right: 10px;">
-              <label for="endTime">End Time (HH:MM:SS):</label>
-              <input type="text" id="endTime" placeholder="e.g. 00:00:10" />
-            </div>
-
-            <button
-              type="button"
-              id="playPauseBtn"
-              class="toolbox-btn"
-              style="margin-bottom: 10px;"
-            >
-              ▶️ Play / ⏸ Pause
-            </button>
-
-            <p id="video-process-status" style="font-size: 14px; color: #555;"></p>
-          `;
-
-          formeasefeedback.style.display = "block";
-
-          // Setup play/pause handler
-          setTimeout(() => {
-            const videoEl = document.getElementById("dynamicVideoPreview");
-            const playPauseBtn = document.getElementById("playPauseBtn");
-
-            if (videoEl && playPauseBtn) {
-              playPauseBtn.addEventListener("click", () => {
-                if (videoEl.paused) {
-                  videoEl.play();
-                } else {
-                  videoEl.pause();
-                }
-              });
-            }
-          }, 0);
-        }
-      }else {
+    // Setup feedback area
+    if (formeasefeedback) {
+      formeasefeedback.innerHTML = `<p id="video-process-status" style="font-size: 14px; color: #555;"></p>`;
+      formeasefeedback.style.display = "block";
+    }
+  } else {
     if (formeasefeedback) {
       formeasefeedback.innerHTML = "<div>No File Selected.</div>";
       formeasefeedback.style.display = "block";
@@ -819,7 +874,7 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
 
           if (currentFile) {
             window.postMessage({ type: "compress", inputId }, "*");
-          }//revokeObjectURL
+          } //revokeObjectURL
         });
 
         if (resetBtn && !resetBtn.dataset.listenerAdded) {
