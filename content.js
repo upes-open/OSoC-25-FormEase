@@ -613,12 +613,6 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     previewContainer.className = "formease-video-preview-container";
     previewContainer.style.marginBottom = "10px";
 
-    const trimControls = document.createElement("div");
-    trimControls.className = "formease-video-trim-controls";
-    trimControls.style.display = "flex";
-    trimControls.style.flexDirection = "column";
-    trimControls.style.gap = "10px";
-
     // Create video preview
     const videoEl = document.createElement("video");
     videoEl.id = "dynamicVideoPreview";
@@ -630,19 +624,6 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     videoEl.style.marginBottom = "10px";
     previewContainer.appendChild(videoEl);
 
-    // Time input fields
-    const startTimeDiv = document.createElement("div");
-    startTimeDiv.innerHTML = `
-    <label for="start-time">Start Time (HH:MM:SS):</label>
-    <input type="text" id="start-time" placeholder="e.g. 00:00:03" />
-  `;
-
-    const endTimeDiv = document.createElement("div");
-    endTimeDiv.innerHTML = `
-    <label for="end-time">End Time (HH:MM:SS):</label>
-    <input type="text" id="end-time" placeholder="e.g. 00:00:10" />
-  `;
-
     // Play/Pause Button
     const playPauseBtn = document.createElement("button");
     playPauseBtn.id = "playPauseBtn";
@@ -651,57 +632,29 @@ function setupToolboxEventListeners(toolbox, inputId, file = null) {
     playPauseBtn.textContent = "▶️ Play / ⏸ Pause";
     playPauseBtn.style.marginBottom = "10px";
 
-    // Trim Button
-    const trimBtn = document.createElement("button");
-    trimBtn.id = "trimVideoBtn";
-    trimBtn.type = "button";
-    trimBtn.className = "toolbox-btn";
-    trimBtn.textContent = "✂️ Trim Video";
-    trimBtn.style.marginBottom = "10px";
-
-    // Append all controls
-    trimControls.appendChild(startTimeDiv);
-    trimControls.appendChild(endTimeDiv);
-    trimControls.appendChild(playPauseBtn);
-    trimControls.appendChild(trimBtn);
+    // Controls wrapper
+    const controlsContainer = document.createElement("div");
+    controlsContainer.className = "formease-video-controls";
+    controlsContainer.style.display = "flex";
+    controlsContainer.style.justifyContent = "flex-start";
+    controlsContainer.style.gap = "10px";
+    controlsContainer.appendChild(playPauseBtn);
 
     // Append to DOM
     const container =
       document.querySelector("#formease-video-container") || document.body;
     container.innerHTML = "";
     container.appendChild(previewContainer);
-    container.appendChild(trimControls);
+    container.appendChild(controlsContainer);
 
     // Play/pause logic
     playPauseBtn.addEventListener("click", () => {
       videoEl.paused ? videoEl.play() : videoEl.pause();
     });
 
-    // Inject trimVideo.js script if not already injected
-    if (!document.getElementById("formease-trim-script")) {
-      const script = document.createElement("script");
-      script.id = "formease-trim-script";
-      script.type = "module";
-      script.src = chrome.runtime.getURL("scripts/trimVideo.js");
-      document.body.appendChild(script);
-    }
-
-    // Trim trigger via postMessage
-    trimBtn.addEventListener("click", () => {
-      const uploader = document.getElementById("uploader");
-      if (!uploader || !uploader.files.length) {
-        document.querySelector(".formease-feedback-video").innerHTML =
-          "<div>❌ No video file selected.</div>";
-        return;
-      }
-
-      // Send message to trigger trim logic
-      window.postMessage({ type: "trim-video" }, "*");
-    });
-
     // Setup feedback area
     if (formeasefeedback) {
-      formeasefeedback.innerHTML = `<p id="video-process-status" style="font-size: 14px; color: #555;"></p>`;
+      formeasefeedback.innerHTML = `<p id="video-process-status" style="font-size: 14px; color: #555;">✅ Video loaded successfully.</p>`;
       formeasefeedback.style.display = "block";
     }
   } else {
