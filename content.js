@@ -35,6 +35,24 @@ function injectScriptInOrder(filePath) {
     (document.head || document.documentElement).appendChild(script);
   });
 }
+function injectScriptAsModule(filePath) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.type = "module";
+    script.src = filePath.startsWith("http")
+      ? filePath
+      : chrome.runtime.getURL(filePath);
+    script.onload = () => {
+      console.log(`✅ ${filePath} (module) loaded`);
+      resolve();
+    };
+    script.onerror = (e) => {
+      console.error(`❌ Failed to load ${filePath} as module`, e);
+      reject(e);
+    };
+    (document.head || document.documentElement).appendChild(script);
+  });
+}
 
 // Inject processing scripts (remove pica.min.js since toolbox.html uses CDN)
 // Load the FFmpeg CDN first
@@ -44,11 +62,19 @@ function injectScriptInOrder(filePath) {
     await injectScriptInOrder("scripts/pdf-lib.min.js");
     await injectScriptInOrder("scripts/pica.min.js");
     await injectScriptInOrder("scripts/resize.js");
-    await injectScriptInOrder("scripts/compressVideo.js");
     await injectScriptInOrder("scripts/compress.js");
+    // await injectScriptInOrder("scripts/ffmpeg.js");
+    await injectScriptInOrder("scripts/assets/ffmpeg/package/dist/umd/ffmpeg.js");
+    await injectScriptInOrder("scripts/assets/util/package/dist/umd/index.js");
+    // await injectScriptInOrder("scripts/assets/core/package/dist/umd/ffmpeg-core.js");
+    // await injectScriptInOrder("scripts/814.ffmpeg.js");
+    // await injectScriptAsModule("scripts/assets/core/package/dist/umd/ffmpeg-core.js");
+    // await injectScriptInOrder("scripts/ffmpeg-core.js");
+    // await injectScriptInOrder("scripts/index.js");
     await injectScriptInOrder("scripts/convert.js");
     await injectScriptInOrder("scripts/compressPDF.js");
     await injectScriptInOrder("scripts/reset.js");
+    await injectScriptInOrder("scripts/compressVideo.js");
     console.log(`✅ All Scripts Loaded and Ready to Use.`);
   } catch (err) {
     console.error("❌ Script loading failed:", err);
