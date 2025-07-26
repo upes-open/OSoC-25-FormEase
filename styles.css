@@ -12,6 +12,7 @@
   flex-direction: column;
   align-items: center;
 }
+
 .formease-close-btn {
   position: absolute;
   top: 16px;
@@ -29,7 +30,8 @@
   background: rgba(239, 68, 68, 0.15);
   transform: scale(1.05);
 }
-/* Toolbox Heading */ 
+
+/* Toolbox Heading */
 .formease-toolbox h4 {
   font-weight: 800;
   font-size: 1.25rem;
@@ -55,6 +57,7 @@
   margin-inline-start: 10px;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
+  color: #2eb82e;
 }
 
 /* Toolbox Range */
@@ -120,7 +123,13 @@
   appearance: none;
   height: 8px;
   border-radius: 4px;
-  background: linear-gradient(to right, #e5e7eb 0%, #10b981 0%, #10b981 100%, #e5e7eb 100%);
+  background: linear-gradient(
+    to right,
+    #e5e7eb 0%,
+    #10b981 0%,
+    #10b981 100%,
+    #e5e7eb 100%
+  );
   outline: none;
   cursor: pointer;
 }
@@ -220,8 +229,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.025em;
-  box-shadow: 
-    0 4px 12px rgba(16, 185, 129, 0.3),
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-top: 16px;
@@ -231,21 +239,25 @@
 }
 
 .formease-toolbox .toolbox-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s;
 }
 
 .formease-toolbox .toolbox-btn:hover {
   background: linear-gradient(145deg, #059669, #047857);
   transform: translateY(-2px);
-  box-shadow: 
-    0 8px 20px rgba(16, 185, 129, 0.4),
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
@@ -256,7 +268,6 @@
 .formease-toolbox .toolbox-btn:active {
   transform: translateY(-1px);
 }
-
 
 .formease-toolbox #resetButton {
   background-color: rgba(128, 128, 128, 0.641);
