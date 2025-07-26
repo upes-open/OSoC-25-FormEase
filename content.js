@@ -64,7 +64,9 @@ function injectScriptAsModule(filePath) {
     await injectScriptInOrder("scripts/resize.js");
     await injectScriptInOrder("scripts/compress.js");
     // await injectScriptInOrder("scripts/ffmpeg.js");
-    await injectScriptInOrder("scripts/assets/ffmpeg/package/dist/umd/ffmpeg.js");
+    await injectScriptInOrder(
+      "scripts/assets/ffmpeg/package/dist/umd/ffmpeg.js"
+    );
     await injectScriptInOrder("scripts/assets/util/package/dist/umd/index.js");
     // await injectScriptInOrder("scripts/assets/core/package/dist/umd/ffmpeg-core.js");
     // await injectScriptInOrder("scripts/814.ffmpeg.js");
@@ -124,23 +126,6 @@ document.addEventListener("drop", (e) => {
   }
 });
 
-window.addEventListener("message", async (event) => {
-  if (event.source !== window) return;
-
-  if (event.data.type === "compress-PDF") {
-    const { inputId } = event.data;
-    const file = getCurrentFileForInput(inputId);
-
-    if (file && file.type === "application/pdf") {
-      try {
-        console.log(`[FormEase] 🔧 Compressing PDF for input: ${inputId}`);
-        await compressPDF(file, inputId);
-      } catch (err) {
-        console.error(`[FormEase] ❌ PDF compression failed:`, err);
-      }
-    }
-  }
-});
 //toolbox.html
 document.addEventListener("change", (event) => {
   const input = event.target;
