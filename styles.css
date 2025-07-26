@@ -333,29 +333,30 @@
 /*Editing the class name because it create a confusion*/
 .formease-edit-btn {
   position: absolute;
-  right: 5px;
-  top: 5px;
-  background-color: #2563eb;
+  right: 6px;
+  top: 6px;
+  background: linear-gradient(135deg, #32cd32, #228b22);
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  padding: 6px 10px;
   font-size: 11px;
   font-weight: bold;
-  z-index: 9999;
+  z-index: 2147483647;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s ease-in-out;
+  transition: all 0.2s ease;
 }
 
 .formease-edit-btn:hover {
-  background-color: #1d4ed8;
+  background: linear-gradient(135deg, #2eb82e, #1e7f1e);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 /*added focus it will more visually grab the attention*/
 .formease-edit-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 255, 100, 0.5);
 }
 
 /* Drag & Drop for images */
