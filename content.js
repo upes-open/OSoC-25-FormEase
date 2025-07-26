@@ -387,16 +387,23 @@ function injectStyles() {
 }
 
 function injectFloatingEditButton(input) {
+  
   console.log("injectflotaing edit button working ✅!!!!");
   const editBtn = document.createElement("button");
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   editBtn.textContent = "Edit";
   editBtn.className = "formease-edit-btn";
+  if (isDark) {
+    editBtn.style.boxShadow = '0 2px 6px rgba(255, 255, 255, 0.2)';
+  }
   editBtn.dataset.formEaseInputId = input.dataset.formEaseId;
 
-  if (input.parentNode && input.parentNode.style) {
-    input.parentNode.style.position = "relative";
-    input.parentNode.appendChild(editBtn);
-  }
+  const container = document.createElement("div");
+  container.style.position = "relative";
+  container.style.display = "inline-block";
+  input.parentNode.insertBefore(container, input);
+  container.appendChild(input);
+  container.appendChild(editBtn);
 
   editBtn.addEventListener("click", (e) => {
     e.preventDefault();
@@ -943,7 +950,7 @@ for (let submitBtn of submitBtns) {
   submitBtn.addEventListener("click", () => {
     closeToolboxOnSubmit(submitBtn);
   });
-}
+}//Edit
 
 function closeToolboxOnSubmit(submitBtn) {
   const inputId = submitBtn.closest("form").querySelector('input[type="file"]')
