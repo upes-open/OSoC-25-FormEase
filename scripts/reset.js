@@ -2,6 +2,10 @@ window.addEventListener("message", async (event) => {
   if (event.source === window && event.data.type === "reset") {
     const { inputId, OriginalFile } = event.data;
 
+    const toolbox = document.querySelector(
+      `.formease-toolbox[data-input-id="${inputId}"]`
+    );
+
     console.log(
       `[FormEase-Reset] Processing reset request for input ${inputId}`
     );
@@ -91,5 +95,9 @@ window.addEventListener("message", async (event) => {
       document.querySelector(".formease-feedback-convert").innerHTML = "";
       document.querySelector(".formease-feedback-pdf").innerHTML = "";
     }, 2000);
+
+    setTimeout(() => {
+      toolbox.remove();
+    }, 3000);
   }
 });

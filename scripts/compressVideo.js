@@ -2,8 +2,10 @@ console.log("[FormEase] compressVideo.js (UMD) loaded ✅");
 
 (async () => {
   if (!window.FFmpegWASM.FFmpeg || !window.FFmpegUtil.fetchFile) {
-    console.log(window)
-    console.error("[FormEase] ❌ FFmpeg or FFmpegUtil.fetchFile not available.");
+    console.log(window);
+    console.error(
+      "[FormEase] ❌ FFmpeg or FFmpegUtil.fetchFile not available."
+    );
     return;
   }
   let ffmpeg = null;
@@ -15,6 +17,10 @@ console.log("[FormEase] compressVideo.js (UMD) loaded ✅");
     if (event.source !== window || event.data.type !== "compress-Video") return;
 
     const { inputId } = event.data;
+
+    const toolbox = document.querySelector(
+      `.formease-toolbox[data-input-id="${inputId}"]`
+    );
 
     const videoFeedbackArea = document.querySelector(
       ".formease-feedback-video"
@@ -60,13 +66,17 @@ console.log("[FormEase] compressVideo.js (UMD) loaded ✅");
 
       if (!isLoaded) {
         await ffmpeg.load({
-            coreURL: "ffmpeg-core.js",
-          });
+          coreURL: "ffmpeg-core.js",
+        });
         isLoaded = true;
       }
 
       const { name } = file;
-      await ffmpeg.FS("writeFile", name, await window.FFmpegUtil.fetchFile(file));
+      await ffmpeg.FS(
+        "writeFile",
+        name,
+        await window.FFmpegUtil.fetchFile(file)
+      );
 
       await ffmpeg.run(
         "-i",
@@ -111,6 +121,10 @@ console.log("[FormEase] compressVideo.js (UMD) loaded ✅");
       }
 
       if (confirmBtn) confirmBtn.style.display = "block";
+
+      setTimeout(() => {
+        toolbox.remove();
+      }, 3000);
     } catch (err) {
       console.error("[FormEase-Compress-Video] ❌", err);
       if (feedback) {
@@ -121,13 +135,8 @@ console.log("[FormEase] compressVideo.js (UMD) loaded ✅");
   });
 })();
 
-
-
-
 // Make sure these are loaded first (in your content script or background script)
 // You need to inject these scripts before this code runs
-
-
 
 // const { FFmpeg } = FFmpegWASM;
 // const { fetchFile } = FFmpegUtil;
@@ -219,4 +228,3 @@ console.log("[FormEase] compressVideo.js (UMD) loaded ✅");
 //     );
 //   }
 // });
-
