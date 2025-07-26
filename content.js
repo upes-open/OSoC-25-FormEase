@@ -165,6 +165,17 @@ document.addEventListener("change", (event) => {
   }
 });
 
+document.addEventListener("click", () => {
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('input[type="file"]:not([data-form-ease-hooked])');
+    inputs.forEach((input) => {
+      input.dataset.formEaseId = crypto.randomUUID();
+      input.dataset.formEaseHooked = "true";
+      injectFloatingEditButton(input);
+    });
+  }, 500); // enough delay to wait for dynamically added input
+});
+
 window.addEventListener("message", async (event) => {
   if (event.source !== window) return;
 
