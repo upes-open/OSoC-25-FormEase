@@ -144,6 +144,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Sidd-04"><img src="https://github.com/Sidd-04.png" width="100px;" alt="Sidd-04"/><br /><sub><b>Sidd-04</b></sub></a><br /><a href="#code-Sidd-04" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Sushmeta1"><img src="https://github.com/Sushmeta1.png" width="100px;" alt="Sushmeta1"/><br /><sub><b>Sushmeta1</b></sub></a><br /><a href="#code-Sushmeta1" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/billayamini18"><img src="https://github.com/billayamini18.png" width="100px;" alt="billayamini18"/><br /><sub><b>billayamini18</b></sub></a><br /><a href="#code-billayamini18" title="Code">💻</a></td>
+     <td align="center"><a href="https://github.com/TarakshGoyal"><img src="https://github.com/TarakshGoyal.png" width="100px;" alt="TarakshGoyal"/><br /><sub><b>TarakshGoyal</b></sub></a><br /><a href="#code-TarakshGoyal" title="Code">💻</a></td>
   </tr>
 </table>
 
